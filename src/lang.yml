@@ -1,0 +1,28 @@
+ERROR_NOTAPLAYER: "&c&lYou must be a player to do this!"
+ERROR_NOPERMISSION: "&c&lYou do not have permission to do this."
+ERROR_WRONGSYNTAX: "&c&lWrong syntax! {SYNTAX}"
+ERROR_NOTANUMBER: "&c&l{NUMBER} is not a number."
+ERROR_EMPTYSHOP: "&4&lNo perks have been set."
+ERROR_INVALIDITEM: "&c&lYou must hold something in your hand."
+
+PERK_ADD_SUCCESS: "&2&lSuccessfully added perk {PERK_NAME}."
+PERK_ADD_ALREADYEXISTS: "&c&lThe perk {PERK_NAME} already exists."
+
+PERK_REMOVE_SUCCESS: "&2&lSuccessfully removed perk {PERK_NAME}."
+PERK_REMOVE_NOTFOUND: "&c&lCould not find perk {PERK_NAME}."
+
+PERK_BUY_SUCCESSFULL: "&2&lSuccessfully bought perk {PERK_NAME}."
+PERK_BUY_INSUFFICIENTFUNDS: "&c&lYou have insufficient funds to buy this perk."
+PERK_BUY_UNLOCKED: "&e&lYou have already unlocked this perk."
+
+PLUGIN_RELOAD_SUCCESS: "&2&lSuccessfully reloaded all config files."
+
+GUI_TITLE: "&6&lPermission Shop - Page {PAGE_NUMBER}"
+GUI_PAGE_NEXT: "&3&lNext"
+GUI_PAGE_PREVIOUS: "&3&l Previous"
+GUI_PAGE_CLOSE: "&4&lClose"
+GUI_PERK_UNLOCKED: "&e&lUNLOCKED"
+GUI_PERK_PRICE: "&2&lPrice: ${PRICE}"
+
+GUI_REMOVE_CLICK: "&4&lClick to remove!"
+GUI_REMOVE_TITLE: "&4&lPermission Removal! - Page {PAGE_NUMBER}"
