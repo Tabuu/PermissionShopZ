@@ -22,21 +22,21 @@ import java.util.*;
 
 public class ShopGUI implements IGUI {
 
-    LanguageConfig _langConfig;
-    Config _data, _config;
+    private LanguageConfig _langConfig;
+    private Config _data, _config;
 
-    Player _player;
-    Economy _economy;
+    private Player _player;
+    private Economy _economy;
 
-    int _currentPage = 1;
-    int _maxPage = 1;
+    private int _currentPage = 1;
+    private int _maxPage = 1;
 
     List<String> _perkIds;
 
     public ShopGUI(Player player){
         _data = PermissionShop.getConfigManager().getConfig("data");
         _config = PermissionShop.getConfigManager().getConfig("config");
-        _langConfig = new LanguageConfig(PermissionShop.getConfigManager().getConfig("lang"));
+        _langConfig = PermissionShop.getConfigManager().getLanguageConfig("lang");
 
         _player = player;
         _economy = VaultEconomy.getEconomy();
@@ -56,7 +56,10 @@ public class ShopGUI implements IGUI {
     }
 
     @Override
-    public void onGUIClick(Player player, int slot, ItemStack itemStack, GUIClick guiClick) {
+    public void onGUIClick(Player player, GUIClick guiClick) {
+
+        ItemStack itemStack = guiClick.getClickedItem();
+        int slot = guiClick.getSlot();
 
         if(itemStack == null)
             return;
@@ -116,10 +119,10 @@ public class ShopGUI implements IGUI {
         Inventory inventory = Bukkit.createInventory(this, 18, _langConfig.parseText("GUI_TITLE", "{PAGE_NUMBER}", _currentPage + ""));
 
         //Navigation
-        ItemBuilder nextButton = new ItemBuilder(new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 0, (byte) 5));
+        ItemBuilder nextButton = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE);
         nextButton.setDisplayName(_langConfig.parseText("GUI_PAGE_NEXT"));
 
-        ItemBuilder previousButton = new ItemBuilder(new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 0, (byte) 5));
+        ItemBuilder previousButton = new ItemBuilder(Material.LIME_STAINED_GLASS_PANE);
         previousButton.setDisplayName(_langConfig.parseText("GUI_PAGE_PREVIOUS"));
 
         ItemBuilder closeButton = new ItemBuilder(Material.BARRIER);

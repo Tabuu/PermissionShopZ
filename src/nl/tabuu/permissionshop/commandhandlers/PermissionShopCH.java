@@ -6,7 +6,7 @@ import nl.tabuu.permissionshop.gui.ShopRemoveGUI;
 import nl.tabuu.tabuucore.configuration.Config;
 import nl.tabuu.tabuucore.configuration.LanguageConfig;
 import nl.tabuu.tabuucore.packets.titlepackets.TitleAPI;
-import nl.tabuu.tabuucore.utils.BukkitTools;
+import nl.tabuu.tabuucore.utils.BukkitUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -28,14 +28,14 @@ public class PermissionShopCH implements CommandExecutor{
 	
 	public PermissionShopCH() {
 		_plugin = PermissionShop.getPlugin();
-		_langConfig = new LanguageConfig(PermissionShop.getConfigManager().getConfig("lang"));
+		_langConfig = PermissionShop.getConfigManager().getLanguageConfig("lang");
 		_data = PermissionShop.getConfigManager().getConfig("data");
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if(sender instanceof Player == false){
+		if(!(sender instanceof Player)){
 			sender.sendMessage(_langConfig.parseText("ERROR_NOTAPLAYER"));
 			return true;
 		}
@@ -91,7 +91,7 @@ public class PermissionShopCH implements CommandExecutor{
 				String perkName = args[1].replace('_', ' ');
 				double price = Double.parseDouble(args[2]);
 				List<String> permissionNodes = Arrays.asList(Arrays.copyOfRange(args, 3, args.length));
-				ItemStack displayItem = BukkitTools.getItemInMainHand(player);
+				ItemStack displayItem = BukkitUtils.getItemInMainHand(player);
 
 				if(_data.getData().get("Perks." + perkName) != null) {
 					TitleAPI.sendActionbar(player, _langConfig.parseText("PERK_ADD_ALREADYEXISTS", "{PERK_NAME}", perkName), 10, 20, 10);

@@ -5,6 +5,7 @@ import nl.tabuu.permissionshop.bstats.Metrics;
 import nl.tabuu.permissionshop.commandhandlers.PermissionShopCH;
 import nl.tabuu.permissionshop.permissionhandler.*;
 import nl.tabuu.tabuucore.autoupdater.AutoUpdater;
+import nl.tabuu.tabuucore.autoupdater.UpdateProviderException;
 import nl.tabuu.tabuucore.autoupdater.providers.SpigotUpdateProvider;
 import nl.tabuu.tabuucore.configuration.ConfigManager;
 import org.anjocaido.groupmanager.GroupManager;
@@ -30,7 +31,6 @@ public class PermissionShop extends JavaPlugin {
 
 		this.getCommand("permissionshop").setExecutor(new PermissionShopCH());
 
-		AutoUpdater.registerPlugin(this, new SpigotUpdateProvider(45547, this.getFile()));
 		new Metrics(this);
 	}
 

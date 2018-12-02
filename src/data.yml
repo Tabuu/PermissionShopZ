@@ -1,0 +1,26 @@
+Perks:
+  '&b&lFly':
+    Price: 9.99
+    Permissions:
+    - essentials.fly
+    DisplayItem:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: FEATHER
+  '&2&l/craft':
+    Price: 4.99
+    Permissions:
+    - essentials.workbench
+    DisplayItem:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: CRAFTING_TABLE
+  '&d&lSandbox':
+    Price: 999.99
+    Permissions:
+    - essentials.gamemode.creative
+    - essentials.gamemode.survival
+    DisplayItem:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1631
+      type: DIAMOND_SHOVEL
