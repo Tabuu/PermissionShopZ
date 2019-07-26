@@ -1,4 +1,4 @@
-package nl.tabuu.permissionshop.permissionhandler;
+package nl.tabuu.permissionshopz.permissionhandler;
 
 import org.bukkit.entity.Player;
 

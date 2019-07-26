@@ -1,6 +1,6 @@
-package nl.tabuu.permissionshop.permissionhandler;
+package nl.tabuu.permissionshopz.permissionhandler;
 
-import nl.tabuu.permissionshop.PermissionShop;
+import nl.tabuu.permissionshopz.PermissionShopZ;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.Tasks.BukkitPermsUpdateTask;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class PermissionHandler_GroupManager implements IPermissionHandler {
 
-    GroupManager _groupManager;
+    private GroupManager _groupManager;
     public PermissionHandler_GroupManager(GroupManager groupManager){
         _groupManager = groupManager;
     }
@@ -21,6 +21,6 @@ public class PermissionHandler_GroupManager implements IPermissionHandler {
             BukkitPermsUpdateTask task = new BukkitPermsUpdateTask();
             task.run();
         }
-        else PermissionShop.getPlugin().getLogger().severe("Could not set permission of player " + player.getName());
+        else PermissionShopZ.getInstance().getLogger().severe("Could not set permission of player " + player.getName());
     }
 }

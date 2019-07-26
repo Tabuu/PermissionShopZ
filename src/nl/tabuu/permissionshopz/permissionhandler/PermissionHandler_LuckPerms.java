@@ -1,4 +1,4 @@
-package nl.tabuu.permissionshop.permissionhandler;
+package nl.tabuu.permissionshopz.permissionhandler;
 
 import me.lucko.luckperms.api.LuckPermsApi;
 import me.lucko.luckperms.api.Node;
@@ -9,7 +9,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class PermissionHandler_LuckPerms implements IPermissionHandler {
 
-    LuckPermsApi _luckPermsApi;
+    private LuckPermsApi _luckPermsApi;
 
     public PermissionHandler_LuckPerms(){
         RegisteredServiceProvider<LuckPermsApi> provider = Bukkit.getServicesManager().getRegistration(LuckPermsApi.class);

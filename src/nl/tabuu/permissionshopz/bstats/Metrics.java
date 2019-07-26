@@ -1,4 +1,4 @@
-package nl.tabuu.permissionshop.bstats;
+package nl.tabuu.permissionshopz.bstats;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

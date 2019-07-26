@@ -1,6 +1,6 @@
-name: PermissionShop
+name: PermissionShopZ
 version: 2.4.0 BETA
-main: nl.tabuu.permissionshop.PermissionShop
+main: nl.tabuu.permissionshopz.PermissionShopZ
 description: This plugin allows players to buy permissions.
 authors: [Tabuu]
 website: https://www.tabuu.nl
@@ -9,28 +9,32 @@ softdepend: [GroupManager, PermissionsEx, LuckPerms]
 api-version: 1.13
 
 commands:
-  permissionshop:
-    usage: /permissionshop
+  permissionshopz:
+    usage: /permissionshopz
     description: Opens the shop GUI.
-    aliases: [pshop]
+    permission: permissionshopz.default
+    aliases: [pshop, permissionshop]
 
-  permissionshop add:
-    usage: /permissionshop add <name> <price> <permission> [<permission> <permission> ...]
+  permissionshopz add:
+    usage: /permissionshopz add <name> <price> <permission> [<permission> <permission> ...]
     description: Adds a permission to the shop, the display item will be the item you hold.
+    permission: permissionshopz.admin
 
-  permissionshop remove:
-    usage: /permissionshop remove
+  permissionshopz remove:
+    usage: /permissionshopz remove
     description: Opens the removal GUI.
+    permission: permissionshopz.admin
 
-  permissionshop reload:
-    usage: /permissionshop reload
+  permissionshopz reload:
+    usage: /permissionshopz reload
     description: Reloads the config.
+    permission: permissionshopz.admin
 
 permissions:
-  permissionshop.default:
+  permissionshopz.default:
     description: Allows players to open the GUI.
     default: true
 
-  permissionshop.admin:
+  permissionshopz.admin:
     description: Allows players to manage the permission shop.
     default: op

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PermissionShopZ">
+    <output-path>$PROJECT_DIR$/../../00_Plugin_Making/03_Test_Servers/1.14.3/plugins</output-path>
+    <root id="archive" name="PermissionShopZ.jar">
+      <element id="module-output" name="PermissionShopZ" />
+    </root>
+  </artifact>
+</component>

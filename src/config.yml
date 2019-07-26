@@ -20,6 +20,9 @@ DisplayPermissionList: true
 # Set to true if you want number suffixes (k, M, B) instead of zeros
 UseNumberSuffix: false
 
+# Use title
+UseTitle: true
+
 # Format: "amount of zeros: 'suffix'"
 NumberSuffixes:
   '3': 'k'
