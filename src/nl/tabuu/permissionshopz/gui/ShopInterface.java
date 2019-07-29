@@ -5,7 +5,6 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.util.Message;
-import nl.tabuu.tabuucore.api.TitleAPI;
 import nl.tabuu.tabuucore.configuration.ConfigurationManager;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.economy.hook.Vault;
@@ -17,7 +16,7 @@ import nl.tabuu.tabuucore.item.ItemBuilder;
 import nl.tabuu.tabuucore.material.SafeMaterial;
 import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -32,7 +31,6 @@ public class ShopInterface extends InventoryFormUI {
     protected int _currentPage = 0;
     private int _maxPage;
 
-    private List<Perk> _perks;
     private Player _player;
     private IPermissionHandler _permissionHandler;
 
@@ -44,11 +42,10 @@ public class ShopInterface extends InventoryFormUI {
         _local = manager.getConfiguration("lang").getDictionary("");
 
         _economy = Vault.getEconomy();
-        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkManager().getPerks());
         _player = player;
         _permissionHandler = PermissionShopZ.getInstance().getPermissionHandler();
 
-        _maxPage = (int) Math.ceil(_perks.size() / 9d);
+        _maxPage = PermissionShopZ.getInstance().getPerkManager().getPerks().size() / 9;
 
         updateTitle();
     }
@@ -79,9 +76,17 @@ public class ShopInterface extends InventoryFormUI {
         setElement(new Vector2f(0, 1), previousButton);
         setElement(new Vector2f(4, 1), exitButton);
 
-        for(int i = _currentPage * 9; i < (_currentPage * 9) + 9 && i < _perks.size(); i++){
-            Perk perk = _perks.get(i);
-            setElement(new Vector2f(i, 0), createPerkItem(_player, perk));
+        List<Perk> perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkManager().getPerks());
+        for(int i = _currentPage * 9; i < (_currentPage * 9) + 9; i++){
+            Vector2f position = new Vector2f(i % 9, 0);
+
+            if(perks.size() < i + 1) {
+                setElement(position, new Button(new Style(SafeMaterial.AIR.toItemStack(), SafeMaterial.AIR.toItemStack())));
+                continue;
+            }
+
+            Perk perk = perks.get(i);
+            setElement(position, createPerkItem(_player, perk));
         }
         super.draw();
     }
@@ -90,7 +95,8 @@ public class ShopInterface extends InventoryFormUI {
         SafeMaterial unlockedItem = _config.getEnum(SafeMaterial.class, "UnlockedMaterial");
 
         boolean unlocked = perk.getPermissions().stream().allMatch(node -> _player.hasPermission(node));
-        ItemBuilder displayItem = new ItemBuilder(unlocked ? perk.getDisplayItem() : unlockedItem.toItemStack());
+        ItemBuilder displayItem = new ItemBuilder(unlocked ? unlockedItem.toItemStack() : perk.getDisplayItem());
+        displayItem.setDisplayName(ChatColor.translateAlternateColorCodes('&', perk.getName()));
 
         if(_config.getBoolean("DisplayPermissionList")){
             for(String node : perk.getPermissions()) {
@@ -107,7 +113,7 @@ public class ShopInterface extends InventoryFormUI {
         else
             displayItem.addLore(_local.translate("GUI_PERK_PRICE", "{PRICE}", suffixFormat(perk.getCost())));
 
-        Style style = new Style(displayItem.build(), unlockedItem.toItemStack());
+        Style style = new Style(displayItem.build(), displayItem.build());
         Button button = new Button(style, p -> onPerkClick(player, perk));
         button.setEnabled(!unlocked);
 
@@ -137,7 +143,7 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     private void nextPage(Player player){
-        if(_currentPage != _maxPage)
+        if(_currentPage < _maxPage)
             _currentPage++;
 
         updateTitle();

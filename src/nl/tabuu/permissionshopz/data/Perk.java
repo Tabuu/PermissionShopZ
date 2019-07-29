@@ -1,6 +1,5 @@
 package nl.tabuu.permissionshopz.data;
 
-import com.google.gson.GsonBuilder;
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.tabuucore.serialization.bytes.Serializer;
 import org.bukkit.inventory.ItemStack;
@@ -10,11 +9,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class Perk implements Serializable {
-
     private UUID _uuid;
     private String _name;
     private double _cost;
@@ -45,7 +42,7 @@ public class Perk implements Serializable {
     }
 
     public ItemStack getDisplayItem(){
-        return _displayItem;
+        return _displayItem.clone();
     }
 
     public List<String> getPermissions(){

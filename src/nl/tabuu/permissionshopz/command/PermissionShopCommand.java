@@ -14,6 +14,7 @@ import nl.tabuu.tabuucore.command.argument.converter.OrderedArgumentConverter;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.util.BukkitUtils;
 import nl.tabuu.tabuucore.util.Dictionary;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -75,7 +76,7 @@ public class PermissionShopCommand extends Command {
 
 			ItemStack itemStack = BukkitUtils.getItemInMainHand(player);
 
-			if(itemStack == null){
+			if(itemStack == null || itemStack.getType().equals(Material.AIR)){
 				Message.send(player, _local.translate("ERROR_INVALIDITEM"));
 				return CommandResult.SUCCESS;
 			}
