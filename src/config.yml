@@ -11,8 +11,8 @@ PermissionManager: "CUSTOM"
 CustomPermissionCommand: "manuaddp {PLAYER} {PERMISSION}"
 
 # Material of unlocked items, if you do not want it to change leave empty.
-# List of all materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-UnlockedMaterial: "IRON_FENCE"
+# List of all materials: http://tabuucore.tabuu.nl/javadoc/nl/tabuu/tabuucore/material/SafeMaterial.html
+UnlockedMaterial: "IRON_BARS"
 
 # Set to true if you want the perk to display all permissions it has.
 DisplayPermissionList: true

@@ -25,14 +25,12 @@ import java.util.Optional;
 
 public class PermissionShopCommand extends Command {
 	private Dictionary _local;
-	private IConfiguration _data;
 	private PerkManager _manager;
 	
 	public PermissionShopCommand() {
 		super("permissionshopz");
 
 		_local = PermissionShopZ.getInstance().getLocal();
-		_data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("data");
 		_manager = PermissionShopZ.getInstance().getPerkManager();
 
 		this.setRequiredSenderType(SenderType.PLAYER);

@@ -28,7 +28,6 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
 		_config = getConfigurationManager().addConfiguration("config");
 		_local = getConfigurationManager().addConfiguration("lang").getDictionary("");
-		getConfigurationManager().addConfiguration("data");
 
 		_manager = new PerkManager();
 		load(new File(this.getDataFolder(), "shop.db"));
