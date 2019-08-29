@@ -1,12 +1,11 @@
 name: PermissionShopZ
-version: 2.4.0 BETA
+version: 3.0 BETA
 main: nl.tabuu.permissionshopz.PermissionShopZ
 description: This plugin allows players to buy permissions.
 authors: [Tabuu]
 website: https://www.tabuu.nl
 depend: [Vault, TabuuCore]
 softdepend: [GroupManager, PermissionsEx, LuckPerms]
-api-version: 1.13
 
 commands:
   permissionshopz:

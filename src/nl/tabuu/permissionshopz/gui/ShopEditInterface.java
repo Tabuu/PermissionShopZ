@@ -8,7 +8,7 @@ import nl.tabuu.tabuucore.inventory.ui.element.Button;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public class ShopEditInterface extends ShopInterface {
     public ShopEditInterface(Player player) {
@@ -38,7 +38,7 @@ public class ShopEditInterface extends ShopInterface {
         button.setEnabled(true);
 
         ItemMeta meta = button.getStyle().getEnabled().getItemMeta();
-        meta.setLore(Arrays.asList(_local.translate("GUI_REMOVE_CLICK")));
+        meta.setLore(Collections.singletonList(_local.translate("GUI_REMOVE_CLICK")));
         button.getStyle().getEnabled().setItemMeta(meta);
 
         return button;
