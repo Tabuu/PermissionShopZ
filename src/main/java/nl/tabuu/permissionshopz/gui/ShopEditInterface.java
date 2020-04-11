@@ -38,6 +38,8 @@ public class ShopEditInterface extends ShopInterface {
         button.setEnabled(true);
 
         ItemMeta meta = button.getStyle().getEnabled().getItemMeta();
+        if(meta == null) return button;
+
         meta.setLore(Collections.singletonList(_local.translate("GUI_REMOVE_CLICK")));
         button.getStyle().getEnabled().setItemMeta(meta);
 

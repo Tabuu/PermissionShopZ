@@ -17,6 +17,7 @@ import nl.tabuu.tabuucore.material.XMaterial;
 import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -157,7 +158,10 @@ public class ShopInterface extends InventoryFormUI {
 
     private String suffixFormat(double value) {
         NavigableMap<Double, String> suffixMap = new TreeMap<>();
-        Set<String> suffixList = _config.getConfigurationSection("NumberSuffixes").getKeys(false);
+        ConfigurationSection suffixes = _config.getConfigurationSection("NumberSuffixes");
+        if(suffixes == null) return value + "";
+
+        Set<String> suffixList = suffixes.getKeys(false);
 
         for (String string : suffixList) {
             int zeroCount = Integer.parseInt(string);

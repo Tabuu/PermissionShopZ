@@ -87,7 +87,7 @@ public class PermissionShopZ extends TabuuCorePlugin {
         }
 
         if(_permissionHandler == null) {
-            if(errorMessage != null) getLogger().severe(errorMessage);
+            getLogger().severe(errorMessage);
             getServer().getPluginManager().disablePlugin(this);
         }
     }
