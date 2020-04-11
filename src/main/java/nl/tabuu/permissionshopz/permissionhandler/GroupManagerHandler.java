@@ -6,21 +6,22 @@ import org.anjocaido.groupmanager.Tasks.BukkitPermsUpdateTask;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.bukkit.entity.Player;
 
-public class PermissionHandler_GroupManager implements IPermissionHandler {
+public class GroupManagerHandler implements IPermissionHandler {
 
     private GroupManager _groupManager;
-    public PermissionHandler_GroupManager(GroupManager groupManager){
+
+    public GroupManagerHandler(GroupManager groupManager) {
         _groupManager = groupManager;
     }
 
     @Override
     public void addPermission(Player player, String permission) {
         OverloadedWorldHolder handler = _groupManager.getWorldsHolder().getWorldData(player);
-        if(handler != null){
+        if (handler != null) {
             handler.getUser(player.getName()).addPermission(permission);
             BukkitPermsUpdateTask task = new BukkitPermsUpdateTask();
             task.run();
-        }
-        else PermissionShopZ.getInstance().getLogger().severe("Could not set permission of player " + player.getName());
+        } else
+            PermissionShopZ.getInstance().getLogger().severe("Could not set permission of player " + player.getName());
     }
 }

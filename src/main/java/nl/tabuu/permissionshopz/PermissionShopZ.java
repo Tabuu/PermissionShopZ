@@ -10,7 +10,10 @@ import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
 import nl.tabuu.tabuucore.util.Dictionary;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.io.*;
 
@@ -34,64 +37,73 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
         setupPermissionHandler();
 
-        this.getCommand("permissionshopz").setExecutor(new PermissionShopCommand());
         new Metrics(this);
+        this.getCommand("permissionshopz").setExecutor(new PermissionShopCommand());
+
         this.getLogger().info("PermissionShopZ is now enabled.");
     }
 
     private void setupPermissionHandler() {
-        switch (_config.getString("PermissionManager").toUpperCase()) {
+        String managerName = _config.getString("PermissionManager");
+        if(managerName == null) {
+            getLogger().severe("Please specify a permission manager in the config.yml!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        managerName = managerName.toUpperCase();
+        PluginManager pluginManager = getServer().getPluginManager();
+        String errorMessage = null;
+
+        switch (managerName) {
             case "GROUP_MANAGER":
-                try {
-                    GroupManager groupManager = (GroupManager) this.getServer().getPluginManager().getPlugin("GroupManager");
-                    _permissionHandler = new PermissionHandler_GroupManager(groupManager);
-                } catch (Exception e) {
-                    this.getLogger().severe("GroupManager was not found! Please edit the config.yml");
-                    this.getServer().getPluginManager().disablePlugin(this);
+                Plugin groupManagerPlugin = pluginManager.getPlugin("GroupManager");
+                if(groupManagerPlugin instanceof GroupManager) {
+                    GroupManager groupManager = (GroupManager) getServer().getPluginManager().getPlugin("GroupManager");
+                    _permissionHandler = new GroupManagerHandler(groupManager);
                 }
+                else errorMessage = "GroupManager was not found! Please edit the config.yml";
                 break;
 
             case "PERMISSIONS_EX":
-                if (this.getServer().getPluginManager().getPlugin("PermissionsEx") != null) {
-                    _permissionHandler = new PermissionHandler_PEX();
-                } else {
-                    this.getLogger().severe("PermissionsEx was not found! Please edit the config.yml");
-                    this.getServer().getPluginManager().disablePlugin(this);
-                }
+                Plugin pexPlugin = getServer().getPluginManager().getPlugin("PermissionsEx");
+                if (pexPlugin instanceof PermissionsEx) _permissionHandler = new PEXHandler();
+                else errorMessage = "PermissionsEx was not found! Please edit the config.yml";
                 break;
 
             case "LUCK_PERMS":
                 RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-                if (provider != null) {
-                    _permissionHandler = new PermissionHandler_LuckPerms();
-                } else {
-                    this.getLogger().severe("LuckPerms provider was not found! Please edit the config.yml");
-                    this.getServer().getPluginManager().disablePlugin(this);
-                }
+                if (provider != null) _permissionHandler = new LuckPermsHandler();
+                else errorMessage = "LuckPerms provider was not found! Please edit the config.yml";
                 break;
 
             case "CUSTOM":
-                _permissionHandler = new PermissionHandler_CUSTOM();
+                _permissionHandler = new CustomHandler();
                 break;
 
             default:
-                this.getLogger().severe("No valid permission manager found! Please edit the config.yml");
-                this.getServer().getPluginManager().disablePlugin(this);
+                errorMessage = "No valid permission manager found! Please edit the config.yml";
                 break;
+        }
+
+        if(_permissionHandler == null) {
+            if(errorMessage != null) getLogger().severe(errorMessage);
+            getServer().getPluginManager().disablePlugin(this);
         }
     }
 
     @Override
     public void onDisable() {
-        save(new File(this.getDataFolder(), "shop.db"));
-        this.getLogger().info("PermissionShopZ is now disabled.");
+        save(new File(getDataFolder(), "shop.db"));
+
+        getLogger().info("PermissionShopZ is now disabled.");
     }
 
     public void save(File file) {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
 
-        	objectOutputStream.writeObject(_manager);
+            objectOutputStream.writeObject(_manager);
         } catch (IOException exception) {
             exception.printStackTrace();
             getLogger().severe("Could not save data!");

@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-public class PermissionHandler_PEX implements IPermissionHandler{
+public class PEXHandler implements IPermissionHandler{
     @Override
     public void addPermission(Player player, String permission) {
         PermissionUser target = PermissionsEx.getUser(player);

@@ -7,11 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-public class PermissionHandler_LuckPerms implements IPermissionHandler {
+public class LuckPermsHandler implements IPermissionHandler {
 
     private LuckPerms _luckPermsApi;
 
-    public PermissionHandler_LuckPerms(){
+    public LuckPermsHandler(){
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         _luckPermsApi = provider == null ? null : provider.getProvider();
     }

@@ -13,7 +13,7 @@ import nl.tabuu.tabuucore.inventory.ui.InventoryFormUI;
 import nl.tabuu.tabuucore.inventory.ui.element.Button;
 import nl.tabuu.tabuucore.inventory.ui.element.style.Style;
 import nl.tabuu.tabuucore.item.ItemBuilder;
-import nl.tabuu.tabuucore.material.SafeMaterial;
+import nl.tabuu.tabuucore.material.XMaterial;
 import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.ChatColor;
@@ -53,13 +53,13 @@ public class ShopInterface extends InventoryFormUI {
     @Override
     protected void draw() {
         ItemBuilder
-                next =              new ItemBuilder(SafeMaterial.GREEN_STAINED_GLASS_PANE)
+                next =              new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
                                             .setDisplayName(_local.translate("GUI_PAGE_NEXT")),
 
-                previous =          new ItemBuilder(SafeMaterial.GREEN_STAINED_GLASS_PANE)
+                previous =          new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
                                             .setDisplayName(_local.translate("GUI_PAGE_PREVIOUS")),
 
-                barrier =           new ItemBuilder(SafeMaterial.BARRIER)
+                barrier =           new ItemBuilder(XMaterial.BARRIER)
                                             .setDisplayName(_local.translate("GUI_PAGE_CLOSE"));
 
         Style
@@ -81,7 +81,7 @@ public class ShopInterface extends InventoryFormUI {
             Vector2f position = new Vector2f(i % 9, 0);
 
             if(perks.size() < i + 1) {
-                setElement(position, new Button(new Style(SafeMaterial.AIR.toItemStack(), SafeMaterial.AIR.toItemStack())));
+                setElement(position, new Button(new Style(XMaterial.AIR, XMaterial.AIR)));
                 continue;
             }
 
@@ -92,10 +92,10 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected Button createPerkItem(Player player, Perk perk){
-        SafeMaterial unlockedItem = _config.getEnum(SafeMaterial.class, "UnlockedMaterial");
+        XMaterial unlockedItem = _config.getEnum(XMaterial.class, "UnlockedMaterial");
 
         boolean unlocked = perk.getPermissions().stream().allMatch(node -> _player.hasPermission(node));
-        ItemBuilder displayItem = new ItemBuilder(unlocked ? unlockedItem.toItemStack() : perk.getDisplayItem());
+        ItemBuilder displayItem = new ItemBuilder(unlocked ? unlockedItem.parseItem() : perk.getDisplayItem());
         displayItem.setDisplayName(ChatColor.translateAlternateColorCodes('&', perk.getName()));
 
         if(_config.getBoolean("DisplayPermissionList")){

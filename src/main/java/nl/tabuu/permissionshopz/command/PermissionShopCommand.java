@@ -11,7 +11,6 @@ import nl.tabuu.tabuucore.command.SenderType;
 import nl.tabuu.tabuucore.command.argument.ArgumentConverter;
 import nl.tabuu.tabuucore.command.argument.ArgumentType;
 import nl.tabuu.tabuucore.command.argument.converter.OrderedArgumentConverter;
-import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.util.BukkitUtils;
 import nl.tabuu.tabuucore.util.Dictionary;
 import org.bukkit.Material;
@@ -24,93 +23,93 @@ import java.util.List;
 import java.util.Optional;
 
 public class PermissionShopCommand extends Command {
-	private Dictionary _local;
-	private PerkManager _manager;
-	
-	public PermissionShopCommand() {
-		super("permissionshopz");
+    private Dictionary _local;
+    private PerkManager _manager;
 
-		_local = PermissionShopZ.getInstance().getLocal();
-		_manager = PermissionShopZ.getInstance().getPerkManager();
+    public PermissionShopCommand() {
+        super("permissionshopz");
 
-		this.setRequiredSenderType(SenderType.PLAYER);
-		this.addSubCommand("add", new PermissionShopAddCommand(this));
-		this.addSubCommand("remove", new PermissionShopRemoveCommand(this));
-		this.addSubCommand("reload", new PermissionShopReloadCommand(this));
-	}
+        _local = PermissionShopZ.getInstance().getLocal();
+        _manager = PermissionShopZ.getInstance().getPerkManager();
 
-	@Override
-	protected CommandResult onCommand(CommandSender commandSender, List<Optional<?>> list) {
-		Player player = (Player) commandSender;
-		new ShopInterface(player).open(player);
-		return CommandResult.SUCCESS;
-	}
+        setRequiredSenderType(SenderType.PLAYER);
 
-	class PermissionShopAddCommand extends Command {
-		private PermissionShopAddCommand(Command parent) {
-			super("permissionshopz add", parent);
+        addSubCommand("add", new PermissionShopAddCommand(this));
+        addSubCommand("remove", new PermissionShopRemoveCommand(this));
+        addSubCommand("reload", new PermissionShopReloadCommand(this));
+    }
 
-			ArgumentConverter converter = new OrderedArgumentConverter()
-											.setSequence(ArgumentType.STRING, ArgumentType.DOUBLE, ArgumentType.STRING)
-											.setParameter(ArgumentType.STRING);
+    @Override
+    protected CommandResult onCommand(CommandSender sender, List<Optional<?>> arguments) {
+        Player player = (Player) sender;
+        new ShopInterface(player).open(player);
+        return CommandResult.SUCCESS;
+    }
 
-			this.setRequiredSenderType(SenderType.PLAYER);
-			this.setArgumentConverter(converter);
-		}
+    class PermissionShopAddCommand extends Command {
+        private PermissionShopAddCommand(Command parent) {
+            super("permissionshopz add", parent);
 
-		@Override
-		protected CommandResult onCommand(CommandSender commandSender, List<Optional<?>> list) {
-			Player player = (Player) commandSender;
+            ArgumentConverter converter = new OrderedArgumentConverter()
+                    .setSequence(ArgumentType.STRING, ArgumentType.DOUBLE, ArgumentType.STRING)
+                    .setParameter(ArgumentType.STRING);
 
-			for(int i = 0; i < 3; i++)
-				if(!list.get(i).isPresent()) return CommandResult.WRONG_SYNTAX;
+           	setRequiredSenderType(SenderType.PLAYER);
+           	setArgumentConverter(converter);
+        }
 
-			String name = (String) list.get(0).get();
-			double cost = (Double) list.get(1).get();
-			List<String> nodes = new ArrayList<>();
+        @Override
+        protected CommandResult onCommand(CommandSender sender, List<Optional<?>> arguments) {
+            Player player = (Player) sender;
 
-			for(int i = 2; i < list.size(); i++)
-				nodes.add((String) list.get(i).get());
+            if(!arguments.stream().allMatch(Optional::isPresent)) return CommandResult.WRONG_SYNTAX;
 
-			ItemStack itemStack = BukkitUtils.getItemInMainHand(player);
+            String name = (String) arguments.get(0).get();
+            double cost = (Double) arguments.get(1).get();
+            List<String> nodes = new ArrayList<>();
 
-			if(itemStack == null || itemStack.getType().equals(Material.AIR)){
-				Message.send(player, _local.translate("ERROR_INVALIDITEM"));
-				return CommandResult.SUCCESS;
-			}
+            for (int i = 2; i < arguments.size(); i++)
+                nodes.add((String) arguments.get(i).get());
 
-			_manager.createPerk(name, cost, itemStack, nodes.stream().toArray(String[]::new));
-			Message.send(player, _local.translate("PERK_ADD_SUCCESS", "{PERK_NAME}", name));
+            ItemStack itemStack = BukkitUtils.getItemInMainHand(player);
 
-			return CommandResult.SUCCESS;
-		}
-	}
+            if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
+                Message.send(player, _local.translate("ERROR_INVALIDITEM"));
+                return CommandResult.SUCCESS;
+            }
 
-	class PermissionShopRemoveCommand extends Command {
-		private PermissionShopRemoveCommand(Command parent) {
-			super("permissionshopz remove", parent);
+            _manager.createPerk(name, cost, itemStack, nodes.stream().toArray(String[]::new));
+            Message.send(player, _local.translate("PERK_ADD_SUCCESS", "{PERK_NAME}", name));
 
-			this.setRequiredSenderType(SenderType.PLAYER);
-		}
+            return CommandResult.SUCCESS;
+        }
+    }
 
-		@Override
-		protected CommandResult onCommand(CommandSender commandSender, List<Optional<?>> list) {
-			Player player = (Player) commandSender;
-			new ShopEditInterface(player).open(player);
-			return CommandResult.SUCCESS;
-		}
-	}
+    class PermissionShopRemoveCommand extends Command {
+        private PermissionShopRemoveCommand(Command parent) {
+            super("permissionshopz remove", parent);
 
-	class PermissionShopReloadCommand extends Command {
-		private PermissionShopReloadCommand(Command parent) {
-			super("permissionshopz reload", parent);
-		}
+            setRequiredSenderType(SenderType.PLAYER);
+        }
 
-		@Override
-		protected CommandResult onCommand(CommandSender commandSender, List<Optional<?>> list) {
-			PermissionShopZ.getInstance().reload();
-			commandSender.sendMessage(_local.translate("PLUGIN_RELOAD_SUCCESS"));
-			return CommandResult.SUCCESS;
-		}
-	}
+        @Override
+        protected CommandResult onCommand(CommandSender sender, List<Optional<?>> arguments) {
+            Player player = (Player) sender;
+            new ShopEditInterface(player).open(player);
+            return CommandResult.SUCCESS;
+        }
+    }
+
+    class PermissionShopReloadCommand extends Command {
+        private PermissionShopReloadCommand(Command parent) {
+            super("permissionshopz reload", parent);
+        }
+
+        @Override
+        protected CommandResult onCommand(CommandSender sender, List<Optional<?>> arguments) {
+            PermissionShopZ.getInstance().reload();
+            sender.sendMessage(_local.translate("PLUGIN_RELOAD_SUCCESS"));
+            return CommandResult.SUCCESS;
+        }
+    }
 }
