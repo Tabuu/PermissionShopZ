@@ -1,0 +1,27 @@
+
+# Possible options are:
+#   - "GROUP_MANAGER" (Essentials GroupManager),
+#   - "PERMISSIONS_EX" (PermissionsEx),
+#   - "LUCK_PERMS" (LuckPerms),
+#   - "CUSTOM".
+# You will have to reload/restart the server for this change to take effect.
+PermissionManager: "CUSTOM"
+
+# Only use this when PermissionManager is set to custom.
+CustomPermissionCommand: "manuaddp {PLAYER} {PERMISSION}"
+
+# Material of unlocked items, if you do not want it to change leave empty.
+# List of all materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+UnlockedMaterial: "IRON_FENCE"
+
+# Set to true if you want the perk to display all permissions it has.
+DisplayPermissionList: true
+
+# Set to true if you want number suffixes (k, M, B) instead of zeros
+UseNumberSuffix: false
+
+# Format: "amount of zeros: 'suffix'"
+NumberSuffixes:
+  '3': 'k'
+  '6': 'M'
+  '9': 'B'

@@ -1,0 +1,23 @@
+ERROR_INVALIDITEM: "&c&lYou must hold something in your hand."
+
+PERK_ADD_SUCCESS: "&2&lSuccessfully added perk {PERK_NAME}."
+
+PERK_REMOVE_SUCCESS: "&2&lSuccessfully removed perk {PERK_NAME}."
+
+PERK_BUY_SUCCESSFUL: "&2&lSuccessfully bought perk {PERK_NAME}."
+PERK_BUY_INSUFFICIENTFUNDS: "&c&lYou have insufficient funds to buy this perk."
+
+PERK_PERMISSION_NODE: "&7- {NODE}"
+PERK_PERMISSION_NODE_HAS: "&7&m- {NODE}"
+
+PLUGIN_RELOAD_SUCCESS: "&2&lSuccessfully reloaded all config files."
+
+GUI_TITLE: "&6&lPermission Shop - Page {PAGE_NUMBER}"
+GUI_PAGE_NEXT: "&3&lNext"
+GUI_PAGE_PREVIOUS: "&3&l Previous"
+GUI_PAGE_CLOSE: "&4&lClose"
+GUI_PERK_UNLOCKED: "&e&lUNLOCKED"
+GUI_PERK_PRICE: "&2&lPrice: ${PRICE}"
+
+GUI_REMOVE_CLICK: "&4&lClick to remove!"
+GUI_REMOVE_TITLE: "&4&lPermission Removal! - Page {PAGE_NUMBER}"
