@@ -5,7 +5,7 @@ import nl.tabuu.permissionshopz.command.PermissionShopCommand;
 import nl.tabuu.permissionshopz.data.PerkManager;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.permissionhandler.PermissionHandler;
-import nl.tabuu.permissionshopz.permissionhandler.PermissionHandlerNotFoundException;
+import nl.tabuu.permissionshopz.exception.PermissionHandlerNotFoundException;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
 import nl.tabuu.tabuucore.util.Dictionary;

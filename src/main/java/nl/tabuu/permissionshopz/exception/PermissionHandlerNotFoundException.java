@@ -1,4 +1,4 @@
-package nl.tabuu.permissionshopz.permissionhandler;
+package nl.tabuu.permissionshopz.exception;
 
 public class PermissionHandlerNotFoundException extends RuntimeException {
     public PermissionHandlerNotFoundException() {

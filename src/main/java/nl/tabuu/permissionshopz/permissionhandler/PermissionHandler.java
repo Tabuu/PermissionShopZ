@@ -2,6 +2,7 @@ package nl.tabuu.permissionshopz.permissionhandler;
 
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.permission.Permission;
+import nl.tabuu.permissionshopz.exception.PermissionHandlerNotFoundException;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -46,7 +47,7 @@ public enum PermissionHandler {
         @Override
         protected IPermissionHandler loadHandler() {
             Plugin pexPlugin = Bukkit.getServer().getPluginManager().getPlugin("PermissionsEx");
-            if (pexPlugin instanceof PermissionsEx) return new PEXHandler();
+            if (pexPlugin instanceof PermissionsEx) return new PermissionsExHandler();
             else throw new PermissionHandlerNotFoundException("Could not find PermissionsEx.");
         }
     },
