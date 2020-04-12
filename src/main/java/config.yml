@@ -1,29 +1,36 @@
-
-# Possible options are:
-#   - "GROUP_MANAGER" (Essentials GroupManager),
-#   - "PERMISSIONS_EX" (PermissionsEx),
-#   - "LUCK_PERMS" (LuckPerms),
-#   - "CUSTOM".
-# You will have to reload/restart the server for this change to take effect.
+# DESCRIPTION:  The permission manager to handle permissions
+# FORMAT:       Enum: "GROUP_MANAGER" (Essentials GroupManager),
+#                     "PERMISSIONS_EX" (PermissionsEx),
+#                     "LUCK_PERMS" (LuckPerms),
+#                     or "CUSTOM".
+# NOTE:         You will have to reload/restart the server after changing this variable.
 PermissionManager: "CUSTOM"
 
-# Only use this when PermissionManager is set to custom.
+# DESCRIPTION:  The command executed when someone buys a permission.
+# FORMAT:       String
+# NOTE:         Only use this when PermissionManager is set to 'CUSTOM'.
 CustomPermissionCommand: "manuaddp {PLAYER} {PERMISSION}"
 
-# Material of unlocked items, if you do not want it to change leave empty.
-# List of all materials: http://tabuucore.tabuu.nl/javadoc/nl/tabuu/tabuucore/material/SafeMaterial.html
+# DESCRIPTION:  Material of the unlocked items.
+# FORMAT:       XMaterial (http://u.tabuu.nl/5mh5duwn0).
+# NOTE:         If you do not want it to change leave it empty.
 UnlockedMaterial: "IRON_BARS"
 
-# Set to true if you want the perk to display all permissions it has.
+# DESCRIPTION:  Whether or not the perk should display the permissions it contains.
+# FORMAT:       Boolean
 DisplayPermissionList: true
 
-# Set to true if you want number suffixes (k, M, B) instead of zeros
-UseNumberSuffix: false
-
-# Use title
+# DESCRIPTION:  Whether or not the messages should be displayed as titles instead of in chat.
+# FORMAT:       Boolean
 UseTitle: true
 
-# Format: "amount of zeros: 'suffix'"
+# DESCRIPTION:  Whether or not zeros in the price should be replaced with their corresponding suffix.
+# FORMAT:       Boolean
+# NOTE:         The suffixes can be configured below.
+UseNumberSuffix: false
+
+# DESCRIPTION:  Suffixes per zero count.
+# FORMAT:       'zero count': 'suffix'
 NumberSuffixes:
   '3': 'k'
   '6': 'M'

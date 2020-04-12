@@ -38,9 +38,9 @@ public class PermissionShopZ extends TabuuCorePlugin {
         setupPermissionHandler();
 
         new Metrics(this);
-        this.getCommand("permissionshopz").setExecutor(new PermissionShopCommand());
+        getCommand("permissionshopz").setExecutor(new PermissionShopCommand());
 
-        this.getLogger().info("PermissionShopZ is now enabled.");
+        getLogger().info("PermissionShopZ is now enabled.");
     }
 
     private void setupPermissionHandler() {
@@ -125,7 +125,7 @@ public class PermissionShopZ extends TabuuCorePlugin {
         save(file);
         load(file);
 
-        this.getConfigurationManager().reloadAll();
+        getConfigurationManager().reloadAll();
     }
 
     public Dictionary getLocal() {

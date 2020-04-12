@@ -20,13 +20,13 @@ public class ShopEditInterface extends ShopInterface {
         PerkManager manager = PermissionShopZ.getInstance().getPerkManager();
         manager.removePerk(perk.getUniqueId());
 
-        Message.send(player, _local.translate("PERK_REMOVE_SUCCESS", "{PERK_NAME}", perk.getName()));
+        Message.send(player, _local.translate("PERK_REMOVE_SUCCESS", "{PERK}", perk.getName()));
         updateTitle();
     }
 
     @Override
     protected void updateTitle() {
-        setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE_NUMBER}", (_currentPage + 1) + ""));
+        setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE}", (_page + 1) + ""));
         reload();
         draw();
     }

@@ -74,7 +74,7 @@ public class PermissionShopCommand extends Command {
             ItemStack itemStack = BukkitUtils.getItemInMainHand(player);
 
             if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
-                Message.send(player, _local.translate("ERROR_INVALIDITEM"));
+                Message.send(player, _local.translate("ERROR_INVALID_ITEM"));
                 return CommandResult.SUCCESS;
             }
 
@@ -108,7 +108,7 @@ public class PermissionShopCommand extends Command {
         @Override
         protected CommandResult onCommand(CommandSender sender, List<Optional<?>> arguments) {
             PermissionShopZ.getInstance().reload();
-            sender.sendMessage(_local.translate("PLUGIN_RELOAD_SUCCESS"));
+            sender.sendMessage(_local.translate("RELOAD_SUCCESS"));
             return CommandResult.SUCCESS;
         }
     }

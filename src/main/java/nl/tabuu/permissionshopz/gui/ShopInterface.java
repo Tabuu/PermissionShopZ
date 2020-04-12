@@ -5,6 +5,7 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.util.Message;
+import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.configuration.ConfigurationManager;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.economy.hook.Vault;
@@ -14,39 +15,42 @@ import nl.tabuu.tabuucore.inventory.ui.element.Button;
 import nl.tabuu.tabuucore.inventory.ui.element.style.Style;
 import nl.tabuu.tabuucore.item.ItemBuilder;
 import nl.tabuu.tabuucore.material.XMaterial;
+import nl.tabuu.tabuucore.util.BukkitUtils;
 import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 public class ShopInterface extends InventoryFormUI {
 
-    private IConfiguration _config;
-    protected Dictionary _local;
-
     private Economy _economy;
-
-    protected int _currentPage = 0;
-    private int _maxPage;
+    protected Dictionary _local;
+    private IConfiguration _config;
 
     private Player _player;
     private IPermissionHandler _permissionHandler;
 
+    private int _maxPage;
+    protected int _page = 0;
+    private List<Perk> _perks;
+
     public ShopInterface(Player player) {
         super("", InventorySize.TWO_ROWS);
-
         ConfigurationManager manager = PermissionShopZ.getInstance().getConfigurationManager();
+
+        _economy = Vault.getEconomy();
         _config = manager.getConfiguration("config");
         _local = manager.getConfiguration("lang").getDictionary("");
 
-        _economy = Vault.getEconomy();
         _player = player;
         _permissionHandler = PermissionShopZ.getInstance().getPermissionHandler();
 
         _maxPage = PermissionShopZ.getInstance().getPerkManager().getPerks().size() / 9;
+        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkManager().getPerks());
 
         updateTitle();
     }
@@ -55,7 +59,7 @@ public class ShopInterface extends InventoryFormUI {
     protected void draw() {
         ItemBuilder
                 next = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
-                .setDisplayName(_local.translate("GUI_PAGE_NEXT")),
+                        .setDisplayName(_local.translate("GUI_PAGE_NEXT")),
 
                 previous = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
                         .setDisplayName(_local.translate("GUI_PAGE_PREVIOUS")),
@@ -66,55 +70,60 @@ public class ShopInterface extends InventoryFormUI {
         Style
                 nextButtonStyle = new Style(next.build(), next.build()),
                 previousButtonStyle = new Style(previous.build(), previous.build()),
-                exitButtonStyle = new Style(barrier.build(), barrier.build());
+                exitButtonStyle = new Style(barrier.build(), barrier.build()),
+                clearButtonStyle = new Style(XMaterial.AIR, XMaterial.AIR);
 
         Button
                 nextButton = new Button(nextButtonStyle, this::nextPage),
                 previousButton = new Button(previousButtonStyle, this::previousPage),
-                exitButton = new Button(exitButtonStyle, this::onCloseButton);
+                exitButton = new Button(exitButtonStyle, this::onCloseButton),
+                clearButton = new Button(clearButtonStyle);
 
         setElement(new Vector2f(8, 1), nextButton);
         setElement(new Vector2f(0, 1), previousButton);
         setElement(new Vector2f(4, 1), exitButton);
 
-        List<Perk> perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkManager().getPerks());
-        for (int i = _currentPage * 9; i < (_currentPage * 9) + 9; i++) {
+        for (int i = _page * 9; i < (_page * 9) + 9; i++) {
             Vector2f position = new Vector2f(i % 9, 0);
 
-            if (perks.size() < i + 1) {
-                setElement(position, new Button(new Style(XMaterial.AIR, XMaterial.AIR)));
-                continue;
+            if(i < _perks.size()) {
+                Perk perk = _perks.get(i);
+                setElement(position, createPerkItem(_player, perk));
             }
-
-            Perk perk = perks.get(i);
-            setElement(position, createPerkItem(_player, perk));
+            else setElement(position, clearButton);
         }
         super.draw();
     }
 
     protected Button createPerkItem(Player player, Perk perk) {
-        XMaterial unlockedItem = _config.getEnum(XMaterial.class, "UnlockedMaterial");
-
+        XMaterial unlockedMaterial = _config.getEnum(XMaterial.class, "UnlockedMaterial");
         boolean unlocked = perk.getPermissions().stream().allMatch(node -> _player.hasPermission(node));
-        ItemBuilder displayItem = new ItemBuilder(unlocked ? unlockedItem.parseItem() : perk.getDisplayItem());
-        displayItem.setDisplayName(ChatColor.translateAlternateColorCodes('&', perk.getName()));
+
+        ItemStack displayItem;
+        if(unlocked && unlockedMaterial != null) displayItem = unlockedMaterial.parseItem();
+        else if(perk.getDisplayItem() != null) displayItem = perk.getDisplayItem();
+        else displayItem = XMaterial.BARRIER.parseItem();
+
+        assert displayItem != null;
+
+        ItemBuilder displayItemBuilder = new ItemBuilder(displayItem);
+
+        String displayName = _local.translate("GUI_PERK_TITLE", perk.getReplacements());
+        displayItemBuilder.setDisplayName(displayName);
 
         if (_config.getBoolean("DisplayPermissionList")) {
             for (String node : perk.getPermissions()) {
-                String text = "PERK_PERMISSION_NODE";
-                if (_player.hasPermission(node))
-                    text += "_HAS";
-
-                displayItem.addLore(_local.translate(text, "{NODE}", node));
+                String text = _player.hasPermission(node) ? "GUI_PERK_NODE_HAS" : "GUI_PERK_NODE";
+                text = _local.translate(text, "{NODE}", node);
+                displayItemBuilder.addLore(text);
             }
         }
 
-        if (unlocked)
-            displayItem.addLore(_local.translate("GUI_PERK_UNLOCKED"));
-        else
-            displayItem.addLore(_local.translate("GUI_PERK_PRICE", "{PRICE}", suffixFormat(perk.getCost())));
+        String footer = unlocked ? "GUI_PERK_UNLOCKED" : "GUI_PERK_PRICE";
+        footer = _local.translate(footer, perk.getReplacements());
+        displayItemBuilder.addLore(footer);
 
-        Style style = new Style(displayItem.build(), displayItem.build());
+        Style style = new Style(displayItemBuilder.build(), displayItemBuilder.build());
         Button button = new Button(style, p -> onPerkClick(player, perk));
         button.setEnabled(!unlocked);
 
@@ -125,15 +134,15 @@ public class ShopInterface extends InventoryFormUI {
         if (_economy.has(player, perk.getCost())) {
             _economy.withdrawPlayer(player, perk.getCost());
             perk.getPermissions().forEach(node -> _permissionHandler.addPermission(player, node));
-            Message.send(player, _local.translate("PERK_BUY_SUCCESSFUL", "{PERK_NAME}", perk.getName()));
+            Message.send(player, _local.translate("PERK_BUY_SUCCESS", perk.getReplacements()));
         } else {
-            Message.send(player, _local.translate("PERK_BUY_INSUFFICIENTFUNDS", "{PERK_NAME}", perk.getName()));
+            Message.send(player, _local.translate("ERROR_INSUFFICIENT_FUNDS", perk.getReplacements()));
         }
         updateTitle();
     }
 
     protected void updateTitle() {
-        setTitle(_local.translate("GUI_TITLE", "{PAGE_NUMBER}", (_currentPage + 1) + ""));
+        setTitle(_local.translate("GUI_TITLE", "{PAGE}", (_page + 1) + ""));
         reload();
         draw();
     }
@@ -143,41 +152,16 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     private void nextPage(Player player) {
-        if (_currentPage < _maxPage)
-            _currentPage++;
+        if (_page < _maxPage)
+            _page++;
 
         updateTitle();
     }
 
     private void previousPage(Player player) {
-        if (_currentPage > 0)
-            _currentPage--;
+        if (_page > 0)
+            _page--;
 
         updateTitle();
-    }
-
-    private String suffixFormat(double value) {
-        NavigableMap<Double, String> suffixMap = new TreeMap<>();
-        ConfigurationSection suffixes = _config.getConfigurationSection("NumberSuffixes");
-        if(suffixes == null) return value + "";
-
-        Set<String> suffixList = suffixes.getKeys(false);
-
-        for (String string : suffixList) {
-            int zeroCount = Integer.parseInt(string);
-            String suffix = _config.getString("NumberSuffixes." + string);
-            suffixMap.put(Math.pow(10d, zeroCount), suffix);
-        }
-
-        Map.Entry<Double, String> entry = suffixMap.floorEntry(value);
-
-        if (entry == null) return value + "";
-
-        Double divider = entry.getKey();
-        String suffix = entry.getValue();
-
-        double formattedNumber = value / (divider / 10);
-        boolean hasDecimal = formattedNumber < 100 && (formattedNumber / 10d) != (formattedNumber / 10);
-        return hasDecimal ? (formattedNumber / 10d) + suffix : (formattedNumber / 10) + suffix;
     }
 }

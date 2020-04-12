@@ -1,6 +1,7 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
+import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.serialization.bytes.Serializer;
 import org.bukkit.inventory.ItemStack;
 
@@ -47,6 +48,13 @@ public class Perk implements Serializable {
 
     public List<String> getPermissions(){
         return _permissions;
+    }
+
+    public String[] getReplacements() {
+        return new String[] {
+                "{PRICE}", NumberFormat.suffixFormat(getCost()),
+                "{NAME}", getName()
+        };
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
