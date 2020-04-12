@@ -13,6 +13,9 @@ public class NumberFormat {
     public static String suffixFormat(double value) {
         IConfiguration config = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("config");
 
+        if(!config.getBoolean("UseNumberSuffix")) return String.format("%.2f", value);
+        else value = Math.ceil(value);
+
         NavigableMap<Double, String> suffixMap = new TreeMap<>();
         ConfigurationSection suffixes = config.getConfigurationSection("NumberSuffixes");
         if (suffixes == null) return value + "";
