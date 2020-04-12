@@ -79,7 +79,7 @@ public class PermissionShopCommand extends Command {
             }
 
             _manager.createPerk(name, cost, itemStack, nodes.stream().toArray(String[]::new));
-            Message.send(player, _local.translate("PERK_ADD_SUCCESS", "{PERK_NAME}", name));
+            Message.send(player, _local.translate("PERK_ADD_SUCCESS", "{NAME}", name));
 
             return CommandResult.SUCCESS;
         }
