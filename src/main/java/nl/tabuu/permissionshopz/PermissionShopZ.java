@@ -5,7 +5,7 @@ import nl.tabuu.permissionshopz.command.PermissionShopCommand;
 import nl.tabuu.permissionshopz.data.PerkManager;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.permissionhandler.PermissionHandler;
-import nl.tabuu.permissionshopz.exception.PermissionHandlerNotFoundException;
+import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
 import nl.tabuu.tabuucore.util.Dictionary;
@@ -91,7 +91,6 @@ public class PermissionShopZ extends TabuuCorePlugin {
     private void load(File file) {
         try (FileInputStream fileInputStream = new FileInputStream(file);
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-
             _manager = (PerkManager) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException exception) {
             getLogger().warning("No data found!");
