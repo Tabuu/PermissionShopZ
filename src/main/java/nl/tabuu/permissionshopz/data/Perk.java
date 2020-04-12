@@ -1,8 +1,10 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
+import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.serialization.bytes.Serializer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
@@ -48,6 +50,11 @@ public class Perk implements Serializable {
 
     public List<String> getPermissions(){
         return _permissions;
+    }
+
+    public void apply(Player player) {
+        IPermissionHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
+        for(String node : _permissions) handler.addPermission(player, node);
     }
 
     public String[] getReplacements() {

@@ -76,7 +76,7 @@ public class ShopInterface extends InventoryFormUI {
         Button
                 nextButton = new Button(nextButtonStyle, this::nextPage),
                 previousButton = new Button(previousButtonStyle, this::previousPage),
-                exitButton = new Button(exitButtonStyle, this::onCloseButton),
+                exitButton = new Button(exitButtonStyle, this::close),
                 clearButton = new Button(clearButtonStyle);
 
         setElement(new Vector2f(8, 1), nextButton);
@@ -131,13 +131,16 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected void onPerkClick(Player player, Perk perk) {
+        String message;
         if (_economy.has(player, perk.getCost())) {
             _economy.withdrawPlayer(player, perk.getCost());
-            perk.getPermissions().forEach(node -> _permissionHandler.addPermission(player, node));
-            Message.send(player, _local.translate("PERK_BUY_SUCCESS", perk.getReplacements()));
-        } else {
-            Message.send(player, _local.translate("ERROR_INSUFFICIENT_FUNDS", perk.getReplacements()));
+            perk.apply(player);
+            message = "PERK_BUY_SUCCESS";
         }
+        else message = "ERROR_INSUFFICIENT_FUNDS";
+
+        message = _local.translate(message, perk.getReplacements());
+        Message.send(player, message);
         updateTitle();
     }
 
@@ -145,10 +148,6 @@ public class ShopInterface extends InventoryFormUI {
         setTitle(_local.translate("GUI_TITLE", "{PAGE}", (_page + 1) + ""));
         reload();
         draw();
-    }
-
-    private void onCloseButton(Player player) {
-        this.close(player);
     }
 
     public int getPage() {
