@@ -51,7 +51,7 @@ public class ShopInterface extends InventoryFormUI {
         int contentHeight = getSize().getHeight() - 2;
         _maxPage = _perks.size() / (contentWidth * contentHeight);
 
-        setTitle(_local.translate("GUI_TITLE", "{PAGE}", (getPage() + 1) + ""));
+        setTitle(_local.translate("GUI_TITLE", getReplacements()));
         reload();
     }
 
@@ -59,13 +59,13 @@ public class ShopInterface extends InventoryFormUI {
     protected void draw() {
         ItemBuilder
                 next = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
-                        .setDisplayName(_local.translate("GUI_PAGE_NEXT")),
+                        .setDisplayName(_local.translate("GUI_PAGE_NEXT", getReplacements())),
 
                 previous = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
-                        .setDisplayName(_local.translate("GUI_PAGE_PREVIOUS")),
+                        .setDisplayName(_local.translate("GUI_PAGE_PREVIOUS", getReplacements())),
 
                 barrier = new ItemBuilder(XMaterial.BARRIER)
-                        .setDisplayName(_local.translate("GUI_PAGE_CLOSE")),
+                        .setDisplayName(_local.translate("GUI_PAGE_CLOSE", getReplacements())),
 
                 black = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE)
                         .setDisplayName(" "),
@@ -170,14 +170,10 @@ public class ShopInterface extends InventoryFormUI {
     protected void updatePage() {
         String raw = _local.get("GUI_TITLE");
         if(raw.contains("{PAGE}")) {
-            setTitle(_local.translate("GUI_TITLE", "{PAGE}", (getPage() + 1) + ""));
+            setTitle(_local.translate("GUI_TITLE", getReplacements()));
             reload();
         }
         draw();
-    }
-
-    public int getPage() {
-        return _page;
     }
 
     private void nextPage(Player player) {
@@ -190,5 +186,16 @@ public class ShopInterface extends InventoryFormUI {
         if (_page > 0) _page--;
 
         updatePage();
+    }
+
+    protected String[] getReplacements() {
+        return new String[] {
+                "{PAGE}", String.format("%s", getPage() + 1),
+                "{MAX_PAGE}", String.format("%s", _maxPage + 1)
+        };
+    }
+
+    public int getPage() {
+        return _page;
     }
 }

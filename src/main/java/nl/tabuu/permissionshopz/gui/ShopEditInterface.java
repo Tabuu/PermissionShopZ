@@ -14,7 +14,7 @@ public class ShopEditInterface extends ShopInterface {
     public ShopEditInterface(Player player) {
         super(player);
 
-        setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE}", (getPage() + 1) + ""));
+        setTitle(_local.translate("GUI_REMOVE_TITLE", getReplacements()));
         reload();
     }
 
@@ -31,7 +31,7 @@ public class ShopEditInterface extends ShopInterface {
     protected void updatePage() {
         String raw = _local.get("GUI_REMOVE_TITLE");
         if(raw.contains("{PAGE}")) {
-            setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE}", (getPage() + 1) + ""));
+            setTitle(_local.translate("GUI_REMOVE_TITLE", getReplacements()));
             reload();
         }
         draw();
