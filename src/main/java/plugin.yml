@@ -6,6 +6,7 @@ authors: [Tabuu]
 website: https://www.tabuu.nl
 depend: [Vault, TabuuCore]
 softdepend: [GroupManager, PermissionsEx, LuckPerms]
+api-version: '1.13'
 
 commands:
   permissionshopz:
