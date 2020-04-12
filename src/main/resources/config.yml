@@ -1,10 +1,12 @@
 # DESCRIPTION:  The permission manager to handle permissions
-# FORMAT:       Enum: "GROUP_MANAGER" (Essentials GroupManager),
+# FORMAT:       Enum:
+#                     "VAULT" (Vault),
+#                     "GROUP_MANAGER" (Essentials GroupManager),
 #                     "PERMISSIONS_EX" (PermissionsEx),
 #                     "LUCK_PERMS" (LuckPerms),
 #                     or "CUSTOM".
 # NOTE:         You will have to reload/restart the server after changing this variable.
-PermissionManager: "CUSTOM"
+PermissionManager: "VAULT"
 
 # DESCRIPTION:  The command executed when someone buys a permission.
 # FORMAT:       String

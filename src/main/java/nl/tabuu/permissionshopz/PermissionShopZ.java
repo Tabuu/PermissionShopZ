@@ -1,6 +1,7 @@
 package nl.tabuu.permissionshopz;
 
 import net.luckperms.api.LuckPerms;
+import net.milkbowl.vault.permission.Permission;
 import nl.tabuu.permissionshopz.bstats.Metrics;
 import nl.tabuu.permissionshopz.command.PermissionShopCommand;
 import nl.tabuu.permissionshopz.data.PerkManager;
@@ -56,6 +57,14 @@ public class PermissionShopZ extends TabuuCorePlugin {
         String errorMessage = null;
 
         switch (managerName) {
+            case "VAULT":
+                RegisteredServiceProvider<Permission> vaultPermissionProvider = Bukkit.getServicesManager().getRegistration(Permission.class);
+                if(vaultPermissionProvider != null) {
+                    Permission permission = vaultPermissionProvider.getProvider();
+                    _permissionHandler = new VaultHandler(permission);
+                } else errorMessage = "Vault was not found! Please edit the config.yml";
+                break;
+
             case "GROUP_MANAGER":
                 Plugin groupManagerPlugin = pluginManager.getPlugin("GroupManager");
                 if(groupManagerPlugin instanceof GroupManager) {
