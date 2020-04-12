@@ -16,7 +16,7 @@ commands:
     aliases: [pshop, permissionshop]
 
   permissionshopz add:
-    usage: /permissionshopz add <name> <price> <permission> [<permission> <permission> ...]
+    usage: /permissionshopz add <name> <price> <permission> [permission...]
     description: Adds a permission to the shop, the display item will be the item you hold.
     permission: permissionshopz.admin
 

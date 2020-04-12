@@ -35,8 +35,8 @@ public class ShopInterface extends InventoryFormUI {
     private IPermissionHandler _permissionHandler;
 
     private int _maxPage;
-    protected int _page = 0;
-    private List<Perk> _perks;
+    private int _page = 0;
+    protected List<Perk> _perks;
 
     public ShopInterface(Player player) {
         super("", InventorySize.TWO_ROWS);
@@ -119,7 +119,7 @@ public class ShopInterface extends InventoryFormUI {
             }
         }
 
-        String footer = unlocked ? "GUI_PERK_UNLOCKED" : "GUI_PERK_PRICE";
+        String footer = unlocked ? "GUI_PERK_UNLOCKED_FOOTER" : "GUI_PERK_LOCKED_FOOTER";
         footer = _local.translate(footer, perk.getReplacements());
         displayItemBuilder.addLore(footer);
 
@@ -149,6 +149,10 @@ public class ShopInterface extends InventoryFormUI {
 
     private void onCloseButton(Player player) {
         this.close(player);
+    }
+
+    public int getPage() {
+        return _page;
     }
 
     private void nextPage(Player player) {
