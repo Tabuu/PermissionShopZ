@@ -13,6 +13,11 @@ PermissionManager: "VAULT"
 # NOTE:         Only use this when PermissionManager is set to 'CUSTOM'.
 CustomPermissionCommand: "manuaddp {PLAYER} {PERMISSION}"
 
+# DESCRIPTION:  GUI Size
+# FORMAT:       InventorySize (http://u.tabuu.nl/5mh7vwb2x).
+# NOTE:         The inventory needs at least 3 rows.
+GUISize: "THREE_ROWS"
+
 # DESCRIPTION:  Material of the unlocked items.
 # FORMAT:       XMaterial (http://u.tabuu.nl/5mh5duwn0).
 # NOTE:         If you do not want it to change leave it empty.

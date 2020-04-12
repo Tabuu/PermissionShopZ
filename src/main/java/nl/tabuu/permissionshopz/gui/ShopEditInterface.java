@@ -13,6 +13,9 @@ import java.util.Collections;
 public class ShopEditInterface extends ShopInterface {
     public ShopEditInterface(Player player) {
         super(player);
+
+        setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE}", (getPage() + 1) + ""));
+        reload();
     }
 
     @Override
@@ -21,13 +24,16 @@ public class ShopEditInterface extends ShopInterface {
         manager.removePerk(perk.getUniqueId());
         _perks.remove(perk);
         Message.send(player, _local.translate("PERK_REMOVE_SUCCESS", "{PERK}", perk.getName()));
-        updateTitle();
+        updatePage();
     }
 
     @Override
-    protected void updateTitle() {
-        setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE}", (getPage() + 1) + ""));
-        reload();
+    protected void updatePage() {
+        String raw = _local.get("GUI_REMOVE_TITLE");
+        if(raw.contains("{PAGE}")) {
+            setTitle(_local.translate("GUI_REMOVE_TITLE", "{PAGE}", (getPage() + 1) + ""));
+            reload();
+        }
         draw();
     }
 

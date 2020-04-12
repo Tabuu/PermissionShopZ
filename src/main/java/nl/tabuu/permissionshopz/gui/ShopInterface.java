@@ -3,9 +3,7 @@ package nl.tabuu.permissionshopz.gui;
 import net.milkbowl.vault.economy.Economy;
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
-import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.util.Message;
-import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.configuration.ConfigurationManager;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.economy.hook.Vault;
@@ -13,13 +11,12 @@ import nl.tabuu.tabuucore.inventory.InventorySize;
 import nl.tabuu.tabuucore.inventory.ui.InventoryFormUI;
 import nl.tabuu.tabuucore.inventory.ui.element.Button;
 import nl.tabuu.tabuucore.inventory.ui.element.style.Style;
+import nl.tabuu.tabuucore.inventory.ui.graphics.brush.CheckerBrush;
+import nl.tabuu.tabuucore.inventory.ui.graphics.brush.IBrush;
 import nl.tabuu.tabuucore.item.ItemBuilder;
 import nl.tabuu.tabuucore.material.XMaterial;
-import nl.tabuu.tabuucore.util.BukkitUtils;
 import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,28 +28,31 @@ public class ShopInterface extends InventoryFormUI {
     protected Dictionary _local;
     private IConfiguration _config;
 
-    private Player _player;
-    private IPermissionHandler _permissionHandler;
-
+    private int _page;
     private int _maxPage;
-    private int _page = 0;
+    private Player _player;
     protected List<Perk> _perks;
 
     public ShopInterface(Player player) {
-        super("", InventorySize.TWO_ROWS);
+        super("", InventorySize.THREE_ROWS);
         ConfigurationManager manager = PermissionShopZ.getInstance().getConfigurationManager();
 
         _economy = Vault.getEconomy();
         _config = manager.getConfiguration("config");
         _local = manager.getConfiguration("lang").getDictionary("");
 
-        _player = player;
-        _permissionHandler = PermissionShopZ.getInstance().getPermissionHandler();
+        InventorySize size = _config.getEnum(InventorySize.class, "GUISize");
+        if(size != null && size.getHeight() >= 3) setSize(size);
 
-        _maxPage = PermissionShopZ.getInstance().getPerkManager().getPerks().size() / 9;
+        _player = player;
         _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkManager().getPerks());
 
-        updateTitle();
+        int contentWidth = getSize().getWidth() - 2;
+        int contentHeight = getSize().getHeight() - 2;
+        _maxPage = _perks.size() / (contentWidth * contentHeight);
+
+        setTitle(_local.translate("GUI_TITLE", "{PAGE}", (getPage() + 1) + ""));
+        reload();
     }
 
     @Override
@@ -65,7 +65,14 @@ public class ShopInterface extends InventoryFormUI {
                         .setDisplayName(_local.translate("GUI_PAGE_PREVIOUS")),
 
                 barrier = new ItemBuilder(XMaterial.BARRIER)
-                        .setDisplayName(_local.translate("GUI_PAGE_CLOSE"));
+                        .setDisplayName(_local.translate("GUI_PAGE_CLOSE")),
+
+                black = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE)
+                        .setDisplayName(" "),
+
+                gray = new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE)
+                        .setDisplayName(" ");
+
 
         Style
                 nextButtonStyle = new Style(next.build(), next.build()),
@@ -79,16 +86,32 @@ public class ShopInterface extends InventoryFormUI {
                 exitButton = new Button(exitButtonStyle, this::close),
                 clearButton = new Button(clearButtonStyle);
 
-        setElement(new Vector2f(8, 1), nextButton);
-        setElement(new Vector2f(0, 1), previousButton);
-        setElement(new Vector2f(4, 1), exitButton);
+        IBrush brush = new CheckerBrush(black.build(), gray.build());
+        setBrush(brush);
 
-        for (int i = _page * 9; i < (_page * 9) + 9; i++) {
-            Vector2f position = new Vector2f(i % 9, 0);
+        Vector2f borderStart = new Vector2f(0, 0);
+        Vector2f borderStop = new Vector2f(getSize().getWidth() - 1, getSize().getHeight() - 1);
+        drawRectangle(borderStart, borderStop);
 
-            if(i < _perks.size()) {
-                Perk perk = _perks.get(i);
-                setElement(position, createPerkItem(_player, perk));
+        setElement(new Vector2f(borderStop.getX(), borderStop.getY()), nextButton);
+        setElement(new Vector2f(borderStart.getX(), borderStop.getY()), previousButton);
+        setElement(new Vector2f(borderStop.getX() / 2, borderStop.getY()), exitButton);
+
+        int rowSize = getSize().getWidth() - 2;
+        int maxRows = getSize().getHeight() - 2;
+        Vector2f offset = new Vector2f(1, 1);
+
+        for(int i = 0; i < rowSize * maxRows; i++) {
+            int index = getPage() * (rowSize * maxRows) + i;
+            int x = i % rowSize;
+            int y = i / rowSize;
+
+            Vector2f position = new Vector2f(x, y).add(offset);
+
+            if(index < _perks.size()) {
+                Perk perk = _perks.get(index);
+                Button button = createPerkItem(_player, perk);
+                setElement(position, button);
             }
             else setElement(position, clearButton);
         }
@@ -141,12 +164,15 @@ public class ShopInterface extends InventoryFormUI {
 
         message = _local.translate(message, perk.getReplacements());
         Message.send(player, message);
-        updateTitle();
+        updatePage();
     }
 
-    protected void updateTitle() {
-        setTitle(_local.translate("GUI_TITLE", "{PAGE}", (_page + 1) + ""));
-        reload();
+    protected void updatePage() {
+        String raw = _local.get("GUI_TITLE");
+        if(raw.contains("{PAGE}")) {
+            setTitle(_local.translate("GUI_TITLE", "{PAGE}", (getPage() + 1) + ""));
+            reload();
+        }
         draw();
     }
 
@@ -155,16 +181,14 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     private void nextPage(Player player) {
-        if (_page < _maxPage)
-            _page++;
+        if (_page < _maxPage) _page++;
 
-        updateTitle();
+        updatePage();
     }
 
     private void previousPage(Player player) {
-        if (_page > 0)
-            _page--;
+        if (_page > 0) _page--;
 
-        updateTitle();
+        updatePage();
     }
 }
