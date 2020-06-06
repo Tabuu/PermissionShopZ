@@ -18,6 +18,6 @@ public class VaultHandler implements IPermissionHandler{
 
     @Override
     public void addPermission(Player player, String permission) {
-        _permission.playerAdd(player, permission);
+        _permission.playerAdd(null, player, permission);
     }
 }
