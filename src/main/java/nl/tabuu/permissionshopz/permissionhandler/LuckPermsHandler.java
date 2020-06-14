@@ -23,7 +23,7 @@ public class LuckPermsHandler implements IPermissionHandler {
         PermissionNode node = PermissionNode.builder(permission).build();
         User user = _luckPerms.getUserManager().getUser(player.getUniqueId());
         if(user == null) return;
-
+        
         user.data().add(node);
         _luckPerms.getUserManager().saveUser(user);
     }

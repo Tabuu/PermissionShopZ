@@ -33,7 +33,8 @@ public class PermissionShopZ extends TabuuCorePlugin {
         setupPermissionHandler();
 
         new Metrics(this);
-        getCommand("permissionshopz").setExecutor(new PermissionShopCommand());
+        // getCommand("permissionshopz").setExecutor(new OldShopCommand());
+        registerExecutors(new PermissionShopCommand());
 
         getLogger().info("PermissionShopZ is now enabled.");
     }

@@ -52,11 +52,10 @@ public class ShopInterface extends InventoryFormUI {
         _maxPage = _perks.size() / (contentWidth * contentHeight);
 
         setTitle(_local.translate("GUI_TITLE", getReplacements()));
-        reload();
     }
 
     @Override
-    protected void draw() {
+    protected void onDraw() {
         ItemBuilder
                 next = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
                         .setDisplayName(_local.translate("GUI_PAGE_NEXT", getReplacements())),
@@ -115,7 +114,7 @@ public class ShopInterface extends InventoryFormUI {
             }
             else setElement(position, clearButton);
         }
-        super.draw();
+        super.onDraw();
     }
 
     protected Button createPerkItem(Player player, Perk perk) {
@@ -173,7 +172,7 @@ public class ShopInterface extends InventoryFormUI {
             setTitle(_local.translate("GUI_TITLE", getReplacements()));
             reload();
         }
-        draw();
+        onDraw();
     }
 
     private void nextPage(Player player) {

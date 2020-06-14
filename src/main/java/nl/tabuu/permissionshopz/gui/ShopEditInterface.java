@@ -15,7 +15,6 @@ public class ShopEditInterface extends ShopInterface {
         super(player);
 
         setTitle(_local.translate("GUI_REMOVE_TITLE", getReplacements()));
-        reload();
     }
 
     @Override
@@ -23,7 +22,7 @@ public class ShopEditInterface extends ShopInterface {
         PerkManager manager = PermissionShopZ.getInstance().getPerkManager();
         manager.removePerk(perk.getUniqueId());
         _perks.remove(perk);
-        Message.send(player, _local.translate("PERK_REMOVE_SUCCESS", "{PERK}", perk.getName()));
+        Message.send(player, _local.translate("PERK_REMOVE_SUCCESS", "{NAME}", perk.getName()));
         updatePage();
     }
 
@@ -34,7 +33,7 @@ public class ShopEditInterface extends ShopInterface {
             setTitle(_local.translate("GUI_REMOVE_TITLE", getReplacements()));
             reload();
         }
-        draw();
+        onDraw();
     }
 
     @Override
