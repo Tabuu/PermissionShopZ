@@ -47,6 +47,7 @@ public class PermissionShopCommand implements ICommandListener {
             argumentSequence = { ArgumentType.STRING, ArgumentType.DOUBLE, ArgumentType.STRING },
             parameter = ArgumentType.STRING
     )
+    @SuppressWarnings("unchecked")
     private CommandResult shopAdd(Player player, List<?> arguments) {
         String name = (String) arguments.get(0);
         double cost = (Double) arguments.get(1);

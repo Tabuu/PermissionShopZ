@@ -22,6 +22,7 @@ public class LuckPermsHandler implements IPermissionHandler {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void addPermission(Player player, String permission) {
         ScopedNode node = Node.builder(permission).build();
         User user = _luckPerms.getUserManager().getUser(player.getUniqueId());
