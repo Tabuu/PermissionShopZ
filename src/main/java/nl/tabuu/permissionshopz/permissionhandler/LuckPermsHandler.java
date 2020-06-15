@@ -2,6 +2,9 @@ package nl.tabuu.permissionshopz.permissionhandler;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.ScopedNode;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.node.types.PermissionNode;
 import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
 import org.bukkit.Bukkit;
@@ -20,10 +23,10 @@ public class LuckPermsHandler implements IPermissionHandler {
 
     @Override
     public void addPermission(Player player, String permission) {
-        PermissionNode node = PermissionNode.builder(permission).build();
+        ScopedNode node = Node.builder(permission).build();
         User user = _luckPerms.getUserManager().getUser(player.getUniqueId());
         if(user == null) return;
-        
+
         user.data().add(node);
         _luckPerms.getUserManager().saveUser(user);
     }
