@@ -27,9 +27,9 @@ public class Perk implements Serializable {
         _displayItem = displayItem;
         _permissions = permissions;
 
-        _uuid = UUID.randomUUID();
-        while(PermissionShopZ.getInstance().getPerkManager().getPerk(_uuid) != null)
+        do {
             _uuid = UUID.randomUUID();
+        } while (PermissionShopZ.getInstance().getPerkManager().getPerk(_uuid) != null);
     }
 
     public UUID getUniqueId(){

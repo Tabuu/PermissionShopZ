@@ -11,9 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Collections;
 
 public class ShopEditInterface extends ShopInterface {
+
     public ShopEditInterface(Player player) {
         super(player);
-
         setTitle(_local.translate("GUI_REMOVE_TITLE", getReplacements()));
     }
 

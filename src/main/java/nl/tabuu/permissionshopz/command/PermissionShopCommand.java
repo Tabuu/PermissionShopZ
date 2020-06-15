@@ -53,7 +53,7 @@ public class PermissionShopCommand implements ICommandListener {
         List<String> nodes = (List<String>) arguments.subList(2, arguments.size());
         ItemStack item = BukkitUtils.getItemInMainHand(player);
 
-        if (item == null || item.getType().equals(Material.AIR)) {
+        if (item.getType().equals(Material.AIR)) {
             Message.send(player, _local.translate("ERROR_INVALID_ITEM"));
             return CommandResult.SUCCESS;
         }

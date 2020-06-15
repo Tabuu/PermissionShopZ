@@ -30,21 +30,10 @@ public class PermissionShopZ extends TabuuCorePlugin {
         _manager = new PerkManager();
         load(new File(this.getDataFolder(), "shop.db"));
 
-        setupPermissionHandler();
-
         new Metrics(this);
-        // getCommand("permissionshopz").setExecutor(new OldShopCommand());
         registerExecutors(new PermissionShopCommand());
 
         getLogger().info("PermissionShopZ is now enabled.");
-    }
-
-    private void setupPermissionHandler() {
-        PermissionHandler handler = _config.getEnum(PermissionHandler.class, "PermissionManager");
-        if(handler == null)
-            throw new PermissionHandlerNotFoundException("No permission handler specified");
-
-        _permissionHandler = handler.getHandler();
     }
 
     @Override
@@ -66,12 +55,24 @@ public class PermissionShopZ extends TabuuCorePlugin {
         return _local;
     }
 
-    public IPermissionHandler getPermissionHandler() {
-        return _permissionHandler;
+    public IConfiguration getConfiguration() {
+        return _config;
     }
 
     public PerkManager getPerkManager() {
         return _manager;
+    }
+
+    public IPermissionHandler getPermissionHandler() {
+        if(_permissionHandler == null) {
+            PermissionHandler handler = _config.getEnum(PermissionHandler.class, "PermissionManager");
+            if(handler == null)
+                throw new PermissionHandlerNotFoundException("No permission handler specified");
+
+            _permissionHandler = handler.getHandler();
+        }
+
+        return _permissionHandler;
     }
 
     public static PermissionShopZ getInstance() {

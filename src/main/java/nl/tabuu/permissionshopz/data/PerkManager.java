@@ -31,7 +31,7 @@ public class PerkManager implements Serializable {
     }
 
     public Collection<Perk> getPerks(){
-        return _perks.values();
+        return Collections.unmodifiableCollection(_perks.values());
     }
 
 }

@@ -1,6 +1,7 @@
 package nl.tabuu.permissionshopz.gui;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.util.Message;
@@ -35,11 +36,10 @@ public class ShopInterface extends InventoryFormUI {
 
     public ShopInterface(Player player) {
         super("", InventorySize.THREE_ROWS);
-        ConfigurationManager manager = PermissionShopZ.getInstance().getConfigurationManager();
 
         _economy = Vault.getEconomy();
-        _config = manager.getConfiguration("config");
-        _local = manager.getConfiguration("lang").getDictionary("");
+        _config = PermissionShopZ.getInstance().getConfiguration();
+        _local = PermissionShopZ.getInstance().getLocal();
 
         InventorySize size = _config.getEnum(InventorySize.class, "GUISize");
         if(size != null && size.getHeight() >= 3) setSize(size);
@@ -71,7 +71,6 @@ public class ShopInterface extends InventoryFormUI {
 
                 gray = new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE)
                         .setDisplayName(" ");
-
 
         Style
                 nextButtonStyle = new Style(next.build(), next.build()),
@@ -119,33 +118,32 @@ public class ShopInterface extends InventoryFormUI {
 
     protected Button createPerkItem(Player player, Perk perk) {
         XMaterial unlockedMaterial = _config.getEnum(XMaterial.class, "UnlockedMaterial");
+
+        assert unlockedMaterial != null : "UnlockedMaterial has not been correctly set in the config.";
+        assert perk.getDisplayItem() != null : String.format("Perk with id \"%s\" has an invalid display item.", perk.getUniqueId().toString());
+
         boolean unlocked = perk.getPermissions().stream().allMatch(node -> _player.hasPermission(node));
 
-        ItemStack displayItem;
-        if(unlocked && unlockedMaterial != null) displayItem = unlockedMaterial.parseItem();
-        else if(perk.getDisplayItem() != null) displayItem = perk.getDisplayItem();
-        else displayItem = XMaterial.BARRIER.parseItem();
-
-        assert displayItem != null;
-
-        ItemBuilder displayItemBuilder = new ItemBuilder(displayItem);
+        ItemBuilder displayItemBuilder = new ItemBuilder(perk.getDisplayItem());
+        ItemBuilder unlockedDisplayItemBuilder = new ItemBuilder(unlockedMaterial);
 
         String displayName = _local.translate("GUI_PERK_TITLE", perk.getReplacements());
         displayItemBuilder.setDisplayName(displayName);
+        unlockedDisplayItemBuilder.setDisplayName(displayName);
 
         if (_config.getBoolean("DisplayPermissionList")) {
             for (String node : perk.getPermissions()) {
-                String text = _player.hasPermission(node) ? "GUI_PERK_NODE_HAS" : "GUI_PERK_NODE";
-                text = _local.translate(text, "{NODE}", node);
-                displayItemBuilder.addLore(text);
+                String line = _player.hasPermission(node) ? "GUI_PERK_NODE_HAS" : "GUI_PERK_NODE";
+                line = _local.translate(line, "{NODE}", node);
+                displayItemBuilder.addLore(line);
+                unlockedDisplayItemBuilder.addLore(line);
             }
         }
 
-        String footer = unlocked ? "GUI_PERK_UNLOCKED_FOOTER" : "GUI_PERK_LOCKED_FOOTER";
-        footer = _local.translate(footer, perk.getReplacements());
-        displayItemBuilder.addLore(footer);
+        displayItemBuilder.addLore(_local.translate("GUI_PERK_LOCKED_FOOTER", perk.getReplacements()));
+        unlockedDisplayItemBuilder.addLore(_local.translate("GUI_PERK_UNLOCKED_FOOTER", perk.getReplacements()));
 
-        Style style = new Style(displayItemBuilder.build(), displayItemBuilder.build());
+        Style style = new Style(displayItemBuilder.build(), unlockedDisplayItemBuilder.build());
         Button button = new Button(style, p -> onPerkClick(player, perk));
         button.setEnabled(!unlocked);
 
@@ -153,16 +151,13 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected void onPerkClick(Player player, Perk perk) {
-        String message;
-        if (_economy.has(player, perk.getCost())) {
-            _economy.withdrawPlayer(player, perk.getCost());
+        EconomyResponse response = _economy.withdrawPlayer(player, perk.getCost());
+        if(response.type.equals(EconomyResponse.ResponseType.SUCCESS)) {
             perk.apply(player);
-            message = "PERK_BUY_SUCCESS";
-        }
-        else message = "ERROR_INSUFFICIENT_FUNDS";
+            Message.send(player, _local.translate("PERK_BUY_SUCCESS", perk.getReplacements()));
+        } else
+            Message.send(player, _local.translate("ERROR_INSUFFICIENT_FUNDS", perk.getReplacements()));
 
-        message = _local.translate(message, perk.getReplacements());
-        Message.send(player, message);
         updatePage();
     }
 
@@ -176,25 +171,32 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     private void nextPage(Player player) {
-        if (_page < _maxPage) _page++;
-
-        updatePage();
+        if (getPage() < getMaxPage()) {
+            _page++;
+            updatePage();
+        }
     }
 
     private void previousPage(Player player) {
-        if (_page > 0) _page--;
-
-        updatePage();
+        if (getPage() > 0) {
+            _page--;
+            updatePage();
+        }
     }
 
     protected String[] getReplacements() {
         return new String[] {
                 "{PAGE}", String.format("%s", getPage() + 1),
-                "{MAX_PAGE}", String.format("%s", _maxPage + 1)
+                "{MAX_PAGE}", String.format("%s", _maxPage + 1),
+                "{PLAYER}", _player.getName()
         };
     }
 
     public int getPage() {
         return _page;
+    }
+
+    public int getMaxPage() {
+        return _maxPage;
     }
 }
