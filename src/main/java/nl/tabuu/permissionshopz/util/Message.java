@@ -19,5 +19,4 @@ public class Message {
     private static String getJSONMessage(String message) {
         return "{\"text\":\"MESSAGE\"}".replace("MESSAGE", JSONObject.escape(message));
     }
-
 }

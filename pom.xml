@@ -6,7 +6,7 @@
 
     <groupId>nl.tabuu</groupId>
     <artifactId>PermissionShopZ</artifactId>
-    <version>0.4.1</version>
+    <version>0.4.2</version>
     <description>This plugin allows players to buy permissions.</description>
 
     <packaging>jar</packaging>
