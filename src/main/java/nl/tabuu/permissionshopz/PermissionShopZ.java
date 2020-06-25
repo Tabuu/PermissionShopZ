@@ -18,7 +18,7 @@ public class PermissionShopZ extends TabuuCorePlugin {
     private Dictionary _local;
     private PerkManager _manager;
     private IConfiguration _config;
-    private IPermissionHandler _permissionHandler;
+    private PermissionHandler _permissionHandler;
 
     @Override
     public void onEnable() {
@@ -30,8 +30,11 @@ public class PermissionShopZ extends TabuuCorePlugin {
         _manager = new PerkManager();
         load(new File(this.getDataFolder(), "shop.db"));
 
-        new Metrics(this);
         registerExecutors(new PermissionShopCommand());
+
+        Metrics metrics = new Metrics(this, 7110);
+        Metrics.SimplePie handlerChart = new Metrics.SimplePie("permission_handler", _permissionHandler::getName);
+        metrics.addCustomChart(handlerChart);
 
         getLogger().info("PermissionShopZ is now enabled.");
     }
@@ -69,10 +72,10 @@ public class PermissionShopZ extends TabuuCorePlugin {
             if(handler == null)
                 throw new PermissionHandlerNotFoundException("No permission handler specified");
 
-            _permissionHandler = handler.getHandler();
+            _permissionHandler = handler;
         }
 
-        return _permissionHandler;
+        return _permissionHandler.getHandler();
     }
 
     public static PermissionShopZ getInstance() {

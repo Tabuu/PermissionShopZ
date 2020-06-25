@@ -6,17 +6,19 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.InvocationTargetException;
 
 public enum PermissionHandler {
-    VAULT(VaultHandler.class),
-    LUCK_PERMS(LuckPermsHandler.class),
-    GROUP_MANAGER(GroupManagerHandler.class),
-    PERMISSIONS_EX(PermissionsExHandler.class),
-    CUSTOM(CustomHandler.class);
+    VAULT(VaultHandler.class, "Vault"),
+    LUCK_PERMS(LuckPermsHandler.class, "Luck Perms"),
+    GROUP_MANAGER(GroupManagerHandler.class, "Group Manager"),
+    PERMISSIONS_EX(PermissionsExHandler.class, "PermissionsEx"),
+    CUSTOM(CustomHandler.class, "Custom");
 
     private Class<?> _class;
     private IPermissionHandler _handler;
+    private String _name;
 
-    <T extends IPermissionHandler> PermissionHandler(Class<T> clazz) {
+    <T extends IPermissionHandler> PermissionHandler(Class<T> clazz, String name) {
         _class = clazz;
+        _name = name;
     }
 
     public IPermissionHandler getHandler() {
@@ -37,5 +39,9 @@ public enum PermissionHandler {
         }
 
         return _handler;
+    }
+
+    public String getName() {
+        return _name;
     }
 }
