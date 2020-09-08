@@ -1,6 +1,5 @@
 package nl.tabuu.permissionshopz.gui;
 
-import nl.tabuu.tabuucore.debug.Debug;
 import nl.tabuu.tabuucore.inventory.ui.InventoryUI;
 import nl.tabuu.tabuucore.inventory.ui.TextInputUI;
 import nl.tabuu.tabuucore.inventory.ui.element.IClickable;
@@ -15,43 +14,45 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements IClickable, IValuable<List<V>> {
 
-    private int _index = 0;
-    private List<V> _items;
-    private IObjectDeserializer<String, V> _deserializer;
+    private int _selectedIndex = 0;
+
     private InventoryUI _returnUI;
     private TextInputStyle _inputStyle;
-    private BiConsumer<Player, List<V>> _onListChange;
 
-    public ListEditor(ListEditorStyle style, TextInputStyle inputStyle, InventoryUI returnUI, List<V> items, IObjectDeserializer<String, V> deserializer, BiConsumer<Player, List<V>> onListChange) {
+    private List<V> _items;
+    private BiConsumer<Player, List<V>> _onListChange;
+    private IObjectDeserializer<String, V> _deserializer;
+
+    public ListEditor(
+            ListEditorStyle style,
+            TextInputStyle inputStyle,
+            InventoryUI returnUI, List<V> items,
+            IObjectDeserializer<String, V> deserializer,
+            BiConsumer<Player, List<V>> onListChange) {
         super(style);
-        _returnUI = returnUI;
         _items = items;
-        _deserializer = deserializer;
+        _returnUI = returnUI;
         _inputStyle = inputStyle;
+        _deserializer = deserializer;
         _onListChange = onListChange;
     }
 
     @Override
     public void click(InventoryClickEvent event) {
         if(event.isShiftClick()) {
-            if(!_items.isEmpty()) _items.remove(_index);
-            _index = 0;
-        } else if (event.isLeftClick()) {
-            _index = (_index + 1) % _items.size();
+            if(!getValue().isEmpty()) getValue().remove(_selectedIndex);
+            _selectedIndex = 0;
         } else if (event.isRightClick()) {
-            new TextInputUI(_inputStyle.getRenameItem(), _inputStyle.getPlaceHolder(), this::addItem, this::returnToUI).open(event.getWhoClicked());
-        }
-    }
+            ItemStack item = _inputStyle.getRenameItem();
+            Player player = (Player) event.getWhoClicked();
+            String placeholder = _inputStyle.getPlaceHolder();
 
-    private void addItem(Player player, String string) {
-        V item = _deserializer.deserialize(string);
-        if(item != null) _items.add(item);
-        _onListChange.accept(player, getValue());
-        returnToUI(player);
+            new TextInputUI(item, placeholder, this::addItem, this::returnToUI).open(player);
+        } else if (event.isLeftClick())
+            _selectedIndex = (_selectedIndex + 1) % getValue().size();
     }
 
     private void returnToUI(Player player) {
@@ -60,22 +61,35 @@ public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements 
 
     @Override
     public ItemStack getDisplayItem() {
-        String[] lore = new String[_items.size()];
+        String[] lore = new String[getValue().size()];
 
-        for(int i = 0; i < _items.size(); i++) {
-            V item = _items.get(i);
+        for(int i = 0; i < getValue().size(); i++) {
+            V item = getValue().get(i);
             if(item == null) continue;
 
-            String string = item.toString();
-            String entry = i == _index ? getStyle().getSelectedEntry() : getStyle().getEntry();
-            entry = entry.replace(getStyle().getReplacement(), string);
-            lore[i] = entry;
+            String
+                    itemString = item.toString(),
+                    entry = getStyle().getEntry(),
+                    replacement = getStyle().getReplacement(),
+                    selectedEntry = getStyle().getSelectedEntry(),
+                    line = _selectedIndex == i ? selectedEntry : entry;
+
+            line = line.replace(replacement, itemString);
+            lore[i] = line;
         }
 
         ItemBuilder builder = new ItemBuilder(super.getDisplayItem().clone());
         builder.addLore(lore);
 
         return builder.build();
+    }
+
+    private void addItem(Player player, String string) {
+        V item = _deserializer.deserialize(string);
+        if(item != null) getValue().add(item);
+
+        _onListChange.accept(player, getValue());
+        returnToUI(player);
     }
 
     @Override

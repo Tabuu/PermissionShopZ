@@ -17,38 +17,23 @@ public class ListEditorStyle extends Style {
     }
 
     public ListEditorStyle(ItemStack display, String entry, String selectedEntry, String replacement) {
-        super(display);
-        _entry = entry;
-        _selectedEntry = selectedEntry;
-        _replacement = replacement;
+        this(display, display, entry, selectedEntry, replacement);
     }
 
     public ListEditorStyle(Material enabled, Material disabled, String entry, String selectedEntry, String replacement) {
-        super(enabled, disabled);
-        _entry = entry;
-        _selectedEntry = selectedEntry;
-        _replacement = replacement;
+        this(new ItemStack(enabled), new ItemStack(disabled), entry, selectedEntry, replacement);
     }
 
     public ListEditorStyle(Material display, String entry, String selectedEntry, String replacement) {
-        super(display);
-        _entry = entry;
-        _selectedEntry = selectedEntry;
-        _replacement = replacement;
+        this(display, display, entry, selectedEntry, replacement);
     }
 
     public ListEditorStyle(XMaterial enabled, XMaterial disabled, String entry, String selectedEntry, String replacement) {
-        super(enabled, disabled);
-        _entry = entry;
-        _selectedEntry = selectedEntry;
-        _replacement = replacement;
+        this(enabled.parseItem(), disabled.parseItem(), entry, selectedEntry, replacement);
     }
 
     public ListEditorStyle(XMaterial display, String entry, String selectedEntry, String replacement) {
-        super(display);
-        _entry = entry;
-        _selectedEntry = selectedEntry;
-        _replacement = replacement;
+        this(display, display, entry, selectedEntry, replacement);
     }
 
     @Override
