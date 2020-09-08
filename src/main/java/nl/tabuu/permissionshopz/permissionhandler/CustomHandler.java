@@ -10,7 +10,7 @@ public class CustomHandler implements IPermissionHandler {
     private String _command;
 
     public CustomHandler() {
-        IConfiguration config = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("config");
+        IConfiguration config = PermissionShopZ.getInstance().getConfiguration();
         _command = config.getString("CustomPermissionCommand");
     }
 

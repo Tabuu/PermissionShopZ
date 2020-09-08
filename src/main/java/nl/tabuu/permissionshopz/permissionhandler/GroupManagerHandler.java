@@ -24,11 +24,13 @@ public class GroupManagerHandler implements IPermissionHandler {
     @Override
     public void addPermission(Player player, String permission) {
         OverloadedWorldHolder handler = _groupManager.getWorldsHolder().getWorldData(player);
-        if (handler != null) {
-            handler.getUser(player.getName()).addPermission(permission);
-            BukkitPermsUpdateTask task = new BukkitPermsUpdateTask();
-            task.run();
-        } else
+        if(handler == null) {
             PermissionShopZ.getInstance().getLogger().severe("Could not set permission of player " + player.getName());
+            return;
+        }
+
+        handler.getUser(player.getName()).addPermission(permission);
+        BukkitPermsUpdateTask task = new BukkitPermsUpdateTask();
+        task.run();
     }
 }

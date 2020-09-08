@@ -2,29 +2,23 @@ package nl.tabuu.permissionshopz.util;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class NumberFormat {
     public static String suffixFormat(double value) {
-        IConfiguration config = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("config");
+        IConfiguration config =PermissionShopZ.getInstance().getConfiguration();
 
         if(!config.getBoolean("UseNumberSuffix")) return String.format("%.2f", value);
         else value = Math.ceil(value);
 
         NavigableMap<Double, String> suffixMap = new TreeMap<>();
-        ConfigurationSection suffixes = config.getConfigurationSection("NumberSuffixes");
-        if (suffixes == null) return value + "";
 
-        Set<String> suffixList = suffixes.getKeys(false);
-
-        for (String string : suffixList) {
-            int zeroCount = Integer.parseInt(string);
-            String suffix = config.getString("NumberSuffixes." + string);
+        for (String key : config.getKeys("NumberSuffixes", false)) {
+            int zeroCount = Integer.parseInt(key);
+            String suffix = config.getString(key);
             suffixMap.put(Math.pow(10d, zeroCount), suffix);
         }
 

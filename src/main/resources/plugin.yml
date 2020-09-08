@@ -11,7 +11,7 @@ api-version: '1.13'
 commands:
   permissionshopz:
     usage: /permissionshopz
-    description: Opens the shop GUI.
+    description: Opens the shop.
     permission: permissionshopz.default
     aliases: [pshop, permissionshop]
 
@@ -20,9 +20,9 @@ commands:
     description: Adds a permission to the shop, the display item will be the item you hold.
     permission: permissionshopz.admin
 
-  permissionshopz remove:
-    usage: /permissionshopz remove
-    description: Opens the removal GUI.
+  permissionshopz edit:
+    usage: /permissionshopz edit
+    description: Opens the shop editor.
     permission: permissionshopz.admin
 
   permissionshopz reload:

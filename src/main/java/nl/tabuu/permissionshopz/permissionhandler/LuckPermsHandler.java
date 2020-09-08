@@ -21,13 +21,28 @@ public class LuckPermsHandler implements IPermissionHandler {
         else _luckPerms = provider.getProvider();
     }
 
-    @Override
-    public void addPermission(Player player, String permission) {
-        Node node = Node.builder(permission).build();
+    public void addNode(Player player, Node node) {
         User user = _luckPerms.getUserManager().getUser(player.getUniqueId());
         if(user == null) return;
 
         user.data().add(node);
         _luckPerms.getUserManager().saveUser(user);
+    }
+
+    @Override
+    public void addPermission(Player player, String permission) {
+        Node node = Node.builder(permission).build();
+        addNode(player, node);
+    }
+
+    @Override
+    public void addTimedPermission(Player player, String permission, long lifeTime) {
+        Node node = Node.builder(permission).expiry(lifeTime).build();
+        addNode(player, node);
+    }
+
+    @Override
+    public boolean isTimedPermissionSupported() {
+        return true;
     }
 }

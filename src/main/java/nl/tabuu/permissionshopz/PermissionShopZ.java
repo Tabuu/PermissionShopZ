@@ -5,32 +5,35 @@ import nl.tabuu.permissionshopz.command.PermissionShopCommand;
 import nl.tabuu.permissionshopz.data.PerkManager;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.permissionhandler.PermissionHandler;
-import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
+import nl.tabuu.tabuucore.configuration.IDataHolder;
+import nl.tabuu.tabuucore.configuration.file.JsonConfiguration;
+import nl.tabuu.tabuucore.configuration.file.YamlConfiguration;
 import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
 import nl.tabuu.tabuucore.util.Dictionary;
 
-import java.io.*;
+import java.util.Objects;
 
 public class PermissionShopZ extends TabuuCorePlugin {
     private static PermissionShopZ INSTANCE;
 
     private Dictionary _local;
     private PerkManager _manager;
-    private IConfiguration _config;
+    private IConfiguration _config, _data;
     private PermissionHandler _permissionHandler;
 
     @Override
     public void onEnable() {
         INSTANCE = this;
 
-        _config = getConfigurationManager().addConfiguration("config");
-        _local = getConfigurationManager().addConfiguration("lang").getDictionary("");
+        _data = getConfigurationManager().addConfiguration("shop.json", JsonConfiguration.class);
+        _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
+        _local = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
 
-        _manager = new PerkManager();
-        load(new File(this.getDataFolder(), "shop.db"));
+        loadPerks();
 
         registerExecutors(new PermissionShopCommand());
+        getPermissionHandler();
 
         Metrics metrics = new Metrics(this, 7110);
         Metrics.SimplePie handlerChart = new Metrics.SimplePie("permission_handler", _permissionHandler::getName);
@@ -41,17 +44,29 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     @Override
     public void onDisable() {
-        save(new File(getDataFolder(), "shop.db"));
-
+        savePerks();
         getLogger().info("PermissionShopZ is now disabled.");
     }
 
     public void reload() {
-        File file = new File(getDataFolder(), "shop.db");
-        save(file);
-        load(file);
-
+        savePerks();
         getConfigurationManager().reloadAll();
+        loadPerks();
+    }
+
+    private void loadPerks() {
+        IDataHolder data = _data.getDataSection("");
+        _manager = new PerkManager(data);
+    }
+
+    private void savePerks() {
+        IDataHolder data = _data.createSection("");
+        data = _manager.getData(data);
+
+
+        _data.setDataSection("", data);
+        System.out.println(_data.getKeys(true));
+        _data.save();
     }
 
     public Dictionary getLocal() {
@@ -68,10 +83,8 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     public IPermissionHandler getPermissionHandler() {
         if(_permissionHandler == null) {
-            PermissionHandler handler = _config.getEnum(PermissionHandler.class, "PermissionManager");
-            if(handler == null)
-                throw new PermissionHandlerNotFoundException("No permission handler specified");
-
+            PermissionHandler handler = _config.get("PermissionManager", PermissionHandler::valueOf);
+            Objects.requireNonNull(handler, "No permission handler specified");
             _permissionHandler = handler;
         }
 
@@ -80,25 +93,5 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     public static PermissionShopZ getInstance() {
         return INSTANCE;
-    }
-
-    private void save(File file) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-
-            objectOutputStream.writeObject(_manager);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-            getLogger().severe("Could not save data!");
-        }
-    }
-
-    private void load(File file) {
-        try (FileInputStream fileInputStream = new FileInputStream(file);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-            _manager = (PerkManager) objectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException exception) {
-            getLogger().warning("No data found!");
-        }
     }
 }

@@ -20,4 +20,15 @@ public class PermissionsExHandler implements IPermissionHandler {
         PermissionUser target = PermissionsEx.getUser(player);
         target.addPermission(permission);
     }
+
+    @Override
+    public void addTimedPermission(Player player, String permission, long lifeTime) {
+        PermissionUser target = PermissionsEx.getUser(player);
+        target.addTimedPermission(permission, null, (int) lifeTime);
+    }
+
+    @Override
+    public boolean isTimedPermissionSupported() {
+        return true;
+    }
 }

@@ -8,20 +8,36 @@ PERK_BUY_SUCCESS: "&2&lSuccessfully bought perk {NAME}."
 PERK_REMOVE_SUCCESS: "&2&lSuccessfully removed perk {NAME}."
 
 # GUI related text.
-GUI_TITLE: "&9&lPermission Shop ({PAGE}/{MAX_PAGE})"
+GUI_SHOP_TITLE: "&9&lPermission Shop ({PAGE}/{MAX_PAGE})"
 
 GUI_PAGE_NEXT: "&3&lNext ({PAGE}/{MAX_PAGE})"
 GUI_PAGE_CLOSE: "&4&lClose"
 GUI_PAGE_PREVIOUS: "&3&l Previous ({PAGE}/{MAX_PAGE})"
 
-GUI_PERK_TITLE: "{NAME}"
+GUI_PERK_NAME: "{NAME}"
 GUI_PERK_NODE: "&7- {NODE}"
 GUI_PERK_NODE_HAS: "&7&m- {NODE}&2&l ✔"
 GUI_PERK_UNLOCKED_FOOTER: "&e&lUNLOCKED"
 GUI_PERK_LOCKED_FOOTER: "&2&lPrice: ${PRICE}"
 
-GUI_REMOVE_CLICK: "&4&lClick to remove!"
-GUI_REMOVE_TITLE: "&4&lPermission Removal! ({PAGE}/{MAX_PAGE})"
+GUI_SHOP_EDITOR_TITLE: "&aShop Editor ({PAGE}/{MAX_PAGE})"
+GUI_SHOP_EDITOR_PERK_LORE: "&7Click to edit!"
+
+
+GUI_PERK_EDITOR_TITLE: "&9&lPerk Editor"
+GUI_PERK_EDITOR_DELETE: "&c&lClick to delete"
+GUI_PERK_EDITOR_NAME: "&3&lEdit Name"
+GUI_PERK_EDITOR_COST: "&3&lEdit Cost"
+GUI_PERK_EDITOR_ITEM: "&3&lEdit Item"
+GUI_PERK_EDITOR_PERMISSIONS: "&3&lEdit Permissions"
+GUI_PERK_EDITOR_PERMISSIONS_LORE: |-
+  &7Right-click for add.
+  &7Left-click for select next.
+  &7Shift-click for remove selected.
+  &7
+
+GUI_PERK_EDITOR_PERMISSIONS_ENTRY: "&7- {ENTRY}"
+GUI_PERK_EDITOR_PERMISSIONS_ENTRY_CURRENT: "&a> {ENTRY}"
 
 # Command related text
-RELOAD_SUCCESS: "&2Reload complete."
+RELOAD_SUCCESS: "&aReload complete."

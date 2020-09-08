@@ -51,7 +51,7 @@ public class ShopInterface extends InventoryFormUI {
         int contentHeight = getSize().getHeight() - 2;
         _maxPage = _perks.size() / (contentWidth * contentHeight);
 
-        setTitle(_local.translate("GUI_TITLE", getReplacements()));
+        setTitle(_local.translate("GUI_SHOP_TITLE", getReplacements()));
     }
 
     @Override
@@ -117,7 +117,7 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected Button createPerkItem(Player player, Perk perk) {
-        XMaterial unlockedMaterial = _config.getEnum(XMaterial.class, "UnlockedMaterial");
+        XMaterial unlockedMaterial = _config.get("UnlockedMaterial", XMaterial::valueOf);
 
         assert unlockedMaterial != null : "UnlockedMaterial has not been correctly set in the config.";
         assert perk.getDisplayItem() != null : String.format("Perk with id \"%s\" has an invalid display item.", perk.getUniqueId().toString());
@@ -127,7 +127,7 @@ public class ShopInterface extends InventoryFormUI {
         ItemBuilder displayItemBuilder = new ItemBuilder(perk.getDisplayItem());
         ItemBuilder unlockedDisplayItemBuilder = new ItemBuilder(unlockedMaterial);
 
-        String displayName = _local.translate("GUI_PERK_TITLE", perk.getReplacements());
+        String displayName = _local.translate("GUI_PERK_NAME", perk.getReplacements());
         displayItemBuilder.setDisplayName(displayName);
         unlockedDisplayItemBuilder.setDisplayName(displayName);
 
@@ -164,7 +164,7 @@ public class ShopInterface extends InventoryFormUI {
     protected void updatePage() {
         String raw = _local.get("GUI_TITLE");
         if(raw.contains("{PAGE}")) {
-            setTitle(_local.translate("GUI_TITLE", getReplacements()));
+            setTitle(_local.translate("GUI_SHOP_TITLE", getReplacements()));
             reload();
         }
         onDraw();

@@ -33,7 +33,7 @@ public class PermissionShopCommand implements ICommandListener {
             command = "permissionshopz",
             children = {
                     @ChildCommand(label = "add", method = "shopAdd"),
-                    @ChildCommand(label = "remove", method = "shopRemove"),
+                    @ChildCommand(label = "edit", method = "shopEdit"),
                     @ChildCommand(label = "reload", method = "reload")
             }
     )
@@ -54,7 +54,7 @@ public class PermissionShopCommand implements ICommandListener {
         List<String> nodes = (List<String>) arguments.subList(2, arguments.size());
         ItemStack item = BukkitUtils.getItemInMainHand(player);
 
-        if (item.getType().equals(Material.AIR)) {
+        if (item == null || item.getType().equals(Material.AIR)) {
             Message.send(player, _local.translate("ERROR_INVALID_ITEM"));
             return CommandResult.SUCCESS;
         }
@@ -65,8 +65,8 @@ public class PermissionShopCommand implements ICommandListener {
         return CommandResult.SUCCESS;
     }
 
-    @CommandExecutor(command = "permissionshopz remove")
-    private CommandResult shopRemove(Player player, List<?> arguments) {
+    @CommandExecutor(command = "permissionshopz edit")
+    private CommandResult shopEdit(Player player, List<?> arguments) {
         new ShopEditInterface(player).open(player);
         return CommandResult.SUCCESS;
     }
