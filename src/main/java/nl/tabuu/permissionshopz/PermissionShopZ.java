@@ -6,7 +6,6 @@ import nl.tabuu.permissionshopz.data.PerkManager;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.permissionhandler.PermissionHandler;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
-import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.configuration.file.JsonConfiguration;
 import nl.tabuu.tabuucore.configuration.file.YamlConfiguration;
 import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
@@ -55,17 +54,11 @@ public class PermissionShopZ extends TabuuCorePlugin {
     }
 
     private void loadPerks() {
-        IDataHolder data = _data.getDataSection("");
-        _manager = new PerkManager(data);
+        _manager = _data.getSerializable("Shop", PerkManager.class, new PerkManager());
     }
 
     private void savePerks() {
-        IDataHolder data = _data.createSection("");
-        data = _manager.getData(data);
-
-
-        _data.setDataSection("", data);
-        System.out.println(_data.getKeys(true));
+        _data.set("Shop", _manager);
         _data.save();
     }
 

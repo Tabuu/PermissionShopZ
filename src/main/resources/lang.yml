@@ -20,7 +20,7 @@ GUI_PERK_NODE_HAS: "&7&m- {NODE}&2&l ✔"
 GUI_PERK_UNLOCKED_FOOTER: "&e&lUNLOCKED"
 GUI_PERK_LOCKED_FOOTER: "&2&lPrice: ${PRICE}"
 
-GUI_SHOP_EDITOR_TITLE: "&aShop Editor ({PAGE}/{MAX_PAGE})"
+GUI_SHOP_EDITOR_TITLE: "&9&lShop Editor ({PAGE}/{MAX_PAGE})"
 GUI_SHOP_EDITOR_PERK_LORE: "&7Click to edit!"
 
 
@@ -32,8 +32,9 @@ GUI_PERK_EDITOR_ITEM: "&3&lEdit Item"
 GUI_PERK_EDITOR_PERMISSIONS: "&3&lEdit Permissions"
 GUI_PERK_EDITOR_PERMISSIONS_LORE: |-
   &7Right-click for add.
+  &7Middle-click for remove selected.
   &7Left-click for select next.
-  &7Shift-click for remove selected.
+  &7[0-9] for specific index.
   &7
 
 GUI_PERK_EDITOR_PERMISSIONS_ENTRY: "&7- {ENTRY}"

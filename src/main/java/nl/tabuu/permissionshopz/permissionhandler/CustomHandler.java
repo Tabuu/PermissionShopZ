@@ -15,7 +15,7 @@ public class CustomHandler implements IPermissionHandler {
     }
 
     @Override
-    public void addPermission(Player player, String permission) {
+    public void addPermissionNode(Player player, String permission) {
         String formattedCommand = _command
                 .replace("{PLAYER}", player.getName())
                 .replace("{PERMISSION}", permission);

@@ -1,30 +1,26 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.tabuucore.configuration.IDataHolder;
+import nl.tabuu.tabuucore.serialization.ISerializable;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.Serializable;
 import java.util.*;
 
-public class PerkManager {
+public class PerkManager implements ISerializable<IDataHolder> {
 
-    private HashMap<UUID, Perk> _perks;
+    private Set<Perk> _perks;
+
+    private PerkManager(Collection<Perk> perks) {
+        _perks = new LinkedHashSet<>(perks);
+    }
 
     public PerkManager() {
-        _perks = new HashMap<>();
+        this(Collections.emptySet());
     }
 
     public PerkManager(IDataHolder data) {
-        this();
-
-        for(String key : data.getKeys(false)) {
-            IDataHolder perkData = data.getDataSection(key);
-            UUID uuid = Serializer.UUID.deserialize(key);
-            Perk perk = new Perk(perkData);
-
-            _perks.put(uuid, perk);
-        }
+        this(data.getSerializableList("Perks", Perk.class));
     }
 
     public void createPerk(String name, double cost, ItemStack displayItem, String... permissions) {
@@ -33,31 +29,20 @@ public class PerkManager {
     }
 
     public void addPerk(Perk perk) {
-        _perks.put(perk.getUniqueId(), perk);
+        _perks.add(perk);
     }
 
-    public void removePerk(UUID uuid) {
-        _perks.remove(uuid);
-    }
-
-    public Perk getPerk(UUID uuid) {
-        return _perks.get(uuid);
+    public void removePerk(Perk perk) {
+        _perks.remove(perk);
     }
 
     public Collection<Perk> getPerks() {
-        return Collections.unmodifiableCollection(_perks.values());
+        return Collections.unmodifiableCollection(_perks);
     }
 
-    public IDataHolder getData(IDataHolder data) {
-
-        for (Map.Entry<UUID, Perk> entry : _perks.entrySet()) {
-            String key = Serializer.UUID.serialize(entry.getKey());
-            IDataHolder perkData = data.createSection(key);
-            entry.getValue().getData(perkData);
-
-            data.setDataSection(key, perkData);
-        }
-
+    @Override
+    public IDataHolder serialize(IDataHolder data) {
+        data.setSerializableList("Perks", new ArrayList<>(_perks));
         return data;
     }
 }

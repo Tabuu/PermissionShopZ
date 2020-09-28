@@ -1,6 +1,7 @@
 package nl.tabuu.permissionshopz.permissionhandler;
 
 import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
+import nl.tabuu.tabuucore.debug.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -16,15 +17,21 @@ public class PermissionsExHandler implements IPermissionHandler {
     }
 
     @Override
-    public void addPermission(Player player, String permission) {
+    public void addPermissionNode(Player player, String permission) {
         PermissionUser target = PermissionsEx.getUser(player);
         target.addPermission(permission);
     }
 
     @Override
-    public void addTimedPermission(Player player, String permission, long lifeTime) {
+    public void addTimedPermissionNode(Player player, String permission, long lifeTime) {
+        int timeInSeconds = (int) (lifeTime / 1000L);
         PermissionUser target = PermissionsEx.getUser(player);
-        target.addTimedPermission(permission, null, (int) lifeTime);
+        target.addTimedPermission(permission, null, timeInSeconds);
+    }
+
+    @Override
+    public boolean hasPermissionNode(Player player, String node) {
+        return PermissionsEx.getUser(player).has(node);
     }
 
     @Override

@@ -11,6 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.concurrent.TimeUnit;
+
 public class LuckPermsHandler implements IPermissionHandler {
 
     private LuckPerms _luckPerms;
@@ -30,14 +32,14 @@ public class LuckPermsHandler implements IPermissionHandler {
     }
 
     @Override
-    public void addPermission(Player player, String permission) {
+    public void addPermissionNode(Player player, String permission) {
         Node node = Node.builder(permission).build();
         addNode(player, node);
     }
 
     @Override
-    public void addTimedPermission(Player player, String permission, long lifeTime) {
-        Node node = Node.builder(permission).expiry(lifeTime).build();
+    public void addTimedPermissionNode(Player player, String permission, long lifeTime) {
+        Node node = Node.builder(permission).expiry(lifeTime, TimeUnit.MILLISECONDS).build();
         addNode(player, node);
     }
 

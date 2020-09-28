@@ -42,17 +42,29 @@ public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements 
 
     @Override
     public void click(InventoryClickEvent event) {
-        if(event.isShiftClick()) {
-            if(!getValue().isEmpty()) getValue().remove(_selectedIndex);
-            _selectedIndex = 0;
-        } else if (event.isRightClick()) {
-            ItemStack item = _inputStyle.getRenameItem();
-            Player player = (Player) event.getWhoClicked();
-            String placeholder = _inputStyle.getPlaceHolder();
+        switch (event.getClick()) {
 
-            new TextInputUI(item, placeholder, this::addItem, this::returnToUI).open(player);
-        } else if (event.isLeftClick())
-            _selectedIndex = (_selectedIndex + 1) % getValue().size();
+            case NUMBER_KEY:
+                _selectedIndex = event.getHotbarButton() % getValue().size();
+                break;
+
+            case MIDDLE:
+                if(!getValue().isEmpty()) getValue().remove(_selectedIndex);
+                _selectedIndex = 0;
+                break;
+
+            case RIGHT:
+                ItemStack item = _inputStyle.getRenameItem();
+                Player player = (Player) event.getWhoClicked();
+                String placeholder = _inputStyle.getPlaceHolder();
+
+                new TextInputUI(item, placeholder, this::addItem, this::returnToUI).open(player);
+                break;
+
+            default:
+                _selectedIndex = (_selectedIndex + 1) % getValue().size();
+                break;
+        }
     }
 
     private void returnToUI(Player player) {

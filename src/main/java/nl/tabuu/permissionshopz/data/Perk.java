@@ -5,76 +5,72 @@ import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.material.XMaterial;
+import nl.tabuu.tabuucore.serialization.ISerializable;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
-public class Perk {
-    private UUID _uuid;
+public class Perk implements ISerializable<IDataHolder> {
+    @Nonnull
     private String _name;
     private double _cost;
     private ItemStack _displayItem;
+    @Nonnull
     private List<String> _permissions;
 
-    public Perk(String name, double cost, ItemStack displayItem, List<String> permissions){
+    public Perk(@Nonnull String name, double cost, ItemStack displayItem, @Nonnull List<String> permissions) {
         _name = name;
         _cost = cost;
         _displayItem = displayItem;
         _permissions = permissions;
-
-        do {
-            _uuid = UUID.randomUUID();
-        } while (PermissionShopZ.getInstance().getPerkManager().getPerk(_uuid) != null);
     }
 
     public Perk(IDataHolder data) {
-        _uuid = data.get("UUID", Serializer.UUID);
-        _name = data.getString("Name");
-        _cost = data.getDouble("Cost");
-        _displayItem = data.get("Item", Serializer.ITEMSTACK);
+        _name = data.getString("Name", "Undefined");
+        _cost = data.getDouble("Cost", 0.0d);
+        _displayItem = data.get("Item", Serializer.ITEMSTACK, XMaterial.BARRIER.parseItem());
         _permissions = data.getStringList("Permissions");
     }
 
-    public UUID getUniqueId(){
-        return _uuid;
-    }
-
-    public String getName(){
+    @Nonnull
+    public String getName() {
         return _name;
     }
 
-    public double getCost(){
+    public double getCost() {
         return _cost;
     }
 
-    public ItemStack getDisplayItem() {
+    @Nonnull public ItemStack getDisplayItem() {
         if (_displayItem == null || _displayItem.getType().equals(Material.AIR))
             setDisplayItem(XMaterial.BARRIER.parseItem());
 
         return _displayItem.clone();
     }
 
-    public List<String> getPermissions(){
+    @Nonnull
+    public List<String> getPermissions() {
         return _permissions;
     }
 
     public void apply(Player player) {
         IPermissionHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
-        for(String node : _permissions) handler.addPermission(player, node);
+        for (String node : _permissions) handler.addPermission(player, node);
     }
 
-    public String[] getReplacements() {
-        return new String[] {
+    public Object[] getReplacements() {
+        return new Object[]{
                 "{PRICE}", NumberFormat.suffixFormat(getCost()),
                 "{NAME}", getName()
         };
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         _name = name;
     }
 
@@ -86,17 +82,33 @@ public class Perk {
         _displayItem = displayItem;
     }
 
-    public void setPermissions(List<String> permissions) {
+    public void setPermissions(@Nonnull List<String> permissions) {
         _permissions = permissions;
     }
 
-    public IDataHolder getData(IDataHolder data) {
-        data.set("UUID", _uuid, Serializer.UUID);
+    @Override
+    public IDataHolder serialize(IDataHolder data) {
         data.set("Name", _name);
         data.set("Cost", _cost);
         data.set("Item", _displayItem, Serializer.ITEMSTACK);
         data.setStringList("Permissions", _permissions);
 
         return data;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Perk)) return false;
+        Perk perk = (Perk) object;
+        return Double.compare(perk.getCost(), getCost()) == 0 &&
+                getName().equals(perk.getName()) &&
+                Objects.equals(getDisplayItem(), perk.getDisplayItem()) &&
+                getPermissions().equals(perk.getPermissions());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getCost(), getDisplayItem(), getPermissions());
     }
 }

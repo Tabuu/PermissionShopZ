@@ -17,7 +17,12 @@ public class VaultHandler implements IPermissionHandler{
     }
 
     @Override
-    public void addPermission(Player player, String permission) {
+    public void addPermissionNode(Player player, String permission) {
         _permission.playerAdd(null, player, permission);
+    }
+
+    @Override
+    public boolean hasPermissionNode(Player player, String node) {
+        return _permission.has(player, node);
     }
 }

@@ -109,7 +109,8 @@ public class PerkEditInterface extends InventoryFormUI {
     }
 
     public void onDeleteClick(Player player) {
-        _manager.removePerk(_perk.getUniqueId());
+        _manager.removePerk(_perk);
+        close(player);
     }
 
     private void onNameChange(Player player, String name) {
@@ -118,7 +119,7 @@ public class PerkEditInterface extends InventoryFormUI {
 
     private void onPermissionsChange(Player player, List<String> list) {
         _perk.setPermissions(list);
-        onDraw();
+        updateElement(new Vector2f(7, 1));
     }
 
     private void onCostChange(Player player, String value) {
