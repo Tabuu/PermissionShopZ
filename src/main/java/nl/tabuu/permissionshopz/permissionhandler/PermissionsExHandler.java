@@ -1,7 +1,6 @@
 package nl.tabuu.permissionshopz.permissionhandler;
 
 import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
-import nl.tabuu.tabuucore.debug.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

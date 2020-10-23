@@ -30,7 +30,7 @@ public class PermissionShopCommand implements ICommandListener {
     }
 
     @CommandExecutor(
-            command = "permissionshopz",
+            value = "permissionshopz",
             children = {
                     @ChildCommand(label = "add", method = "shopAdd"),
                     @ChildCommand(label = "edit", method = "shopEdit"),
@@ -43,7 +43,7 @@ public class PermissionShopCommand implements ICommandListener {
     }
 
     @CommandExecutor(
-            command = "permissionshopz add",
+            value = "permissionshopz add",
             argumentSequence = { ArgumentType.STRING, ArgumentType.DOUBLE, ArgumentType.STRING },
             parameter = ArgumentType.STRING
     )
@@ -65,13 +65,13 @@ public class PermissionShopCommand implements ICommandListener {
         return CommandResult.SUCCESS;
     }
 
-    @CommandExecutor(command = "permissionshopz edit")
+    @CommandExecutor("permissionshopz edit")
     private CommandResult shopEdit(Player player, List<?> arguments) {
         new ShopEditInterface(player).open(player);
         return CommandResult.SUCCESS;
     }
 
-    @CommandExecutor(command = "permissionshopz reload")
+    @CommandExecutor("permissionshopz reload")
     private CommandResult reload(CommandSender sender, List<?> arguments) {
         PermissionShopZ.getInstance().reload();
         sender.sendMessage(_local.translate("RELOAD_SUCCESS"));
