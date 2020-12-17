@@ -163,7 +163,7 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected void updatePage() {
-        String raw = _local.get("GUI_SHOP_TITLE");
+        String raw = _local.getOrDefault("GUI_SHOP_TITLE", "GUI_SHOP_TITLE");
         if(raw.contains("{PAGE}")) {
             setTitle(_local.translate("GUI_SHOP_TITLE", getReplacements()));
             reload();

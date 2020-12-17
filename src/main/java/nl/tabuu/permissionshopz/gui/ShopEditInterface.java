@@ -21,7 +21,7 @@ public class ShopEditInterface extends ShopInterface {
 
     @Override
     protected void updatePage() {
-        String raw = _local.get("GUI_REMOVE_TITLE");
+        String raw = _local.getOrDefault("GUI_REMOVE_TITLE", "GUI_REMOVE_TITLE");
         if(raw.contains("{PAGE}")) {
             setTitle(_local.translate("GUI_SHOP_EDITOR_TITLE", getReplacements()));
             reload();
