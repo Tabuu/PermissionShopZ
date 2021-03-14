@@ -17,14 +17,13 @@ import java.util.function.BiConsumer;
 
 public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements IClickable, IValuable<List<V>> {
 
-    private int _selectedIndex = 0;
-
-    private InventoryUI _returnUI;
-    private TextInputStyle _inputStyle;
+    private final InventoryUI _returnUI;
+    private final TextInputStyle _inputStyle;
+    private final BiConsumer<Player, List<V>> _onListChange;
+    private final IObjectDeserializer<String, V> _deserializer;
 
     private List<V> _items;
-    private BiConsumer<Player, List<V>> _onListChange;
-    private IObjectDeserializer<String, V> _deserializer;
+    private int _selectedIndex = 0;
 
     public ListEditor(
             ListEditorStyle style,
@@ -62,6 +61,7 @@ public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements 
                 break;
 
             default:
+                if(getValue().size() < 1) break;
                 _selectedIndex = (_selectedIndex + 1) % getValue().size();
                 break;
         }

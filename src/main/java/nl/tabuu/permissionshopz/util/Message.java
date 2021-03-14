@@ -11,7 +11,7 @@ public class Message {
 
     public static void send(Player player, String message) {
         IConfiguration config = PermissionShopZ.getInstance().getConfiguration();
-        if (config.getBoolean("UseTitle"))
+        if (config.getBoolean("UseTitle", false))
             TitleAPI.getInstance().sendActionbar(player, getJSONMessage(message), 0, 5, 0);
         else
             player.spigot().sendMessage(ComponentBuilder.parse(message).build());

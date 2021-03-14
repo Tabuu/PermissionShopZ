@@ -3,9 +3,6 @@ package nl.tabuu.permissionshopz.permissionhandler;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
-import net.luckperms.api.node.ScopedNode;
-import net.luckperms.api.node.types.InheritanceNode;
-import net.luckperms.api.node.types.PermissionNode;
 import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LuckPermsHandler implements IPermissionHandler {
 
-    private LuckPerms _luckPerms;
+    private final LuckPerms _luckPerms;
 
     public LuckPermsHandler(){
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);

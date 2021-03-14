@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,20 +23,24 @@ public class Perk implements ISerializable<IDataHolder> {
     private double _cost;
     private ItemStack _displayItem;
     @Nonnull
-    private List<String> _permissions;
+    private List<String> _awardedPermissions, _requiredPermissions;
 
-    public Perk(@Nonnull String name, double cost, ItemStack displayItem, @Nonnull List<String> permissions) {
+    public Perk(@Nonnull String name, double cost, @Nonnull ItemStack displayItem, @Nonnull List<String> awardedPermissions, @Nonnull List<String> requiredPermissions) {
         _name = name;
         _cost = cost;
         _displayItem = displayItem;
-        _permissions = permissions;
+        _awardedPermissions = new LinkedList<>(awardedPermissions);
+        _requiredPermissions = new LinkedList<>(requiredPermissions);
     }
 
     public Perk(IDataHolder data) {
-        _name = data.getString("Name", "Undefined");
-        _cost = data.getDouble("Cost", 0.0d);
-        _displayItem = data.get("Item", Serializer.ITEMSTACK, XMaterial.BARRIER.parseItem());
-        _permissions = data.getStringList("Permissions");
+        this(
+                data.getString("Name", "Undefined"),
+                data.getDouble("Cost", 0.0d),
+                data.get("Item", Serializer.ITEMSTACK, XMaterial.BARRIER.parseItem()),
+                data.getStringList("Permissions"),
+                data.getStringList("RequiredPermissions")
+        );
     }
 
     @Nonnull
@@ -54,13 +60,13 @@ public class Perk implements ISerializable<IDataHolder> {
     }
 
     @Nonnull
-    public List<String> getPermissions() {
-        return _permissions;
+    public List<String> getAwardedPermissions() {
+        return _awardedPermissions;
     }
 
     public void apply(Player player) {
         IPermissionHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
-        for (String node : _permissions) handler.addPermission(player, node);
+        for (String node : getAwardedPermissions()) handler.addPermission(player, node);
     }
 
     public Object[] getReplacements() {
@@ -82,8 +88,28 @@ public class Perk implements ISerializable<IDataHolder> {
         _displayItem = displayItem;
     }
 
-    public void setPermissions(@Nonnull List<String> permissions) {
-        _permissions = permissions;
+    public void setAwardedPermissions(@Nonnull List<String> permissions) {
+        _awardedPermissions = permissions;
+    }
+
+    @Nonnull
+    public List<String> getRequiredPermissions() {
+        return _requiredPermissions;
+    }
+
+    public void setRequiredPermissions(@Nonnull List<String> requiredPermissions) {
+        _requiredPermissions = requiredPermissions;
+    }
+
+    public boolean hasRequiredPermissions(Player player) {
+        IPermissionHandler permissionHandler = PermissionShopZ.getInstance().getPermissionHandler();
+
+        for(String permission : getRequiredPermissions()) {
+            if(!permissionHandler.hasPermission(player, permission))
+                return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -91,7 +117,8 @@ public class Perk implements ISerializable<IDataHolder> {
         data.set("Name", _name);
         data.set("Cost", _cost);
         data.set("Item", _displayItem, Serializer.ITEMSTACK);
-        data.setStringList("Permissions", _permissions);
+        data.setStringList("Permissions", _awardedPermissions);
+        data.setStringList("RequiredPermissions", _requiredPermissions);
 
         return data;
     }
@@ -104,11 +131,11 @@ public class Perk implements ISerializable<IDataHolder> {
         return Double.compare(perk.getCost(), getCost()) == 0 &&
                 getName().equals(perk.getName()) &&
                 Objects.equals(getDisplayItem(), perk.getDisplayItem()) &&
-                getPermissions().equals(perk.getPermissions());
+                getAwardedPermissions().equals(perk.getAwardedPermissions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getCost(), getDisplayItem(), getPermissions());
+        return Objects.hash(getName(), getCost(), getDisplayItem(), getAwardedPermissions());
     }
 }

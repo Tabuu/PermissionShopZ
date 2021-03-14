@@ -11,7 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 public class GroupManagerHandler implements IPermissionHandler {
 
-    private GroupManager _groupManager;
+    private final GroupManager _groupManager;
 
     public GroupManagerHandler() {
         Plugin groupManagerPlugin = Bukkit.getPluginManager().getPlugin("GroupManager");

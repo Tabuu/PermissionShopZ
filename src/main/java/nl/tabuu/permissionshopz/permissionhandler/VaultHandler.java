@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class VaultHandler implements IPermissionHandler{
-    private Permission _permission;
+    private final Permission _permission;
 
     public VaultHandler() {
         RegisteredServiceProvider<Permission> provider = Bukkit.getServicesManager().getRegistration(Permission.class);

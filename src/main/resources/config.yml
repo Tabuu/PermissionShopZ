@@ -27,6 +27,10 @@ UnlockedMaterial: "IRON_BARS"
 # FORMAT:       Boolean
 DisplayPermissionList: true
 
+# DESCRIPTION:  Whether or not the perk should display the permissions it requires.
+# FORMAT:       Boolean
+DisplayRequiredPermissionList: true
+
 # DESCRIPTION:  Whether or not the messages should be displayed as titles instead of in chat.
 # FORMAT:       Boolean
 UseTitle: true

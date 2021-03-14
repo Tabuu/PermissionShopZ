@@ -5,7 +5,6 @@ import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.data.PerkManager;
 import nl.tabuu.tabuucore.inventory.InventorySize;
 import nl.tabuu.tabuucore.inventory.ui.InventoryFormUI;
-import nl.tabuu.tabuucore.inventory.ui.InventoryUI;
 import nl.tabuu.tabuucore.inventory.ui.element.Button;
 import nl.tabuu.tabuucore.inventory.ui.element.ItemInput;
 import nl.tabuu.tabuucore.inventory.ui.element.TextInput;
@@ -26,12 +25,12 @@ import java.util.List;
 
 public class PerkEditInterface extends InventoryFormUI {
 
-    private Perk _perk;
-    private Dictionary _local;
-    private PerkManager _manager;
+    private final Perk _perk;
+    private final Dictionary _local;
+    private final PerkManager _manager;
 
     public PerkEditInterface(Perk perk) {
-        super("Perk Editor", InventorySize.FOUR_ROWS);
+        super("Perk Editor", InventorySize.FIVE_ROWS);
 
         _local = PermissionShopZ.getInstance().getLocal();
         _perk = perk;
@@ -54,6 +53,10 @@ public class PerkEditInterface extends InventoryFormUI {
                         .setDisplayName(_local.translate("GUI_PERK_EDITOR_PERMISSIONS"))
                         .setLore(_local.translate("GUI_PERK_EDITOR_PERMISSIONS_LORE")),
 
+                book2 = new ItemBuilder(XMaterial.BOOK)
+                        .setDisplayName(_local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS"))
+                        .setLore(_local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_LORE")),
+
                 barrier = new ItemBuilder(XMaterial.BARRIER)
                         .setDisplayName(_local.translate("GUI_PERK_EDITOR_DELETE")),
 
@@ -75,29 +78,42 @@ public class PerkEditInterface extends InventoryFormUI {
         TextInputStyle nameStyle = new TextInputStyle(paper.build(), XMaterial.NAME_TAG.parseItem(), _perk.getName());
         TextInputStyle costStyle = new TextInputStyle(emerald.build(), XMaterial.NAME_TAG.parseItem(), Double.toString(_perk.getCost()));
         TextInputStyle entryStyle = new TextInputStyle(emerald.build(), XMaterial.NAME_TAG.parseItem(), "example.permission");
-        ListEditorStyle permissionStyle = new ListEditorStyle(
+        ListEditorStyle awardedPermissionStyle = new ListEditorStyle(
                 book.build(),
                 _local.translate("GUI_PERK_EDITOR_PERMISSIONS_ENTRY"),
                 _local.translate("GUI_PERK_EDITOR_PERMISSIONS_ENTRY_CURRENT"),
+                "{ENTRY}");
+        ListEditorStyle requiredPermissionStyle = new ListEditorStyle(
+                book2.build(),
+                _local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY"),
+                _local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY_CURRENT"),
                 "{ENTRY}");
 
         TextInput nameInput = new TextInput(nameStyle, this, this::onNameChange);
         TextInput costInput = new TextInput(costStyle, this, this::onCostChange);
         ItemInput itemInput = new ItemInput(itemStyle, true, this::onDisplayItemChange);
         Button deleteButton = new Button(deleteStyle, this::onDeleteClick);
-        ListEditor<String> permissionInput = new ListEditor<>(
-                permissionStyle,
+        ListEditor<String> awardedPermissionInput = new ListEditor<>(
+                awardedPermissionStyle,
                 entryStyle,
                 this,
-                new ArrayList<>(_perk.getPermissions()),
+                new ArrayList<>(_perk.getAwardedPermissions()),
                 Serializer.STRING,
-                this::onPermissionsChange);
+                this::onAwardedPermissionsChange);
+        ListEditor<String> requiredPermissionInput = new ListEditor<>(
+                requiredPermissionStyle,
+                entryStyle,
+                this,
+                new ArrayList<>(_perk.getRequiredPermissions()),
+                Serializer.STRING,
+                this::onRequiredPermissionsChange);
 
-        setElement(new Vector2f(1, 1), nameInput);
-        setElement(new Vector2f(3, 1), costInput);
-        setElement(new Vector2f(4, 2), deleteButton);
-        setElement(new Vector2f(5, 1), itemInput);
-        setElement(new Vector2f(7, 1), permissionInput);
+        setElement(new Vector2f(2, 1), nameInput);
+        setElement(new Vector2f(4, 1), costInput);
+        setElement(new Vector2f(6, 1), itemInput);
+        setElement(new Vector2f(3, 2), awardedPermissionInput);
+        setElement(new Vector2f(5, 2), requiredPermissionInput);
+        setElement(new Vector2f(4, 3), deleteButton);
 
         itemInput.setValue(_perk.getDisplayItem());
 
@@ -117,14 +133,18 @@ public class PerkEditInterface extends InventoryFormUI {
         _perk.setName(name);
     }
 
-    private void onPermissionsChange(Player player, List<String> list) {
-        _perk.setPermissions(list);
-        updateElement(new Vector2f(7, 1));
+    private void onAwardedPermissionsChange(Player player, List<String> list) {
+        _perk.setAwardedPermissions(list);
+        updateElement(new Vector2f(3, 2));
+    }
+
+    private void onRequiredPermissionsChange(Player player, List<String> list) {
+        _perk.setRequiredPermissions(list);
+        updateElement(new Vector2f(5, 2));
     }
 
     private void onCostChange(Player player, String value) {
         Double cost = Serializer.DOUBLE.deserialize(value);
         if(cost != null) _perk.setCost(cost);
     }
-
 }

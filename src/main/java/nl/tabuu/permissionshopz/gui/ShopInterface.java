@@ -6,7 +6,6 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.util.Message;
-import nl.tabuu.tabuucore.configuration.ConfigurationManager;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.economy.hook.Vault;
 import nl.tabuu.tabuucore.inventory.InventorySize;
@@ -20,21 +19,19 @@ import nl.tabuu.tabuucore.material.XMaterial;
 import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 public class ShopInterface extends InventoryFormUI {
-    private Economy _economy;
-    protected Dictionary _local;
-    private IConfiguration _config;
+    protected final Economy _economy;
+    protected final Dictionary _local;
+    protected final IConfiguration _config;
+    protected final IPermissionHandler _permission;
 
     private int _page;
-    private int _maxPage;
-    private Player _player;
-    protected List<Perk> _perks;
-
-    private IPermissionHandler _permission;
+    private final int _maxPage;
+    private final Player _player;
+    private final List<Perk> _perks;
 
     public ShopInterface(Player player) {
         super("", InventorySize.THREE_ROWS);
@@ -123,7 +120,7 @@ public class ShopInterface extends InventoryFormUI {
         XMaterial unlockedMaterial = _config.get("UnlockedMaterial", XMaterial::valueOf);
         assert unlockedMaterial != null : "UnlockedMaterial has not been correctly set in the config.";
 
-        boolean unlocked = perk.getPermissions().stream().allMatch(node -> _permission.hasPermission(_player, node));
+        boolean unlocked = perk.getAwardedPermissions().stream().allMatch(node -> _permission.hasPermission(_player, node));
 
         ItemBuilder displayItemBuilder = new ItemBuilder(perk.getDisplayItem());
         ItemBuilder unlockedDisplayItemBuilder = new ItemBuilder(unlockedMaterial);
@@ -133,11 +130,28 @@ public class ShopInterface extends InventoryFormUI {
         unlockedDisplayItemBuilder.setDisplayName(displayName);
 
         if (_config.getBoolean("DisplayPermissionList", true)) {
-            for (String node : perk.getPermissions()) {
-                String line = _permission.hasPermission(_player, node) ? "GUI_PERK_NODE_HAS" : "GUI_PERK_NODE";
-                line = _local.translate(line, "{NODE}", node);
+            String header = _local.translate("GUI_PERK_AWARDED_PERMISSION_HEADER");
+            displayItemBuilder.addLore(header);
+            unlockedDisplayItemBuilder.addLore(header);
+
+            for (String node : perk.getAwardedPermissions()) {
+                String line = _permission.hasPermission(_player, node) ? "GUI_PERK_AWARDED_PERMISSION_ENTRY_HAS" : "GUI_PERK_AWARDED_PERMISSION_ENTRY";
+                line = _local.translate(line, "{PERMISSION}", node);
                 displayItemBuilder.addLore(line);
                 unlockedDisplayItemBuilder.addLore(line);
+            }
+        }
+
+        if (_config.getBoolean("DisplayRequiredPermissionList", true)) {
+            String header = _local.translate("GUI_PERK_REQUIRED_PERMISSION_HEADER");
+            displayItemBuilder.addLore(header);
+            unlockedDisplayItemBuilder.addLore(header);
+
+            for (String node : perk.getRequiredPermissions()) {
+                String entry = _permission.hasPermission(_player, node) ? "GUI_PERK_REQUIRED_PERMISSION_ENTRY_HAS" : "GUI_PERK_REQUIRED_PERMISSION_ENTRY";
+                entry = _local.translate(entry, "{PERMISSION}", node);
+                displayItemBuilder.addLore(entry);
+                unlockedDisplayItemBuilder.addLore(entry);
             }
         }
 
@@ -153,7 +167,11 @@ public class ShopInterface extends InventoryFormUI {
 
     protected void onPerkClick(Player player, Perk perk) {
         EconomyResponse response = _economy.withdrawPlayer(player, perk.getCost());
-        if(response.type.equals(EconomyResponse.ResponseType.SUCCESS)) {
+
+        if(!perk.hasRequiredPermissions(player))
+            Message.send(player, _local.translate("ERROR_INSUFFICIENT_PERMISSION", perk.getReplacements()));
+
+        else if(response.type.equals(EconomyResponse.ResponseType.SUCCESS)) {
             perk.apply(player);
             Message.send(player, _local.translate("PERK_BUY_SUCCESS", perk.getReplacements()));
         } else
@@ -164,21 +182,21 @@ public class ShopInterface extends InventoryFormUI {
 
     protected void updatePage() {
         String raw = _local.getOrDefault("GUI_SHOP_TITLE", "GUI_SHOP_TITLE");
-        if(raw.contains("{PAGE}")) {
+        if(Objects.nonNull(raw) && raw.contains("{PAGE}")) {
             setTitle(_local.translate("GUI_SHOP_TITLE", getReplacements()));
             reload();
         }
         onDraw();
     }
 
-    private void nextPage(Player player) {
+    protected void nextPage(Player player) {
         if (getPage() < getMaxPage()) {
             _page++;
             updatePage();
         }
     }
 
-    private void previousPage(Player player) {
+    protected void previousPage(Player player) {
         if (getPage() > 0) {
             _page--;
             updatePage();

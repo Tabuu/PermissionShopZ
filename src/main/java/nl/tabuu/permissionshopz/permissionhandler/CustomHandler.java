@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public class CustomHandler implements IPermissionHandler {
 
-    private String _command;
+    private final String _command;
 
     public CustomHandler() {
         IConfiguration config = PermissionShopZ.getInstance().getConfiguration();

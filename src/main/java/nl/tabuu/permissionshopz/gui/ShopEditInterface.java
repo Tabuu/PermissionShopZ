@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
+import java.util.Objects;
 
 public class ShopEditInterface extends ShopInterface {
 
@@ -22,7 +23,7 @@ public class ShopEditInterface extends ShopInterface {
     @Override
     protected void updatePage() {
         String raw = _local.getOrDefault("GUI_REMOVE_TITLE", "GUI_REMOVE_TITLE");
-        if(raw.contains("{PAGE}")) {
+        if(Objects.nonNull(raw) && raw.contains("{PAGE}")) {
             setTitle(_local.translate("GUI_SHOP_EDITOR_TITLE", getReplacements()));
             reload();
         }

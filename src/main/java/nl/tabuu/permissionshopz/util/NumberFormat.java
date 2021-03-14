@@ -11,7 +11,7 @@ public class NumberFormat {
     public static String suffixFormat(double value) {
         IConfiguration config =PermissionShopZ.getInstance().getConfiguration();
 
-        if(!config.getBoolean("UseNumberSuffix")) return String.format("%.2f", value);
+        if(!config.getBoolean("UseNumberSuffix", false)) return String.format("%.2f", value);
         else value = Math.ceil(value);
 
         NavigableMap<Double, String> suffixMap = new TreeMap<>();

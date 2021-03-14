@@ -1,5 +1,6 @@
 # Error related text.
 ERROR_INSUFFICIENT_FUNDS: "&c&lInsufficient funds."
+ERROR_INSUFFICIENT_PERMISSION: "&c&lInsufficient permission."
 ERROR_INVALID_ITEM: "&c&lYou must hold something in your hand."
 
 # Perk interaction related text.
@@ -15,14 +16,20 @@ GUI_PAGE_CLOSE: "&4&lClose"
 GUI_PAGE_PREVIOUS: "&3&l Previous ({PAGE}/{MAX_PAGE})"
 
 GUI_PERK_NAME: "{NAME}"
-GUI_PERK_NODE: "&7- {NODE}"
-GUI_PERK_NODE_HAS: "&7&m- {NODE}&2&l ✔"
-GUI_PERK_UNLOCKED_FOOTER: "&e&lUNLOCKED"
+
+GUI_PERK_AWARDED_PERMISSION_HEADER: "\n&9Awarded Permissions"
+GUI_PERK_AWARDED_PERMISSION_ENTRY: "&7&l\u2192 &7{PERMISSION}"
+GUI_PERK_AWARDED_PERMISSION_ENTRY_HAS: "&8&l\u2192 &7&m{PERMISSION}"
+
+GUI_PERK_REQUIRED_PERMISSION_HEADER: "\n&9Required Permissions"
+GUI_PERK_REQUIRED_PERMISSION_ENTRY: "&c&l\u274c &7{PERMISSION}"
+GUI_PERK_REQUIRED_PERMISSION_ENTRY_HAS: "&2&l\u2714 &7{PERMISSION}"
+
+GUI_PERK_UNLOCKED_FOOTER: "\n&e&lUNLOCKED"
 GUI_PERK_LOCKED_FOOTER: "&2&lPrice: ${PRICE}"
 
 GUI_SHOP_EDITOR_TITLE: "&9&lShop Editor ({PAGE}/{MAX_PAGE})"
 GUI_SHOP_EDITOR_PERK_LORE: "&7Click to edit!"
-
 
 GUI_PERK_EDITOR_TITLE: "&9&lPerk Editor"
 GUI_PERK_EDITOR_DELETE: "&c&lClick to delete"
@@ -36,9 +43,19 @@ GUI_PERK_EDITOR_PERMISSIONS_LORE: |-
   &7Left-click for select next.
   &7[0-9] for specific index.
   &7
+GUI_PERK_EDITOR_REQUIRED_PERMISSIONS: "&3&lEdit Required Permissions"
+GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_LORE: |-
+  &7Right-click for add.
+  &7Middle-click for remove selected.
+  &7Left-click for select next.
+  &7[0-9] for specific index.
+  &7
 
 GUI_PERK_EDITOR_PERMISSIONS_ENTRY: "&7- {ENTRY}"
 GUI_PERK_EDITOR_PERMISSIONS_ENTRY_CURRENT: "&a> {ENTRY}"
+
+GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY: "&7- {ENTRY}"
+GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY_CURRENT: "&a> {ENTRY}"
 
 # Command related text
 RELOAD_SUCCESS: "&aReload complete."

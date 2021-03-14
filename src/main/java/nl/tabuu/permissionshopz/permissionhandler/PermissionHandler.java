@@ -12,9 +12,9 @@ public enum PermissionHandler {
     PERMISSIONS_EX(PermissionsExHandler.class, "PermissionsEx"),
     CUSTOM(CustomHandler.class, "Custom");
 
-    private Class<?> _class;
+    private final String _name;
+    private final Class<?> _class;
     private IPermissionHandler _handler;
-    private String _name;
 
     <T extends IPermissionHandler> PermissionHandler(Class<T> clazz, String name) {
         _class = clazz;

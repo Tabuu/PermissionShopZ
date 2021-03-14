@@ -1,9 +1,8 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.tabuucore.configuration.IDataHolder;
+import nl.tabuu.tabuucore.configuration.holder.JsonDataHolder;
 import nl.tabuu.tabuucore.serialization.ISerializable;
-import nl.tabuu.tabuucore.serialization.string.Serializer;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -23,9 +22,10 @@ public class PerkManager implements ISerializable<IDataHolder> {
         this(data.getSerializableList("Perks", Perk.class));
     }
 
-    public void createPerk(String name, double cost, ItemStack displayItem, String... permissions) {
-        Perk perk = new Perk(name, cost, displayItem, Arrays.asList(permissions));
+    public Perk createDefaultPerk() {
+        Perk perk = new Perk(new JsonDataHolder()); // Creating a perk based on an empty configuration.
         addPerk(perk);
+        return perk;
     }
 
     public void addPerk(Perk perk) {

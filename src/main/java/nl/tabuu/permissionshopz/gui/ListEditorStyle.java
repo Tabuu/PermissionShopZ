@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ListEditorStyle extends Style {
 
-    private String _entry, _selectedEntry, _replacement;
+    private final String _entry, _selectedEntry, _replacement;
 
     public ListEditorStyle(ItemStack enabled, ItemStack disabled, String entry, String selectedEntry, String replacement) {
         super(enabled, disabled);
