@@ -5,6 +5,7 @@ import nl.tabuu.permissionshopz.command.PermissionShopCommand;
 import nl.tabuu.permissionshopz.data.PerkManager;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
 import nl.tabuu.permissionshopz.permissionhandler.PermissionHandler;
+import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.configuration.file.JsonConfiguration;
 import nl.tabuu.tabuucore.configuration.file.YamlConfiguration;
@@ -30,6 +31,7 @@ public class PermissionShopZ extends TabuuCorePlugin {
         _local = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
 
         loadPerks();
+        NumberFormat.reloadSuffixMap();
 
         registerExecutors(new PermissionShopCommand());
         getPermissionHandler();
@@ -51,6 +53,8 @@ public class PermissionShopZ extends TabuuCorePlugin {
         savePerks();
         getConfigurationManager().reloadAll();
         loadPerks();
+
+        NumberFormat.reloadSuffixMap();
     }
 
     private void loadPerks() {

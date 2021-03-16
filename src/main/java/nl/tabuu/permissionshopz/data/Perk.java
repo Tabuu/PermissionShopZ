@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +70,7 @@ public class Perk implements ISerializable<IDataHolder> {
 
     public Object[] getReplacements() {
         return new Object[]{
-                "{PRICE}", NumberFormat.suffixFormat(getCost()),
+                "{PRICE}", NumberFormat.formatNumber(getCost()),
                 "{NAME}", getName()
         };
     }
