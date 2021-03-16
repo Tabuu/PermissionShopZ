@@ -2,16 +2,17 @@ package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.configuration.holder.JsonDataHolder;
+import nl.tabuu.tabuucore.debug.Debug;
 import nl.tabuu.tabuucore.serialization.ISerializable;
 
 import java.util.*;
 
 public class PerkManager implements ISerializable<IDataHolder> {
 
-    private Set<Perk> _perks;
+    private final List<Perk> _perks;
 
     private PerkManager(Collection<Perk> perks) {
-        _perks = new LinkedHashSet<>(perks);
+        _perks = new LinkedList<>(perks);
     }
 
     public PerkManager() {
@@ -33,7 +34,7 @@ public class PerkManager implements ISerializable<IDataHolder> {
     }
 
     public void removePerk(Perk perk) {
-        _perks.remove(perk);
+        Debug.log(_perks.remove(perk));
     }
 
     public Collection<Perk> getPerks() {

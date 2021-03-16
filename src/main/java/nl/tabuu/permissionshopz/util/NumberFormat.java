@@ -31,7 +31,6 @@ public class NumberFormat {
             SUFFIX_MAP = new TreeMap<>();
 
         if(SUFFIX_MAP.isEmpty()) {
-
             IConfiguration config = PermissionShopZ.getInstance().getConfiguration();
             IDataHolder suffixSection = config.getDataSection(NUMBER_SUFFIXES_KEY);
 
@@ -49,7 +48,6 @@ public class NumberFormat {
     }
 
     public static String formatNumber(double value, boolean useSuffix) {
-
         if(!useSuffix)
             return FORMAT.format(value);
 

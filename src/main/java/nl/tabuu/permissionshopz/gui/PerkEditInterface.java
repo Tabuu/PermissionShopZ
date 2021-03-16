@@ -78,12 +78,12 @@ public class PerkEditInterface extends InventoryFormUI {
         TextInputStyle nameStyle = new TextInputStyle(paper.build(), XMaterial.NAME_TAG.parseItem(), _perk.getName());
         TextInputStyle costStyle = new TextInputStyle(emerald.build(), XMaterial.NAME_TAG.parseItem(), Double.toString(_perk.getCost()));
         TextInputStyle entryStyle = new TextInputStyle(emerald.build(), XMaterial.NAME_TAG.parseItem(), "example.permission");
-        ListEditorStyle awardedPermissionStyle = new ListEditorStyle(
+        ListEditorStyle awardedPermissionStyle = new ListEditorNodeStyle(
                 book.build(),
                 _local.translate("GUI_PERK_EDITOR_PERMISSIONS_ENTRY"),
                 _local.translate("GUI_PERK_EDITOR_PERMISSIONS_ENTRY_CURRENT"),
                 "{ENTRY}");
-        ListEditorStyle requiredPermissionStyle = new ListEditorStyle(
+        ListEditorStyle requiredPermissionStyle = new ListEditorNodeStyle(
                 book2.build(),
                 _local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY"),
                 _local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY_CURRENT"),

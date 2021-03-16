@@ -5,6 +5,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
+import nl.tabuu.permissionshopz.permissionhandler.NodeType;
 import nl.tabuu.permissionshopz.util.Message;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.economy.hook.Vault;
@@ -120,7 +121,7 @@ public class ShopInterface extends InventoryFormUI {
         XMaterial unlockedMaterial = _config.get("UnlockedMaterial", XMaterial::valueOf);
         assert unlockedMaterial != null : "UnlockedMaterial has not been correctly set in the config.";
 
-        boolean unlocked = perk.getAwardedPermissions().stream().allMatch(node -> _permission.hasPermission(_player, node));
+        boolean unlocked = perk.getAwardedPermissions().stream().allMatch(node -> _permission.hasNode(_player, node));
 
         ItemBuilder displayItemBuilder = new ItemBuilder(perk.getDisplayItem());
         ItemBuilder unlockedDisplayItemBuilder = new ItemBuilder(unlockedMaterial);
@@ -135,8 +136,10 @@ public class ShopInterface extends InventoryFormUI {
             unlockedDisplayItemBuilder.addLore(header);
 
             for (String node : perk.getAwardedPermissions()) {
-                String line = _permission.hasPermission(_player, node) ? "GUI_PERK_AWARDED_PERMISSION_ENTRY_HAS" : "GUI_PERK_AWARDED_PERMISSION_ENTRY";
-                line = _local.translate(line, "{PERMISSION}", node);
+                NodeType type = NodeType.fromNode(node);
+
+                String line = _permission.hasNode(_player, node) ? "GUI_PERK_AWARDED_PERMISSION_ENTRY_HAS" : "GUI_PERK_AWARDED_PERMISSION_ENTRY";
+                line = _local.translate(line, "{PERMISSION}", type.toString(node));
                 displayItemBuilder.addLore(line);
                 unlockedDisplayItemBuilder.addLore(line);
             }
@@ -148,8 +151,10 @@ public class ShopInterface extends InventoryFormUI {
             unlockedDisplayItemBuilder.addLore(header);
 
             for (String node : perk.getRequiredPermissions()) {
-                String entry = _permission.hasPermission(_player, node) ? "GUI_PERK_REQUIRED_PERMISSION_ENTRY_HAS" : "GUI_PERK_REQUIRED_PERMISSION_ENTRY";
-                entry = _local.translate(entry, "{PERMISSION}", node);
+                NodeType type = NodeType.fromNode(node);
+
+                String entry = _permission.hasNode(_player, node) ? "GUI_PERK_REQUIRED_PERMISSION_ENTRY_HAS" : "GUI_PERK_REQUIRED_PERMISSION_ENTRY";
+                entry = _local.translate(entry, "{PERMISSION}", type.toString(node));
                 displayItemBuilder.addLore(entry);
                 unlockedDisplayItemBuilder.addLore(entry);
             }

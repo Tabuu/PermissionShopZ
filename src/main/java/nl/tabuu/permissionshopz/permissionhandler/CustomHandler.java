@@ -15,11 +15,30 @@ public class CustomHandler implements IPermissionHandler {
     }
 
     @Override
-    public void addPermissionNode(Player player, String permission) {
-        String formattedCommand = _command
-                .replace("{PLAYER}", player.getName())
-                .replace("{PERMISSION}", permission);
+    public boolean hasNode(Player player, NodeType nodeType, String node) {
+        String value = nodeType.getValue(node);
 
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
+        if (NodeType.PERMISSION.equals(nodeType))
+            return player.hasPermission(value);
+
+        return false;
+    }
+
+    @Override
+    public void addNode(Player player, NodeType nodeType, String node) {
+        String value = nodeType.getValue(node);
+
+        if (NodeType.PERMISSION.equals(nodeType)) {
+            String formattedCommand = _command
+                    .replace("{PLAYER}", player.getName())
+                    .replace("{PERMISSION}", value);
+
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
+        }
+    }
+
+    @Override
+    public boolean isNodeTypeSupported(NodeType nodeType) {
+        return NodeType.PERMISSION.equals(nodeType);
     }
 }

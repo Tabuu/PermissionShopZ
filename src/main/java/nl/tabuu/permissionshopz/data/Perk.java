@@ -65,7 +65,7 @@ public class Perk implements ISerializable<IDataHolder> {
 
     public void apply(Player player) {
         IPermissionHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
-        for (String node : getAwardedPermissions()) handler.addPermission(player, node);
+        for (String node : getAwardedPermissions()) handler.addNode(player, node);
     }
 
     public Object[] getReplacements() {
@@ -104,7 +104,7 @@ public class Perk implements ISerializable<IDataHolder> {
         IPermissionHandler permissionHandler = PermissionShopZ.getInstance().getPermissionHandler();
 
         for(String permission : getRequiredPermissions()) {
-            if(!permissionHandler.hasPermission(player, permission))
+            if(!permissionHandler.hasNode(player, permission))
                 return false;
         }
 

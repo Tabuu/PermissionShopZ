@@ -52,6 +52,7 @@ public class PermissionShopZ extends TabuuCorePlugin {
     public void reload() {
         savePerks();
         getConfigurationManager().reloadAll();
+        _local = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
         loadPerks();
 
         NumberFormat.reloadSuffixMap();

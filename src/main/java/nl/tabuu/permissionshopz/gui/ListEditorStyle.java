@@ -5,6 +5,8 @@ import nl.tabuu.tabuucore.material.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 public class ListEditorStyle extends Style {
 
     private final String _entry, _selectedEntry, _replacement;
@@ -56,5 +58,18 @@ public class ListEditorStyle extends Style {
 
     public String getReplacement() {
         return _replacement;
+    }
+
+    public String getDisplayString(String entry, boolean selected) {
+        if(Objects.isNull(entry)) return null;
+
+        String
+                entryTemplate = getEntry(),
+                replacement = getReplacement(),
+                selectedEntry = getSelectedEntry(),
+                line = selected ? selectedEntry : entryTemplate;
+
+        line = line.replace(replacement, entry);
+        return line;
     }
 }

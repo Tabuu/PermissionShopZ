@@ -41,6 +41,8 @@ public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements 
 
     @Override
     public void click(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+
         switch (event.getClick()) {
 
             case NUMBER_KEY:
@@ -49,12 +51,12 @@ public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements 
 
             case MIDDLE:
                 if(!getValue().isEmpty()) getValue().remove(_selectedIndex);
+                _onListChange.accept(player, getValue());
                 _selectedIndex = 0;
                 break;
 
             case RIGHT:
                 ItemStack item = _inputStyle.getRenameItem();
-                Player player = (Player) event.getWhoClicked();
                 String placeholder = _inputStyle.getPlaceHolder();
 
                 new TextInputUI(item, placeholder, this::addItem, this::returnToUI).open(player);
@@ -79,15 +81,7 @@ public class ListEditor<V> extends StyleableElement<ListEditorStyle> implements 
             V item = getValue().get(i);
             if(item == null) continue;
 
-            String
-                    itemString = item.toString(),
-                    entry = getStyle().getEntry(),
-                    replacement = getStyle().getReplacement(),
-                    selectedEntry = getStyle().getSelectedEntry(),
-                    line = _selectedIndex == i ? selectedEntry : entry;
-
-            line = line.replace(replacement, itemString);
-            lore[i] = line;
+            lore[i] = getStyle().getDisplayString(item.toString(), _selectedIndex == i);
         }
 
         ItemBuilder builder = new ItemBuilder(super.getDisplayItem().clone());
