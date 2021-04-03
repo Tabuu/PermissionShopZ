@@ -1,6 +1,7 @@
-package nl.tabuu.permissionshopz.permissionhandler;
+package nl.tabuu.permissionshopz.nodehandler;
 
-import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
+import nl.tabuu.permissionshopz.data.node.*;
+import nl.tabuu.permissionshopz.nodehandler.exception.NodeHandlerNotFoundException;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -8,45 +9,37 @@ import org.bukkit.plugin.Plugin;
 import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
-import ru.tehkode.permissions.events.PermissionEntityEvent;
-import ru.tehkode.permissions.exceptions.RankingException;
 
 import java.util.*;
 
-public class PermissionsExHandler implements IPermissionHandler {
+public class PermissionsExHandler implements INodeHandler {
 
     public PermissionsExHandler() {
         Plugin pexPlugin = Bukkit.getServer().getPluginManager().getPlugin("PermissionsEx");
         if (!(pexPlugin instanceof PermissionsEx))
-            throw new PermissionHandlerNotFoundException("Could not find PermissionsEx.");
+            throw new NodeHandlerNotFoundException("Could not find PermissionsEx.");
     }
 
     @Override
-    public boolean hasNode(Player player, NodeType nodeType, String node) {
-        String value = nodeType.getValue(node);
+    public boolean hasNode(Player player, Node node) {
         PermissionUser user = PermissionsEx.getUser(player);
 
-        if(Objects.isNull(value) || Objects.isNull(user)) return false;
+        if(Objects.isNull(user)) return false;
 
-        switch (nodeType) {
+        switch (node.getType()) {
             case PERMISSION:
             case TEMPORARY_PERMISSION:
-                return user.has(value, null);
+                PermissionNode permNode = (PermissionNode) node;
+                return user.has(permNode.getPermission(), null);
 
             case GROUP:
-                return user.inGroup(value, null);
+                GroupNode groupNode = (GroupNode) node;
+                return user.inGroup(groupNode.getGroupId(), null);
 
             case TRACK:
-                String[] arguments = nodeType.getArguments(node);
-                if(arguments.length < 1) return false;
-
-                int trackIndex;
-                try {
-                    trackIndex = Integer.parseInt(arguments[0]);
-                } catch (NumberFormatException exception) { return false; }
-
-                int currentTrack = getUserTrackIndex(user, value);
-                return trackIndex <= currentTrack;
+                TrackNode trackNode = (TrackNode) node;
+                int currentTrack = getUserTrackIndex(user, trackNode.getTrackId());
+                return trackNode.getIndex() <= currentTrack;
 
             default:
                 return false;
@@ -61,39 +54,39 @@ public class PermissionsExHandler implements IPermissionHandler {
     }
 
     @Override
-    public void addNode(Player player, NodeType nodeType, String node) {
-        String value = nodeType.getValue(node);
-        String[] arguments = nodeType.getArguments(node);
+    public boolean addNode(Player player, Node node) {
         PermissionUser user = PermissionsEx.getUser(player);
 
-        if(Objects.isNull(value) || Objects.isNull(user)) return;
+        if(Objects.isNull(user)) return false;
 
-        switch (nodeType) {
+        switch (node.getType()) {
             case PERMISSION:
-                user.addPermission(value);
+                PermissionNode permNode = (PermissionNode) node;
+                user.addPermission(permNode.getPermission());
                 break;
 
             case TEMPORARY_PERMISSION:
-                if(arguments.length < 1) return;
-                long lifeTime = Serializer.TIME.deserialize(arguments[0]);
-                int timeInSeconds = (int) (lifeTime / 1000L);
-                user.addTimedPermission(value, null, timeInSeconds);
+                TemporaryPermissionNode tempPermNode = (TemporaryPermissionNode) node;
+                int timeInSeconds = (int) (tempPermNode.getDuration());
+                user.addTimedPermission(tempPermNode.getPermission(), null, timeInSeconds);
                 break;
 
             case GROUP:
-                user.addGroup(value);
+                GroupNode groupNode = (GroupNode) node;
+                user.addGroup(groupNode.getGroupId());
                 break;
 
             case TRACK:
-                int trackIndex;
-                try {
-                    trackIndex = Integer.parseInt(arguments[0]);
-                } catch (NumberFormatException exception) { return; }
-
-                removeFromTrack(user, value);
-                setUserTrackIndex(user, value, trackIndex);
+                TrackNode trackNode = (TrackNode) node;
+                removeFromTrack(user, trackNode.getTrackId());
+                setUserTrackIndex(user, trackNode.getTrackId(), trackNode.getIndex());
                 break;
+
+            default:
+                return false;
         }
+
+        return true;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package nl.tabuu.permissionshopz.gui;
+package nl.tabuu.permissionshopz.gui.element;
 
 import nl.tabuu.tabuucore.inventory.ui.element.style.Style;
 import nl.tabuu.tabuucore.material.XMaterial;
@@ -36,16 +36,6 @@ public class ListEditorStyle extends Style {
 
     public ListEditorStyle(XMaterial display, String entry, String selectedEntry, String replacement) {
         this(display, display, entry, selectedEntry, replacement);
-    }
-
-    @Override
-    public ItemStack getEnabled() {
-        return super.getEnabled();
-    }
-
-    @Override
-    public ItemStack getDisabled() {
-        return super.getDisabled();
     }
 
     public String getEntry() {

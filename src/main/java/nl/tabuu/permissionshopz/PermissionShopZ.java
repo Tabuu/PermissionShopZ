@@ -2,9 +2,13 @@ package nl.tabuu.permissionshopz;
 
 import nl.tabuu.permissionshopz.bstats.Metrics;
 import nl.tabuu.permissionshopz.command.PermissionShopCommand;
-import nl.tabuu.permissionshopz.data.PerkManager;
-import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
-import nl.tabuu.permissionshopz.permissionhandler.PermissionHandler;
+import nl.tabuu.permissionshopz.dao.DAO;
+import nl.tabuu.permissionshopz.dao.NodeDAO;
+import nl.tabuu.permissionshopz.dao.PerkDAO;
+import nl.tabuu.permissionshopz.data.Perk;
+import nl.tabuu.permissionshopz.data.node.Node;
+import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
+import nl.tabuu.permissionshopz.nodehandler.NodeHandler;
 import nl.tabuu.permissionshopz.util.NumberFormat;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.configuration.file.JsonConfiguration;
@@ -17,20 +21,29 @@ import java.util.Objects;
 public class PermissionShopZ extends TabuuCorePlugin {
     private static PermissionShopZ INSTANCE;
 
-    private Dictionary _local;
-    private PerkManager _manager;
-    private IConfiguration _config, _data;
-    private PermissionHandler _permissionHandler;
+    private Dictionary _locale;
+    private PerkDAO _perkDao;
+    private NodeDAO _nodeDao;
+
+    private IConfiguration _config;
+    private NodeHandler _permissionHandler;
 
     @Override
     public void onEnable() {
         INSTANCE = this;
 
-        _data = getConfigurationManager().addConfiguration("shop.json", JsonConfiguration.class);
-        _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
-        _local = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+        getConfigurationManager().addConfiguration("perks.json", JsonConfiguration.class);
+        getConfigurationManager().addConfiguration("nodes.json", JsonConfiguration.class);
 
-        loadPerks();
+        _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
+        _locale = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+
+        _nodeDao = new NodeDAO();
+        _nodeDao.readAll();
+
+        _perkDao = new PerkDAO();
+        _perkDao.readAll();
+
         NumberFormat.reloadSuffixMap();
 
         registerExecutors(new PermissionShopCommand());
@@ -45,43 +58,38 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     @Override
     public void onDisable() {
-        savePerks();
+        _perkDao.writeAll();
         getLogger().info("PermissionShopZ is now disabled.");
     }
 
     public void reload() {
-        savePerks();
+        _perkDao.writeAll();
         getConfigurationManager().reloadAll();
-        _local = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
-        loadPerks();
+        _locale = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+        _perkDao.readAll();
 
         NumberFormat.reloadSuffixMap();
     }
 
-    private void loadPerks() {
-        _manager = _data.getSerializable("Shop", PerkManager.class, new PerkManager());
-    }
-
-    private void savePerks() {
-        _data.set("Shop", _manager);
-        _data.save();
-    }
-
-    public Dictionary getLocal() {
-        return _local;
+    public Dictionary getLocale() {
+        return _locale;
     }
 
     public IConfiguration getConfiguration() {
         return _config;
     }
 
-    public PerkManager getPerkManager() {
-        return _manager;
+    public DAO<Integer, Perk> getPerkDao() {
+        return _perkDao;
     }
 
-    public IPermissionHandler getPermissionHandler() {
+    public NodeDAO getNodeDao() {
+        return _nodeDao;
+    }
+
+    public INodeHandler getPermissionHandler() {
         if(_permissionHandler == null) {
-            PermissionHandler handler = _config.get("PermissionManager", PermissionHandler::valueOf);
+            NodeHandler handler = _config.get("PermissionManager", NodeHandler::valueOf);
             Objects.requireNonNull(handler, "No permission handler specified");
             _permissionHandler = handler;
         }

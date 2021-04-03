@@ -46,3 +46,10 @@ NumberSuffixes:
   '3': 'k'
   '6': 'M'
   '9': 'B'
+
+Icons:
+  NodeTypes:
+    PERMISSION: "PAPER"
+    TEMPORARY_PERMISSION: "CLOCK"
+    GROUP: "TOTEM_OF_UNDYING"
+    TRACK: "KNOWLEDGE_BOOK"

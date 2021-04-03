@@ -4,8 +4,9 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
-import nl.tabuu.permissionshopz.permissionhandler.IPermissionHandler;
-import nl.tabuu.permissionshopz.permissionhandler.NodeType;
+import nl.tabuu.permissionshopz.data.node.Node;
+import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
+import nl.tabuu.permissionshopz.data.node.NodeType;
 import nl.tabuu.permissionshopz.util.Message;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.economy.hook.Vault;
@@ -27,7 +28,7 @@ public class ShopInterface extends InventoryFormUI {
     protected final Economy _economy;
     protected final Dictionary _local;
     protected final IConfiguration _config;
-    protected final IPermissionHandler _permission;
+    protected final INodeHandler _permission;
 
     private int _page;
     private final int _maxPage;
@@ -39,14 +40,14 @@ public class ShopInterface extends InventoryFormUI {
 
         _economy = Vault.getEconomy();
         _config = PermissionShopZ.getInstance().getConfiguration();
-        _local = PermissionShopZ.getInstance().getLocal();
+        _local = PermissionShopZ.getInstance().getLocale();
         _permission = PermissionShopZ.getInstance().getPermissionHandler();
 
         InventorySize size = _config.get("GUISize", InventorySize::valueOf);
         if(size != null && size.getHeight() >= 3) setSize(size);
 
         _player = player;
-        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkManager().getPerks());
+        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkDao().getAll());
 
         int contentWidth = getSize().getWidth() - 2;
         int contentHeight = getSize().getHeight() - 2;
@@ -135,26 +136,22 @@ public class ShopInterface extends InventoryFormUI {
             displayItemBuilder.addLore(header);
             unlockedDisplayItemBuilder.addLore(header);
 
-            for (String node : perk.getAwardedPermissions()) {
-                NodeType type = NodeType.fromNode(node);
-
+            for (Node node : perk.getAwardedPermissions()) {
                 String line = _permission.hasNode(_player, node) ? "GUI_PERK_AWARDED_PERMISSION_ENTRY_HAS" : "GUI_PERK_AWARDED_PERMISSION_ENTRY";
-                line = _local.translate(line, "{PERMISSION}", type.toString(node));
+                line = _local.translate(line, "{PERMISSION}", node);
                 displayItemBuilder.addLore(line);
                 unlockedDisplayItemBuilder.addLore(line);
             }
         }
 
         if (_config.getBoolean("DisplayRequiredPermissionList", true)) {
-            String header = _local.translate("GUI_PERK_REQUIRED_PERMISSION_HEADER");
+            String header = _local.translate("GUI_PERK_REQUIRED_NODE_HEADER");
             displayItemBuilder.addLore(header);
             unlockedDisplayItemBuilder.addLore(header);
 
-            for (String node : perk.getRequiredPermissions()) {
-                NodeType type = NodeType.fromNode(node);
-
+            for (Node node : perk.getRequiredPermissions()) {
                 String entry = _permission.hasNode(_player, node) ? "GUI_PERK_REQUIRED_PERMISSION_ENTRY_HAS" : "GUI_PERK_REQUIRED_PERMISSION_ENTRY";
-                entry = _local.translate(entry, "{PERMISSION}", type.toString(node));
+                entry = _local.translate(entry, "{PERMISSION}", node);
                 displayItemBuilder.addLore(entry);
                 unlockedDisplayItemBuilder.addLore(entry);
             }

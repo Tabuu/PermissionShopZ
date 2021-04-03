@@ -1,4 +1,4 @@
-package nl.tabuu.permissionshopz.permissionhandler;
+package nl.tabuu.permissionshopz.nodehandler;
 
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
@@ -7,8 +7,8 @@ import net.luckperms.api.node.NodeBuilder;
 import net.luckperms.api.node.NodeEqualityPredicate;
 import net.luckperms.api.node.types.InheritanceNode;
 import net.luckperms.api.track.Track;
-import nl.tabuu.permissionshopz.permissionhandler.exception.PermissionHandlerNotFoundException;
-import nl.tabuu.tabuucore.serialization.string.Serializer;
+import nl.tabuu.permissionshopz.data.node.*;
+import nl.tabuu.permissionshopz.nodehandler.exception.NodeHandlerNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -18,45 +18,39 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class LuckPermsHandler implements IPermissionHandler {
+public class LuckPermsHandler implements INodeHandler {
 
     private final LuckPerms _luckPerms;
 
-    public LuckPermsHandler(){
+    public LuckPermsHandler() {
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        if (provider == null) throw new PermissionHandlerNotFoundException("Could not find LuckPerms.");
+        if (provider == null) throw new NodeHandlerNotFoundException("Could not find LuckPerms.");
         else _luckPerms = provider.getProvider();
     }
 
     @Override
-    public boolean hasNode(Player player, NodeType nodeType, String stringNode) {
+    public boolean hasNode(Player player, nl.tabuu.permissionshopz.data.node.Node node) {
         User user = _luckPerms.getUserManager().getUser(player.getUniqueId());
+        NodeType nodeType = node.getType();
 
-        if(Objects.isNull(user)) return false;
+        if (Objects.isNull(user)) return false;
 
         switch (nodeType) {
             case TRACK:
-                String value = nodeType.getValue(stringNode);
-                String[] arguments = nodeType.getArguments(stringNode);
-                if(Objects.isNull(value) || arguments.length < 1) return false;
+                TrackNode trackNode = (TrackNode) node;
 
-                Track track = _luckPerms.getTrackManager().getTrack(value);
-                if(Objects.isNull(track)) return false;
-
-                int trackIndex;
-                try {
-                    trackIndex = Integer.parseInt(arguments[0]);
-                } catch (NumberFormatException exception) { return false; }
+                Track track = _luckPerms.getTrackManager().getTrack(trackNode.getTrackId());
+                if (Objects.isNull(track)) return false;
 
                 int currentTrack = getUserTrackIndex(user, track);
-                return trackIndex <= currentTrack;
+                return trackNode.getIndex() <= currentTrack;
 
             case PERMISSION:
             case TEMPORARY_PERMISSION:
             case GROUP:
-                Node node = nodeFromString(nodeType, stringNode);
-                if(Objects.isNull(node)) return false;
-                return user.data().contains(node, NodeEqualityPredicate.IGNORE_VALUE_OR_IF_TEMPORARY).asBoolean();
+                Node luckNode = convertNode(node);
+                if (Objects.isNull(luckNode)) return false;
+                return user.data().contains(luckNode, NodeEqualityPredicate.IGNORE_VALUE_OR_IF_TEMPORARY).asBoolean();
 
             default:
                 return false;
@@ -73,41 +67,35 @@ public class LuckPermsHandler implements IPermissionHandler {
     }
 
     @Override
-    public void addNode(Player player, NodeType nodeType, String stringNode) {
-        String value = nodeType.getValue(stringNode);
-        String[] arguments = nodeType.getArguments(stringNode);
+    public boolean addNode(Player player, nl.tabuu.permissionshopz.data.node.Node node) {
         User user = _luckPerms.getUserManager().getUser(player.getUniqueId());
 
-        if(Objects.isNull(value) || Objects.isNull(user)) return;
+        if (Objects.isNull(user)) return false;
 
-        switch (nodeType) {
+        switch (node.getType()) {
             case TRACK:
-                Track track = _luckPerms.getTrackManager().getTrack(value);
-                if(Objects.isNull(track)) return;
-
-                int trackIndex;
-                try {
-                    trackIndex = Integer.parseInt(arguments[0]);
-                } catch (NumberFormatException exception) { return; }
+                TrackNode trackNode = (TrackNode) node;
+                Track track = _luckPerms.getTrackManager().getTrack(trackNode.getTrackId());
+                if (Objects.isNull(track)) return false;
 
                 removeFromTrack(user, track);
-                setUserTrackIndex(user, track, trackIndex);
+                setUserTrackIndex(user, track, trackNode.getIndex());
                 break;
 
             case PERMISSION:
             case TEMPORARY_PERMISSION:
             case GROUP:
-                Node node = nodeFromString(nodeType, stringNode);
-                if(Objects.isNull(node)) return;
-
-                user.data().add(node);
+                Node luckNode = convertNode(node);
+                if(Objects.isNull(luckNode)) return false;
+                user.data().add(luckNode);
                 break;
 
             default:
-                return;
+                return false;
         }
 
         _luckPerms.getUserManager().saveUser(user);
+        return true;
     }
 
     public int getUserTrackIndex(User user, Track track) {
@@ -115,17 +103,17 @@ public class LuckPermsHandler implements IPermissionHandler {
         Collection<Node> nodes = user.data().toCollection();
 
         String foundGroup = null;
-        for(Node node : nodes) {
-            if(!(node instanceof InheritanceNode)) continue;
+        for (Node node : nodes) {
+            if (!(node instanceof InheritanceNode)) continue;
 
             InheritanceNode group = (InheritanceNode) node;
-            if(groups.contains(group.getGroupName())) {
+            if (groups.contains(group.getGroupName())) {
                 foundGroup = group.getGroupName();
                 break;
             }
         }
 
-        if(Objects.nonNull(foundGroup))
+        if (Objects.nonNull(foundGroup))
             return groups.indexOf(foundGroup);
 
         return -1;
@@ -133,7 +121,7 @@ public class LuckPermsHandler implements IPermissionHandler {
 
     public void setUserTrackIndex(User user, Track track, int index) {
         List<String> groups = track.getGroups();
-        if(groups.size() <= index) return;
+        if (groups.size() <= index) return;
 
         String targetGroupId = groups.get(index);
         Node node = InheritanceNode.builder(targetGroupId).build();
@@ -143,7 +131,7 @@ public class LuckPermsHandler implements IPermissionHandler {
     public void removeFromTrack(User user, Track track) {
         List<String> groups = track.getGroups();
 
-        for(String groupId : groups) {
+        for (String groupId : groups) {
             InheritanceNode node = InheritanceNode.builder(groupId).build();
             user.data().remove(node);
         }
@@ -163,31 +151,27 @@ public class LuckPermsHandler implements IPermissionHandler {
         }
     }
 
-    private Node nodeFromString(NodeType nodeType, String node) {
-        String value = nodeType.getValue(node);
-        String[] arguments = nodeType.getArguments(node);
+    private Node convertNode(nl.tabuu.permissionshopz.data.node.Node node) {
+        NodeBuilder<?, ?> nodeBuilder;
 
-        if(Objects.isNull(value)) return null;
-
-        NodeBuilder<?,?> nodeBuilder;
-
-        switch (nodeType) {
+        switch (node.getType()) {
             case GROUP:
-                nodeBuilder = InheritanceNode.builder(value);
+                GroupNode groupNode = (GroupNode) node;
+                nodeBuilder = InheritanceNode.builder(groupNode.getGroupId());
                 break;
 
             case PERMISSION:
+                PermissionNode permNode = (PermissionNode) node;
+                nodeBuilder = Node.builder(permNode.getPermission());
+                break;
+
             case TEMPORARY_PERMISSION:
-                nodeBuilder = Node.builder(value);
+                TemporaryPermissionNode tempPermNode = (TemporaryPermissionNode) node;
+                nodeBuilder = Node.builder(tempPermNode.getPermission()).expiry(tempPermNode.getDuration(), TimeUnit.MILLISECONDS);
                 break;
 
             default:
                 return null;
-        }
-
-        if(arguments.length > 0) {
-            long time = Serializer.TIME.deserialize(arguments[0]);
-            nodeBuilder.expiry(time, TimeUnit.MILLISECONDS).build();
         }
 
         return nodeBuilder.build();

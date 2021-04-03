@@ -25,6 +25,11 @@ commands:
     description: Opens the shop editor.
     permission: permissionshopz.admin
 
+  permissionshopz debuginfo:
+    usage: /permissionshopz debuginfo
+    description: Displays information about the current state of the plugin.
+    permission: permissionshopz.admin
+
   permissionshopz reload:
     usage: /permissionshopz reload
     description: Reloads the config.

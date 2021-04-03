@@ -1,67 +1,71 @@
-# Error related text.
-ERROR_INSUFFICIENT_FUNDS: "&c&lInsufficient funds."
-ERROR_INSUFFICIENT_PERMISSION: "&c&lInsufficient permission."
-ERROR_INVALID_ITEM: "&c&lYou must hold something in your hand."
-
-# Perk interaction related text.
-PERK_ADD_SUCCESS: "&2&lSuccessfully added perk {NAME}."
-PERK_BUY_SUCCESS: "&2&lSuccessfully bought perk {NAME}."
-PERK_REMOVE_SUCCESS: "&2&lSuccessfully removed perk {NAME}."
-
 # GUI related text.
-GUI_SHOP_TITLE: "&9&lPermission Shop ({PAGE}/{MAX_PAGE})"
+GUI_NAVIGATION_NEXT: "&3&lNext ({CURRENT}/{MAX})"
+GUI_NAVIGATION_PREVIOUS: "&3&lNext ({CURRENT}/{MAX})"
+GUI_NAVIGATION_RETURN: "&4&lClose"
 
-GUI_PAGE_NEXT: "&3&lNext ({PAGE}/{MAX_PAGE})"
-GUI_PAGE_CLOSE: "&4&lClose"
-GUI_PAGE_PREVIOUS: "&3&l Previous ({PAGE}/{MAX_PAGE})"
+GUI_FORM_SHOP_TITLE: "&9&lPermission Shop ({CURRENT}/{MAX})"
 
-GUI_PERK_NAME: "{NAME}"
-
-GUI_PERK_AWARDED_PERMISSION_HEADER: "\n&9Awarded Permissions"
-GUI_PERK_AWARDED_PERMISSION_ENTRY: "&7&l\u2192 &7{PERMISSION}"
-GUI_PERK_AWARDED_PERMISSION_ENTRY_HAS: "&8&l\u2192 &7&m{PERMISSION}"
-
-GUI_PERK_REQUIRED_PERMISSION_HEADER: "\n&9Required Permissions"
-GUI_PERK_REQUIRED_PERMISSION_ENTRY: "&c&l\u274c &7{PERMISSION}"
-GUI_PERK_REQUIRED_PERMISSION_ENTRY_HAS: "&2&l\u2714 &7{PERMISSION}"
-
-GUI_PERK_UNLOCKED_FOOTER: "\n&e&lUNLOCKED"
-GUI_PERK_LOCKED_FOOTER: "&2&lPrice: ${PRICE}"
-
-GUI_SHOP_EDITOR_TITLE: "&9&lShop Editor ({PAGE}/{MAX_PAGE})"
-GUI_SHOP_EDITOR_PERK_LORE: "&7Click to edit!"
+GUI_FORM_SHOP_EDITOR_TITLE: "&9&lShop Editor ({CURRENT}/{MAX})"
+GUI_FORM_SHOP_EDITOR_PERK_FOOTER: "&7Click to edit!"
 
 GUI_PERK_EDITOR_TITLE: "&9&lPerk Editor"
-GUI_PERK_EDITOR_DELETE: "&c&lClick to delete"
-GUI_PERK_EDITOR_NAME: "&3&lEdit Name"
-GUI_PERK_EDITOR_COST: "&3&lEdit Cost"
-GUI_PERK_EDITOR_ITEM: "&3&lEdit Item"
-GUI_PERK_EDITOR_PERMISSIONS: "&3&lEdit Permissions"
-GUI_PERK_EDITOR_PERMISSIONS_LORE: |-
-  &7Right-click for add.
-  &7Middle-click for remove selected.
-  &7Left-click for select next.
-  &7[0-9] for specific index.
-  &7
-GUI_PERK_EDITOR_REQUIRED_PERMISSIONS: "&3&lEdit Required Permissions"
-GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_LORE: |-
+
+GUI_ELEMENT_LIST_EDITOR_ENTRY: "&7- {ENTRY}"
+GUI_ELEMENT_LIST_EDITOR_ENTRY_SELECTED: "&a> {ENTRY}"
+GUI_ELEMENT_LIST_EDITOR_LORE: |-
   &7Right-click for add.
   &7Middle-click for remove selected.
   &7Left-click for select next.
   &7[0-9] for specific index.
   &7
 
-GUI_PERK_EDITOR_PERMISSIONS_ENTRY: "&7- {ENTRY}"
-GUI_PERK_EDITOR_PERMISSIONS_ENTRY_CURRENT: "&a> {ENTRY}"
+# Perk related text.
+PERK_TITLE: "{NAME}"
+PERK_LORE: |-
+  &9Awarded Nodes
+  {AWAREDED_NODES}
 
-GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY: "&7- {ENTRY}"
-GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY_CURRENT: "&a> {ENTRY}"
+  &9Required Nodes
+  {REQUIRED_NODES}
+
+  {FOOTER}
+
+PERK_AWARDED_NODE_ENTRY: "&7&l\u2192 &7{NODE}"
+PERK_AWARDED_NODE_ENTRY_HAS: "&8&l\u2192 &7&m{NODE}"
+
+PERK_REQUIRED_NODE_ENTRY: "&c&l\u274c &7{NODE}"
+PERK_REQUIRED_NODE_ENTRY_HAS: "&2&l\u2714 &7{NODE}"
+
+PERK_FOOTER_LOCKED: "&2&lPrice: ${COST}"
+PERK_FOOTER_UNLOCKED: "\n&e&lUNLOCKED"
+
+PERK_EDIT_NAME: "&3&lEdit Name"
+PERK_EDIT_COST: "&3&lEdit Cost"
+PERK_EDIT_ITEM: "&3&lEdit Item"
+PERK_EDIT_DELETE: "&c&lClick to delete"
+PERK_EDIT_NODES_AWARDED: "&3&lEdit Awarded Nodes"
+PERK_EDIT_NODES_REQUIRED: "&3&lEdit Required Permissions"
 
 # Node related text.
-NODE_TYPE_TO_STRING_PERMISSION: "Permission: {VALUE}"
-NODE_TYPE_TO_STRING_TEMPORARY_PERMISSION: "Permission: {VALUE} {ARGS_0}"
-NODE_TYPE_TO_STRING_GROUP: "Group: {VALUE}"
-NODE_TYPE_TO_STRING_TRACK: "Track: {VALUE} {ARGS_0}"
+NODE_TYPE_GROUP: "Group"
+NODE_TYPE_TRACK: "Track"
+NODE_TYPE_PERMISSION: "Permission"
+NODE_TYPE_TEMPORARY_PERMISSION: "Temporary Permission"
 
-# Command related text
-RELOAD_SUCCESS: "&aReload complete."
+NODE_EDIT_DESCRIPTION: "&3&lEdit Description"
+
+# Information messages
+INFO_ERROR_INSUFFICIENT_FUNDS: "&c&lInsufficient funds."
+INFO_ERROR_INSUFFICIENT_PERMISSION: "&c&lInsufficient permission."
+
+INFO_PERK_ADD: "&2&lSuccessfully added perk {NAME}."
+INFO_PERK_BUY: "&2&lSuccessfully bought perk {NAME}."
+INFO_PERK_REMOVE: "&2&lSuccessfully removed perk {NAME}."
+
+INFO_COMMAND_RELOAD: "&aReload complete."
+INFO_COMMAND_COMMANDDEBUG: |-
+  {PERMISSION_HANDLER_CLASS}
+    Group:                 {NODE_TYPE_GROUP_SUPPORTED}
+    Track:                 {NODE_TYPE_TRACK_SUPPORTED}
+    Permission:            {NODE_TYPE_PERMISSION_SUPPORTED}
+    Temporary Permission:  {NODE_TYPE_TEMPORARY_PERMISSION_SUPPORTED}
