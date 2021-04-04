@@ -12,7 +12,7 @@ public class ShopEditInterface extends ShopInterface {
 
     public ShopEditInterface(Player player) {
         super(player);
-        setTitle(_local.translate("GUI_SHOP_EDITOR_TITLE", getReplacements()));
+        setTitle(_local.translate("GUI_FORM_SHOP_EDITOR_TITLE", getReplacements()));
     }
 
     @Override
@@ -22,9 +22,9 @@ public class ShopEditInterface extends ShopInterface {
 
     @Override
     protected void updatePage() {
-        String raw = _local.getOrDefault("GUI_REMOVE_TITLE", "GUI_REMOVE_TITLE");
-        if(Objects.nonNull(raw) && raw.contains("{PAGE}")) {
-            setTitle(_local.translate("GUI_SHOP_EDITOR_TITLE", getReplacements()));
+        String raw = _local.getOrDefault("GUI_FORM_SHOP_EDITOR_TITLE", "GUI_FORM_SHOP_EDITOR_TITLE");
+        if(Objects.nonNull(raw) && raw.contains("{CURRENT}")) {
+            setTitle(_local.translate("GUI_FORM_SHOP_EDITOR_TITLE", getReplacements()));
             reload();
         }
         onDraw();
@@ -39,7 +39,7 @@ public class ShopEditInterface extends ShopInterface {
         ItemMeta meta = button.getStyle().getEnabled().getItemMeta();
         if(meta == null) return button;
 
-        meta.setLore(Collections.singletonList(_local.translate("GUI_SHOP_EDITOR_PERK_LORE")));
+        meta.setLore(Collections.singletonList(_local.translate("PERK_LORE")));
         button.getStyle().getEnabled().setItemMeta(meta);
 
         return button;

@@ -44,21 +44,21 @@ public class PerkEditInterface extends InventoryFormUI {
     protected void onDraw() {
         ItemBuilder
                 paper = new ItemBuilder(XMaterial.PAPER)
-                .setDisplayName(_local.translate("GUI_PERK_EDITOR_NAME")),
+                .setDisplayName(_local.translate("PERK_EDIT_NAME")),
 
                 emerald = new ItemBuilder(XMaterial.EMERALD)
-                        .setDisplayName(_local.translate("GUI_PERK_EDITOR_COST")),
+                        .setDisplayName(_local.translate("PERK_EDIT_COST")),
 
                 book = new ItemBuilder(XMaterial.BOOK)
-                        .setDisplayName(_local.translate("GUI_PERK_EDITOR_NODES"))
-                        .setLore(_local.translate("GUI_PERK_EDITOR_NODES_LORE")),
+                        .setDisplayName(_local.translate("PERK_EDIT_NODES_AWARDED"))
+                        .setLore(_local.translate("GUI_ELEMENT_LIST_EDITOR_LORE")),
 
                 book2 = new ItemBuilder(XMaterial.BOOK)
-                        .setDisplayName(_local.translate("GUI_PERK_EDITOR_REQUIRED_NODES"))
-                        .setLore(_local.translate("GUI_PERK_EDITOR_REQUIRED_NODES_LORE")),
+                        .setDisplayName(_local.translate("PERK_EDIT_NODES_REQUIRED"))
+                        .setLore(_local.translate("GUI_ELEMENT_LIST_EDITOR_LORE")),
 
                 barrier = new ItemBuilder(XMaterial.BARRIER)
-                        .setDisplayName(_local.translate("GUI_PERK_EDITOR_DELETE")),
+                        .setDisplayName(_local.translate("PERK_EDIT_DELETE")),
 
                 black = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE)
                         .setDisplayName(" "),
@@ -79,13 +79,13 @@ public class PerkEditInterface extends InventoryFormUI {
         TextInputStyle costStyle = new TextInputStyle(emerald.build(), XMaterial.NAME_TAG.parseItem(), Double.toString(_perk.getCost()));
         ListEditorStyle awardedPermissionStyle = new ListEditorStyle(
                 book.build(),
-                _local.translate("GUI_PERK_EDITOR_NODE_AWARDED_ENTRY"),
-                _local.translate("GUI_PERK_EDITOR_NODE_AWARDED_ENTRY_CURRENT"),
+                _local.translate("GUI_ELEMENT_LIST_EDITOR_ENTRY"),
+                _local.translate("GUI_ELEMENT_LIST_EDITOR_ENTRY_SELECTED"),
                 "{ENTRY}");
         ListEditorStyle requiredPermissionStyle = new ListEditorStyle(
                 book2.build(),
-                _local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY"),
-                _local.translate("GUI_PERK_EDITOR_REQUIRED_PERMISSIONS_ENTRY_CURRENT"),
+                _local.translate("GUI_ELEMENT_LIST_EDITOR_ENTRY"),
+                _local.translate("GUI_ELEMENT_LIST_EDITOR_ENTRY_SELECTED"),
                 "{ENTRY}");
 
         TextInput nameInput = new TextInput(nameStyle, this, this::onNameChange);
@@ -93,19 +93,20 @@ public class PerkEditInterface extends InventoryFormUI {
         ItemInput itemInput = new ItemInput(itemStyle, true, this::onDisplayItemChange);
         Button deleteButton = new Button(deleteStyle, this::onDeleteClick);
 
-        NodeTypeSelectorFormUI nodeSupplier = new NodeTypeSelectorFormUI(this);
+        NodeTypeSelectorFormUI awardedNodeSupplier = new NodeTypeSelectorFormUI(this);
+        NodeTypeSelectorFormUI requiredNodeSupplier = new NodeTypeSelectorFormUI(this);
 
         ListEditor<Node> awardedPermissionInput = new ListEditor<>(
                 awardedPermissionStyle,
-                new ArrayList<>(_perk.getAwardedPermissions()),
-                nodeSupplier)
+                new ArrayList<>(_perk.getAwardedNodes()),
+                awardedNodeSupplier)
                 .onChange(this::onAwardedPermissionsChange)
                 .onAdd((player, node) -> PermissionShopZ.getInstance().getNodeDao().create(node));
 
         ListEditor<Node> requiredPermissionInput = new ListEditor<>(
                 requiredPermissionStyle,
-                new ArrayList<>(_perk.getRequiredPermissions()),
-                nodeSupplier)
+                new ArrayList<>(_perk.getRequiredNodes()),
+                requiredNodeSupplier)
                 .onChange(this::onRequiredPermissionsChange)
                 .onAdd((player, node) -> PermissionShopZ.getInstance().getNodeDao().create(node));
 
@@ -135,7 +136,7 @@ public class PerkEditInterface extends InventoryFormUI {
     }
 
     private void onAwardedPermissionsChange(Player player, List<Node> list) {
-        _perk.setAwardedPermissions(list);
+        _perk.setAwardedNodes(list);
         updateElement(new Vector2f(3, 2));
     }
 

@@ -23,9 +23,13 @@ public abstract class FutureSupplierInventoryFormUI<T> extends InventoryFormUI {
         _callbacks.add(onSupply);
     }
 
+    public InventoryUI getReturnUI() {
+        return _returnUI;
+    }
+
     protected void supply(Player player, T object) {
+        _returnUI.open(player);
         for(BiConsumer<Player, T> callback : _callbacks)
             callback.accept(player, object);
-        _returnUI.open(player);
     }
 }

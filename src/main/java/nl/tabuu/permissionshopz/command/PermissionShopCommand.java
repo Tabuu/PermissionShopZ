@@ -51,6 +51,8 @@ public class PermissionShopCommand implements ICommandListener {
         PerkEditInterface edit = new PerkEditInterface(perk);
         edit.open(player);
 
+        PermissionShopZ.getInstance().getPerkDao().create(perk);
+
         return CommandResult.SUCCESS;
     }
 

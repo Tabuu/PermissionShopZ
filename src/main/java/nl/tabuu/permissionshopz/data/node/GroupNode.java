@@ -25,6 +25,15 @@ public class GroupNode extends Node {
     }
 
     @Override
+    public Object[] getReplacements() {
+        return new Object[] {
+                "{TYPE}", getType(),
+                "{DESCRIPTION}", getDescription(),
+                "{GROUP_ID}", getGroupId()
+        };
+    }
+
+    @Override
     public IDataHolder serialize(IDataHolder data) {
         data = super.serialize(data);
         data.set("GroupID", getGroupId());
@@ -72,7 +81,7 @@ public class GroupNode extends Node {
         }
 
         @Override
-        protected boolean canBuild() {
+        public boolean canBuild() {
             return super.canBuild() && Objects.nonNull(getGroupId());
         }
 

@@ -69,7 +69,7 @@ public class Perk implements ISerializable<IDataHolder> {
 
     public void apply(Player player) {
         INodeHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
-        for (Node node : getAwardedPermissions()) handler.addNode(player, node);
+        for (Node node : getAwardedNodes()) handler.addNode(player, node);
     }
 
     public Object[] getReplacements() {
@@ -92,17 +92,17 @@ public class Perk implements ISerializable<IDataHolder> {
     }
 
     @Nonnull
-    public List<Node> getAwardedPermissions() {
+    public List<Node> getAwardedNodes() {
         return Collections.unmodifiableList(_awardedPermissions);
     }
 
-    public void setAwardedPermissions(@Nonnull List<Node> nodes) {
+    public void setAwardedNodes(@Nonnull List<Node> nodes) {
         _awardedPermissions.clear();
         _awardedPermissions.addAll(nodes);
     }
 
     @Nonnull
-    public List<Node> getRequiredPermissions() {
+    public List<Node> getRequiredNodes() {
         return Collections.unmodifiableList(_requiredPermissions);
     }
 
@@ -111,10 +111,10 @@ public class Perk implements ISerializable<IDataHolder> {
         _requiredPermissions.addAll(requiredPermissions);
     }
 
-    public boolean hasRequiredPermissions(Player player) {
+    public boolean hasRequiredNodes(Player player) {
         INodeHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
 
-        for(Node node : getRequiredPermissions()) {
+        for(Node node : getRequiredNodes()) {
             if(!handler.hasNode(player, node))
                 return false;
         }
@@ -127,8 +127,8 @@ public class Perk implements ISerializable<IDataHolder> {
         data.set("Name", _name);
         data.set("Cost", _cost);
         data.set("Item", _displayItem, Serializer.ITEMSTACK);
-        data.setList("Permissions", _awardedPermissions, getNodeSerializer());
-        data.setList("RequiredPermissions", _requiredPermissions, getNodeSerializer());
+        data.setList("AwardedNodes", _awardedPermissions, getNodeSerializer());
+        data.setList("RequiredNodes", _requiredPermissions, getNodeSerializer());
 
         return data;
     }
@@ -141,7 +141,7 @@ public class Perk implements ISerializable<IDataHolder> {
         return Double.compare(perk.getCost(), getCost()) == 0 &&
                 getName().equals(perk.getName()) &&
                 Objects.equals(getDisplayItem(), perk.getDisplayItem()) &&
-                getAwardedPermissions().equals(perk.getAwardedPermissions());
+                getAwardedNodes().equals(perk.getAwardedNodes());
     }
 
     private static NodeDAO.NodeSerializer getNodeSerializer() {
@@ -150,6 +150,6 @@ public class Perk implements ISerializable<IDataHolder> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getCost(), getDisplayItem(), getAwardedPermissions());
+        return Objects.hash(getName(), getCost(), getDisplayItem(), getAwardedNodes());
     }
 }

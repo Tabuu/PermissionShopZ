@@ -32,6 +32,16 @@ public class TrackNode extends Node {
     }
 
     @Override
+    public Object[] getReplacements() {
+        return new Object[] {
+                "{TYPE}", getType(),
+                "{DESCRIPTION}", getDescription(),
+                "{TRACK_ID}", getTrackId(),
+                "{TRACK_INDEX}", getIndex()
+        };
+    }
+
+    @Override
     public IDataHolder serialize(IDataHolder data) {
         data = super.serialize(data);
         data.set("TrackID", getTrackId());
@@ -90,7 +100,7 @@ public class TrackNode extends Node {
         }
 
         @Override
-        protected boolean canBuild() {
+        public boolean canBuild() {
             return super.canBuild() && Objects.nonNull(getTrackId());
         }
 

@@ -33,6 +33,13 @@ public abstract class Node implements ISerializable<IDataHolder> {
         return PermissionShopZ.getInstance().getPermissionHandler();
     }
 
+    public Object[] getReplacements() {
+        return new Object[] {
+                "{TYPE}", getType(),
+                "{DESCRIPTION}", getDescription()
+        };
+    }
+
     @Override
     public IDataHolder serialize(IDataHolder data) {
         data.set("Type", getType(), NodeType::name);
@@ -88,7 +95,7 @@ public abstract class Node implements ISerializable<IDataHolder> {
             return this;
         }
 
-        protected boolean canBuild() {
+        public boolean canBuild() {
             return Objects.nonNull(getType()) && Objects.nonNull(getDescription());
         }
 

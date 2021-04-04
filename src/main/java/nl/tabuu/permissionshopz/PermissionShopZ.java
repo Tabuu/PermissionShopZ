@@ -59,13 +59,16 @@ public class PermissionShopZ extends TabuuCorePlugin {
     @Override
     public void onDisable() {
         _perkDao.writeAll();
+        _nodeDao.writeAll();
         getLogger().info("PermissionShopZ is now disabled.");
     }
 
     public void reload() {
         _perkDao.writeAll();
+        _nodeDao.writeAll();
         getConfigurationManager().reloadAll();
         _locale = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+        _nodeDao.readAll();
         _perkDao.readAll();
 
         NumberFormat.reloadSuffixMap();

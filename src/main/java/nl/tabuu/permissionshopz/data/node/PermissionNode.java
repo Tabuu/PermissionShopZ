@@ -25,6 +25,15 @@ public class PermissionNode extends Node {
     }
 
     @Override
+    public Object[] getReplacements() {
+        return new Object[] {
+                "{TYPE}", getType(),
+                "{DESCRIPTION}", getDescription(),
+                "{PERMISSION}", getPermission()
+        };
+    }
+
+    @Override
     public IDataHolder serialize(IDataHolder data) {
         data = super.serialize(data);
         data.set("Permission", getPermission());
@@ -72,7 +81,7 @@ public class PermissionNode extends Node {
         }
 
         @Override
-        protected boolean canBuild() {
+        public boolean canBuild() {
             return super.canBuild() && Objects.nonNull(getPermission());
         }
 

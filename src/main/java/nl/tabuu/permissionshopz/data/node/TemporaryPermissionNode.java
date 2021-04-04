@@ -25,6 +25,16 @@ public class TemporaryPermissionNode extends PermissionNode {
     }
 
     @Override
+    public Object[] getReplacements() {
+        return new Object[] {
+                "{TYPE}", getType(),
+                "{DESCRIPTION}", getDescription(),
+                "{PERMISSION}", getPermission(),
+                "{DURATION}", Serializer.TIME.serialize(getDuration())
+        };
+    }
+
+    @Override
     public IDataHolder serialize(IDataHolder data) {
         data = super.serialize(data);
         data.set("Duration", getDuration(), Serializer.TIME);

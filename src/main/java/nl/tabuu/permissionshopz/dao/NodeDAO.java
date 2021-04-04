@@ -19,7 +19,7 @@ public class NodeDAO implements DAO<Integer, Node> {
     @Nonnull
     @Override
     public Integer create(@Nonnull Node object) {
-        int index = _nodes.lastKey() + 1;
+        int index = _nodes.isEmpty() ? 0 : _nodes.lastKey();
         _nodes.put(index + 1, object);
         return index;
     }

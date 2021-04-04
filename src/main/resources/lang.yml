@@ -2,6 +2,8 @@
 GUI_NAVIGATION_NEXT: "&3&lNext ({CURRENT}/{MAX})"
 GUI_NAVIGATION_PREVIOUS: "&3&lNext ({CURRENT}/{MAX})"
 GUI_NAVIGATION_RETURN: "&4&lClose"
+GUI_NAVIGATION_ACCEPT: "&a&lAccept"
+GUI_NAVIGATION_INCOMPLETE_FORM: "&4&lIncomplete Form"
 
 GUI_FORM_SHOP_TITLE: "&9&lPermission Shop ({CURRENT}/{MAX})"
 
@@ -23,7 +25,7 @@ GUI_ELEMENT_LIST_EDITOR_LORE: |-
 PERK_TITLE: "{NAME}"
 PERK_LORE: |-
   &9Awarded Nodes
-  {AWAREDED_NODES}
+  {AWARDED_NODES}
 
   &9Required Nodes
   {REQUIRED_NODES}
@@ -47,11 +49,15 @@ PERK_EDIT_NODES_AWARDED: "&3&lEdit Awarded Nodes"
 PERK_EDIT_NODES_REQUIRED: "&3&lEdit Required Permissions"
 
 # Node related text.
-NODE_TYPE_GROUP: "Group"
-NODE_TYPE_TRACK: "Track"
-NODE_TYPE_PERMISSION: "Permission"
-NODE_TYPE_TEMPORARY_PERMISSION: "Temporary Permission"
+NODE_TYPE_GROUP: "&3&lGroup"
+NODE_TYPE_TRACK: "&3&lTrack"
+NODE_TYPE_PERMISSION: "&3&lPermission"
+NODE_TYPE_TEMPORARY_PERMISSION: "&3&lTemporary Permission"
 
+NODE_EDIT_GROUP_ID: "&3&lEdit Group ID"
+NODE_EDIT_TRACK_ID: "&3&lEdit Track ID"
+NODE_EDIT_TRACK_INDEX: "&3&lEdit Track Level"
+NODE_EDIT_PERMISSION: "&3&lEdit Permission"
 NODE_EDIT_DESCRIPTION: "&3&lEdit Description"
 
 # Information messages
