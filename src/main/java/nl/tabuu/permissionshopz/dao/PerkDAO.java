@@ -4,29 +4,27 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.data.Shop;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
-import nl.tabuu.tabuucore.configuration.IDataHolder;
+import nl.tabuu.tabuucore.serialization.string.AbstractStringSerializer;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 
 import java.util.Collection;
 import java.util.Objects;
 
-public class PerkDAO extends IntegerMapDAO<Perk> {
-    @Override
-    public boolean readAll() {
-        if(!getDataBase().isEmpty())
-            getDataBase().clear();
+public class PerkDAO extends IntegerMapDAO<Perk> implements IConfigurationDAO<Integer, Perk> {
 
-        IDataHolder data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("perks.json");
-        getDataBase().putAll(data.getSerializableMap("Perks", Perk.class, Serializer.INTEGER));
-        return true;
+    @Override
+    public String getConfigurationKey() {
+        return "Perks";
     }
 
     @Override
-    public boolean writeAll() {
-        IConfiguration data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("perks.json");
-        data.setSerializableMap("Perks", getDataBase(), Serializer.INTEGER);
-        data.save();
-        return true;
+    public IConfiguration getConfiguration() {
+        return PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("perks.json");
+    }
+
+    @Override
+    public AbstractStringSerializer<Integer> getKeySerializer() {
+        return Serializer.INTEGER;
     }
 
     @Override
