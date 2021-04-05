@@ -124,14 +124,14 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected boolean shouldDisplay(Player player, Perk perk) {
-        if(!_config.getBoolean("DisplayUnavailablePerks", true)) {
+        if(!getShop().displayUnavailablePerks()) {
             if(!_economy.has(player, perk.getCost())) return false;
             if(!perk.hasRequiredNodes(player)) return false;
         }
 
         boolean unlocked = perk.getAwardedNodes().stream().allMatch(node -> _permission.hasNode(_player, node));
 
-        if(!_config.getBoolean("DisplayUnlockedPerks", true)) {
+        if(!getShop().displayUnlockedPerks()) {
             if(unlocked) return false;
         }
 
@@ -140,13 +140,12 @@ public class ShopInterface extends InventoryFormUI {
 
     @Nonnull
     protected Button createPerkItem(Player player, Perk perk) {
-        XMaterial unlockedMaterial = _config.get("UnlockedMaterial", XMaterial::valueOf);
-        assert unlockedMaterial != null : "UnlockedMaterial has not been correctly set in the config.";
+        XMaterial unlockedMaterial = _config.get("Icons.UnlockedMaterial", XMaterial::valueOf);
 
         boolean unlocked = perk.getAwardedNodes().stream().allMatch(node -> _permission.hasNode(_player, node));
 
         ItemBuilder displayItemBuilder = new ItemBuilder(perk.getDisplayItem());
-        ItemBuilder unlockedDisplayItemBuilder = new ItemBuilder(unlockedMaterial);
+        ItemBuilder unlockedDisplayItemBuilder = Objects.nonNull(unlockedMaterial) ? new ItemBuilder(unlockedMaterial) : new ItemBuilder(perk.getDisplayItem());
 
         String displayName = _local.translate("PERK_TITLE", perk.getReplacements());
         displayItemBuilder.setDisplayName(displayName);

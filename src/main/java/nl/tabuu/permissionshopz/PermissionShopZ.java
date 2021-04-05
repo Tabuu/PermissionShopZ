@@ -57,14 +57,15 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     @Override
     public void onDisable() {
-        save();
+        unload();
         getLogger().info("PermissionShopZ is now disabled.");
     }
 
-    public void save() {
+    public void unload() {
         _nodeDao.writeAll();
         _perkDao.writeAll();
         _shopDao.writeAll();
+        _nodeHandler = null;
     }
 
     public void load() {
@@ -86,7 +87,7 @@ public class PermissionShopZ extends TabuuCorePlugin {
     }
 
     public void reload() {
-        save();
+        unload();
 
         getConfigurationManager().reloadAll();
 

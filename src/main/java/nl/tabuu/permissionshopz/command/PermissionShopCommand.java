@@ -66,7 +66,7 @@ public class PermissionShopCommand implements ICommandListener {
     @CommandExecutor("permissionshopz reload")
     private CommandResult reload(CommandSender sender, List<?> arguments) {
         _plugin.reload();
-        sender.sendMessage(_local.translate("RELOAD_SUCCESS"));
+        sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
         return CommandResult.SUCCESS;
     }
 
@@ -88,7 +88,7 @@ public class PermissionShopCommand implements ICommandListener {
                 .flatMap(entry -> Stream.of(entry.getKey(), entry.getValue()))
                 .toArray();
 
-        sender.sendMessage(_local.translate("DEBUG_INFO", replacements));
+        sender.sendMessage(_local.translate("INFO_COMMAND_COMMANDDEBUG", replacements));
 
         return CommandResult.SUCCESS;
     }
