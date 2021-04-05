@@ -4,6 +4,7 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.serialization.ISerializable;
+import nl.tabuu.tabuucore.util.Dictionary;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -45,6 +46,12 @@ public abstract class Node implements ISerializable<IDataHolder> {
         data.set("Type", getType(), NodeType::name);
         data.set("Description", getDescription());
         return data;
+    }
+
+    @Override
+    public String toString() {
+        Dictionary locale = PermissionShopZ.getInstance().getLocale();
+        return locale.translate("NODE_TO_STRING_" + getType().name(), getReplacements());
     }
 
     private static Node deserialize(IDataHolder data) {

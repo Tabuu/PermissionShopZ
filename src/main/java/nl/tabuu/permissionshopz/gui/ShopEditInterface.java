@@ -2,11 +2,13 @@ package nl.tabuu.permissionshopz.gui;
 
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.tabuucore.inventory.ui.element.Button;
+import nl.tabuu.tabuucore.inventory.ui.element.style.Style;
+import nl.tabuu.tabuucore.item.ItemBuilder;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Collections;
+import javax.annotation.Nonnull;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ShopEditInterface extends ShopInterface {
 
@@ -31,17 +33,35 @@ public class ShopEditInterface extends ShopInterface {
     }
 
     @Override
+    protected boolean shouldDisplay(Player player, Perk perk) {
+        return true;
+    }
+
+    @Nonnull
+    @Override
     protected Button createPerkItem(Player player, Perk perk) {
-        Button button = super.createPerkItem(player, perk);
+        ItemBuilder displayItemBuilder = new ItemBuilder(perk.getDisplayItem());
 
-        button.setEnabled(true);
+        String displayName = _local.translate("PERK_TITLE", perk.getReplacements());
+        displayItemBuilder.setDisplayName(displayName);
 
-        ItemMeta meta = button.getStyle().getEnabled().getItemMeta();
-        if(meta == null) return button;
+        String awardedNodeString = perk.getAwardedNodes().stream().map(node -> {
+            String entryKey = _permission.hasNode(getPlayer(), node) ? "PERK_AWARDED_NODE_ENTRY_HAS" : "PERK_AWARDED_NODE_ENTRY";
+            return _local.translate(entryKey, "{NODE}", node);
+        }).collect(Collectors.joining("\n"));
 
-        meta.setLore(Collections.singletonList(_local.translate("PERK_LORE")));
-        button.getStyle().getEnabled().setItemMeta(meta);
+        String requiredNodeString = perk.getRequiredNodes().stream().map(node -> {
+            String entryKey = _permission.hasNode(getPlayer(), node) ? "PERK_REQUIRED_NODE_ENTRY_HAS" : "PERK_REQUIRED_NODE_ENTRY";
+            return _local.translate(entryKey, "{NODE}", node);
+        }).collect(Collectors.joining("\n"));
 
-        return button;
+        String footer = _local.translate("GUI_FORM_SHOP_EDITOR_PERK_FOOTER", perk.getReplacements());
+
+        String lore = _local.translate("PERK_LORE", "{AWARDED_NODES}", awardedNodeString, "{REQUIRED_NODES}", requiredNodeString, "{FOOTER}", footer);
+
+        displayItemBuilder.setLore(lore);
+
+        Style style = new Style(displayItemBuilder);
+        return new Button(style, p -> onPerkClick(player, perk));
     }
 }

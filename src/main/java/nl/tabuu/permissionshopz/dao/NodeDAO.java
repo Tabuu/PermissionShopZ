@@ -1,6 +1,7 @@
 package nl.tabuu.permissionshopz.dao;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
+import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.data.node.Node;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
@@ -10,6 +11,8 @@ import nl.tabuu.tabuucore.serialization.string.Serializer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 public class NodeDAO implements DAO<Integer, Node> {
 
@@ -43,6 +46,17 @@ public class NodeDAO implements DAO<Integer, Node> {
     @Override
     public Collection<Node> getAll() {
         return Collections.unmodifiableCollection(_nodes.values());
+    }
+
+    @Nonnull
+    @Override
+    public Collection<Node> getMatching(Predicate<Node> predicate) {
+        return _nodes.values().stream()
+                .filter(predicate)
+                .collect(Collector.of(LinkedList<Node>::new, List::add, (left, right) -> {
+                    left.addAll(right);
+                    return left;
+                }, Collections::unmodifiableList));
     }
 
     @Override

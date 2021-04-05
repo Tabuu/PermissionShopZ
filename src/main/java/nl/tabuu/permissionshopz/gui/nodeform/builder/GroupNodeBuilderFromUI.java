@@ -37,5 +37,6 @@ public class GroupNodeBuilderFromUI extends NodeBuilderFormUI<GroupNode.Builder>
 
     private void onGroupIdInput(Player player, String permission) {
         getBuilder().setGroupId(permission);
+        super.onDraw();
     }
 }

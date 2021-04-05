@@ -8,6 +8,9 @@ import nl.tabuu.tabuucore.configuration.IDataHolder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class PerkDAO implements DAO<Integer, Perk> {
 
@@ -38,9 +41,20 @@ public class PerkDAO implements DAO<Integer, Perk> {
         return Collections.unmodifiableCollection(_perks);
     }
 
+    @Nonnull
+    @Override
+    public Collection<Perk> getMatching(Predicate<Perk> predicate) {
+        return _perks.stream()
+                .filter(predicate)
+                .collect(Collector.of(LinkedList<Perk>::new, List::add, (left, right) -> {
+                    left.addAll(right);
+                    return left;
+                }, Collections::unmodifiableList));
+    }
+
     @Override
     public boolean update(@Nonnull Integer key, @Nonnull Perk object) {
-        if(key < 0 || key >= _perks.size()) return false;
+        if (key < 0 || key >= _perks.size()) return false;
 
         _perks.remove(key.intValue());
         _perks.add(key, object);
@@ -54,14 +68,14 @@ public class PerkDAO implements DAO<Integer, Perk> {
 
     @Override
     public boolean delete(@Nonnull Integer key) {
-        if(key < 0 || key >= _perks.size()) return false;
+        if (key < 0 || key >= _perks.size()) return false;
         _perks.remove(key.intValue());
         return true;
     }
 
     @Override
     public boolean readAll() {
-        if(!_perks.isEmpty())
+        if (!_perks.isEmpty())
             _perks.clear();
 
         IDataHolder data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("perks.json");

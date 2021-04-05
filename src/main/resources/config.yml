@@ -18,18 +18,13 @@ CustomPermissionCommand: "manuaddp {PLAYER} {PERMISSION}"
 # NOTE:         The inventory needs at least 3 rows.
 GUISize: "THREE_ROWS"
 
-# DESCRIPTION:  Material of the unlocked items.
-# FORMAT:       XMaterial (http://u.tabuu.nl/5mh5duwn0).
-# NOTE:         If you do not want it to change leave it empty.
-UnlockedMaterial: "IRON_BARS"
-
-# DESCRIPTION:  Whether or not the perk should display the permissions it contains.
+# DESCRIPTION:  Whether perks that can not be bought should be displayed.
 # FORMAT:       Boolean
-DisplayPermissionList: true
+DisplayUnavailablePerks: true
 
-# DESCRIPTION:  Whether or not the perk should display the permissions it requires.
+# DESCRIPTION:  Whether perks that are already bought should be displayed.
 # FORMAT:       Boolean
-DisplayRequiredPermissionList: true
+DisplayUnlockedPerks: true
 
 # DESCRIPTION:  Whether or not the messages should be displayed as titles instead of in chat.
 # FORMAT:       Boolean
@@ -48,6 +43,13 @@ NumberSuffixes:
   '9': 'B'
 
 Icons:
+  # DESCRIPTION:  Material of the unlocked items.
+  # FORMAT:       XMaterial (http://u.tabuu.nl/5mh5duwn0).
+  # NOTE:         If you do not want it to change, leave it empty.
+  UnlockedMaterial: "IRON_BARS"
+
+  # DESCRIPTION:  Materials of how node types are displayed in menus.
+  # FORMAT:       XMaterial (http://u.tabuu.nl/5mh5duwn0).
   NodeTypes:
     PERMISSION: "PAPER"
     TEMPORARY_PERMISSION: "CLOCK"

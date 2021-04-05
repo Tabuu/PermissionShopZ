@@ -74,7 +74,7 @@ public class Perk implements ISerializable<IDataHolder> {
 
     public Object[] getReplacements() {
         return new Object[]{
-                "{PRICE}", NumberFormat.formatNumber(getCost()),
+                "{COST}", NumberFormat.formatNumber(getCost()),
                 "{NAME}", getName()
         };
     }

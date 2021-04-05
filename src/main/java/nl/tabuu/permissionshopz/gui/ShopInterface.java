@@ -20,6 +20,8 @@ import nl.tabuu.tabuucore.util.Dictionary;
 import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,7 @@ public class ShopInterface extends InventoryFormUI {
         if(size != null && size.getHeight() >= 3) setSize(size);
 
         _player = player;
-        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkDao().getAll());
+        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkDao().getMatching(perk -> shouldDisplay(_player, perk)));
 
         int contentWidth = getSize().getWidth() - 2;
         int contentHeight = getSize().getHeight() - 2;
@@ -96,14 +98,14 @@ public class ShopInterface extends InventoryFormUI {
         setElement(new Vector2f(borderStart.getX(), borderStop.getY()), previousButton);
         setElement(new Vector2f(borderStop.getX() / 2, borderStop.getY()), exitButton);
 
-        int rowSize = getSize().getWidth() - 2;
-        int maxRows = getSize().getHeight() - 2;
+        int width = getSize().getWidth() - 2;
+        int height = getSize().getHeight() - 2;
         Vector2f offset = new Vector2f(1, 1);
 
-        for(int i = 0; i < rowSize * maxRows; i++) {
-            int index = getPage() * (rowSize * maxRows) + i;
-            int x = i % rowSize;
-            int y = i / rowSize;
+        for(int i = 0; i < width * height; i++) {
+            int index = getPage() * (width * height) + i;
+            int x = i % width;
+            int y = i / width;
 
             Vector2f position = new Vector2f(x, y).add(offset);
 
@@ -117,6 +119,22 @@ public class ShopInterface extends InventoryFormUI {
         super.onDraw();
     }
 
+    protected boolean shouldDisplay(Player player, Perk perk) {
+        if(!_config.getBoolean("DisplayUnavailablePerks", true)) {
+            if(!_economy.has(player, perk.getCost())) return false;
+            if(!perk.hasRequiredNodes(player)) return false;
+        }
+
+        boolean unlocked = perk.getAwardedNodes().stream().allMatch(node -> _permission.hasNode(_player, node));
+
+        if(!_config.getBoolean("DisplayUnlockedPerks", true)) {
+            if(unlocked) return false;
+        }
+
+        return true;
+    }
+
+    @Nonnull
     protected Button createPerkItem(Player player, Perk perk) {
         XMaterial unlockedMaterial = _config.get("UnlockedMaterial", XMaterial::valueOf);
         assert unlockedMaterial != null : "UnlockedMaterial has not been correctly set in the config.";
@@ -131,14 +149,14 @@ public class ShopInterface extends InventoryFormUI {
         unlockedDisplayItemBuilder.setDisplayName(displayName);
 
         String awardedNodeString = perk.getAwardedNodes().stream().map(node -> {
-            String entryKey = _permission.hasNode(_player, node) ? "PERK_AWARDED_NODE_ENTRY" : "PERK_AWARDED_NODE_ENTRY_HAS";
+            String entryKey = _permission.hasNode(_player, node) ? "PERK_AWARDED_NODE_ENTRY_HAS" : "PERK_AWARDED_NODE_ENTRY";
             return _local.translate(entryKey, "{NODE}", node);
-        }).collect(Collectors.joining());
+        }).collect(Collectors.joining("\n"));
 
         String requiredNodeString = perk.getRequiredNodes().stream().map(node -> {
-            String entryKey = _permission.hasNode(_player, node) ? "PERK_REQUIRED_NODE_ENTRY" : "PERK_REQUIRED_NODE_ENTRY_HAS";
+            String entryKey = _permission.hasNode(_player, node) ? "PERK_REQUIRED_NODE_ENTRY_HAS" : "PERK_REQUIRED_NODE_ENTRY";
             return _local.translate(entryKey, "{NODE}", node);
-        }).collect(Collectors.joining());
+        }).collect(Collectors.joining("\n"));
 
         String footer = _local.translate(unlocked ? "PERK_FOOTER_UNLOCKED" : "PERK_FOOTER_LOCKED", perk.getReplacements());
 
@@ -147,7 +165,7 @@ public class ShopInterface extends InventoryFormUI {
         displayItemBuilder.setLore(lore);
         unlockedDisplayItemBuilder.setLore(lore);
 
-        Style style = new Style(displayItemBuilder.build(), unlockedDisplayItemBuilder.build());
+        Style style = new Style(displayItemBuilder, unlockedDisplayItemBuilder);
         Button button = new Button(style, p -> onPerkClick(player, perk));
         button.setEnabled(!unlocked);
 
@@ -190,6 +208,10 @@ public class ShopInterface extends InventoryFormUI {
             _page--;
             updatePage();
         }
+    }
+
+    protected Player getPlayer() {
+        return _player;
     }
 
     protected Object[] getReplacements() {
