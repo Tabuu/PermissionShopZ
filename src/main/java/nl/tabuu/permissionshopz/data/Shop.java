@@ -1,9 +1,9 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
-import nl.tabuu.permissionshopz.dao.IntegerTreeMapDAO;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.serialization.ISerializable;
+import nl.tabuu.tabuucore.serialization.string.AbstractStringSerializer;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -99,7 +99,7 @@ public class Shop implements ISerializable<IDataHolder> {
         return data;
     }
 
-    private static IntegerTreeMapDAO<Perk>.StringSerializer getPerkSerializer() {
-        return PermissionShopZ.getInstance().getPerkDao().getSerializer();
+    private static AbstractStringSerializer<Perk> getPerkSerializer() {
+        return PermissionShopZ.getInstance().getPerkDao().getStringSerializer();
     }
 }

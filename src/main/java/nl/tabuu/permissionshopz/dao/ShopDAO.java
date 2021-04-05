@@ -4,25 +4,25 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Shop;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
-import nl.tabuu.tabuucore.serialization.string.Serializer;
 
 import java.util.Objects;
 
-public class ShopDAO extends IntegerTreeMapDAO<Shop> {
+public class ShopDAO extends StringMapDAO<Shop> {
+
     @Override
     public boolean readAll() {
-        if(!_data.isEmpty())
-            _data.clear();
+        if(!getDataBase().isEmpty())
+            getDataBase().clear();
 
         IDataHolder data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("shops.json");
-        _data.putAll(data.getSerializableMap("Shops", Shop.class, Serializer.INTEGER));
+        getDataBase().putAll(data.getSerializableMap("Shops", Shop.class));
         return true;
     }
 
     @Override
     public boolean writeAll() {
         IConfiguration data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("shops.json");
-        data.setSerializableMap("Shops", _data, Serializer.INTEGER);
+        data.setSerializableMap("Shops", getDataBase());
         data.save();
         return true;
     }
@@ -32,5 +32,10 @@ public class ShopDAO extends IntegerTreeMapDAO<Shop> {
         if(Objects.isNull(shop)) return true;
 
         return shop.getContents().isEmpty();
+    }
+
+    @Override
+    protected String getUniqueKey(Shop object) {
+        return object.getName();
     }
 }

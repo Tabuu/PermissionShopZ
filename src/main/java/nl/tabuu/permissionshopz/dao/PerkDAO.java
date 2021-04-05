@@ -10,21 +10,21 @@ import nl.tabuu.tabuucore.serialization.string.Serializer;
 import java.util.Collection;
 import java.util.Objects;
 
-public class PerkDAO extends IntegerTreeMapDAO<Perk> {
+public class PerkDAO extends IntegerMapDAO<Perk> {
     @Override
     public boolean readAll() {
-        if(!_data.isEmpty())
-            _data.clear();
+        if(!getDataBase().isEmpty())
+            getDataBase().clear();
 
         IDataHolder data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("perks.json");
-        _data.putAll(data.getSerializableMap("Perks", Perk.class, Serializer.INTEGER));
+        getDataBase().putAll(data.getSerializableMap("Perks", Perk.class, Serializer.INTEGER));
         return true;
     }
 
     @Override
     public boolean writeAll() {
         IConfiguration data = PermissionShopZ.getInstance().getConfigurationManager().getConfiguration("perks.json");
-        data.setSerializableMap("Perks", _data, Serializer.INTEGER);
+        data.setSerializableMap("Perks", getDataBase(), Serializer.INTEGER);
         data.save();
         return true;
     }

@@ -35,6 +35,11 @@ commands:
     description: Reloads the config.
     permission: permissionshopz.admin
 
+  permissionshopz cleandata:
+    usage: /permissionshopz cleandata
+    description: Removes all unused data from the database.
+    permission: permissionshopz.admin
+
 permissions:
   permissionshopz.default:
     description: Allows players to open the GUI.

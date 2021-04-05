@@ -1,7 +1,7 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
-import nl.tabuu.permissionshopz.dao.IntegerTreeMapDAO;
+import nl.tabuu.permissionshopz.dao.IntegerMapDAO;
 import nl.tabuu.permissionshopz.data.node.Node;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
 import nl.tabuu.permissionshopz.util.NumberFormat;
@@ -9,6 +9,8 @@ import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.configuration.holder.JsonDataHolder;
 import nl.tabuu.tabuucore.material.XMaterial;
 import nl.tabuu.tabuucore.serialization.ISerializable;
+import nl.tabuu.tabuucore.serialization.ISerializer;
+import nl.tabuu.tabuucore.serialization.string.AbstractStringSerializer;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -144,8 +146,8 @@ public class Perk implements ISerializable<IDataHolder> {
                 getAwardedNodes().equals(perk.getAwardedNodes());
     }
 
-    private static IntegerTreeMapDAO<Node>.StringSerializer getNodeSerializer() {
-        return PermissionShopZ.getInstance().getNodeDao().getSerializer();
+    private static AbstractStringSerializer<Node> getNodeSerializer() {
+        return PermissionShopZ.getInstance().getNodeDao().getStringSerializer();
     }
 
     @Override

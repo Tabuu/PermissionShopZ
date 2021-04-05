@@ -71,6 +71,8 @@ NODE_TO_STRING_UNKNOWN: "{TYPE}: {DESCRIPTION}"
 INFO_ERROR_INSUFFICIENT_FUNDS: "&c&lInsufficient funds."
 INFO_ERROR_INSUFFICIENT_PERMISSION: "&c&lInsufficient permission."
 
+INFO_DATA_CLEAN: "&aClean complete: Shops({SHOPS}) Perks({PERKS}) Nodes({NODES})."
+
 INFO_PERK_ADD: "&2&lSuccessfully added perk {NAME}."
 INFO_PERK_BUY: "&2&lSuccessfully bought perk {NAME}."
 INFO_PERK_REMOVE: "&2&lSuccessfully removed perk {NAME}."

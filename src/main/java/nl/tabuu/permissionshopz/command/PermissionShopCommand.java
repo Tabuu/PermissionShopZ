@@ -1,6 +1,9 @@
 package nl.tabuu.permissionshopz.command;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
+import nl.tabuu.permissionshopz.dao.NodeDAO;
+import nl.tabuu.permissionshopz.dao.PerkDAO;
+import nl.tabuu.permissionshopz.dao.ShopDAO;
 import nl.tabuu.permissionshopz.data.Perk;
 import nl.tabuu.permissionshopz.gui.PerkEditInterface;
 import nl.tabuu.permissionshopz.gui.ShopEditInterface;
@@ -37,6 +40,7 @@ public class PermissionShopCommand implements ICommandListener {
                     @ChildCommand(label = "add", method = "shopAdd"),
                     @ChildCommand(label = "edit", method = "shopEdit"),
                     @ChildCommand(label = "reload", method = "reload"),
+                    @ChildCommand(label = "cleandata", method = "cleandata"),
                     @ChildCommand(label = "debuginfo", method = "debugInfo")
             }
     )
@@ -67,6 +71,33 @@ public class PermissionShopCommand implements ICommandListener {
     private CommandResult reload(CommandSender sender, List<?> arguments) {
         _plugin.reload();
         sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
+        return CommandResult.SUCCESS;
+    }
+
+    @CommandExecutor("permissionshopz cleandata")
+    private CommandResult cleandata(CommandSender sender, List<?> arguments) {
+        ShopDAO shopDAO = PermissionShopZ.getInstance().getShopDao();
+        PerkDAO perkDAO = PermissionShopZ.getInstance().getPerkDao();
+        NodeDAO nodeDAO = PermissionShopZ.getInstance().getNodeDao();
+
+        int shops = shopDAO.size();
+        int perks = perkDAO.size();
+        int nodes = nodeDAO.size();
+
+        shopDAO.deleteGarbage();
+        perkDAO.deleteGarbage();
+        nodeDAO.deleteGarbage();
+
+        perkDAO.deleteGarbage();
+        shopDAO.deleteGarbage();
+
+        Object[] replacements = {
+                "{SHOPS}", shops - shopDAO.size(),
+                "{PERKS}", perks - perkDAO.size(),
+                "{NODES}", nodes - nodeDAO.size()
+        };
+
+        sender.sendMessage(_local.translate("INFO_DATA_CLEAN", replacements));
         return CommandResult.SUCCESS;
     }
 
