@@ -1,6 +1,7 @@
 package nl.tabuu.permissionshopz.gui;
 
 import nl.tabuu.permissionshopz.data.Perk;
+import nl.tabuu.permissionshopz.data.Shop;
 import nl.tabuu.tabuucore.inventory.ui.element.Button;
 import nl.tabuu.tabuucore.inventory.ui.element.style.Style;
 import nl.tabuu.tabuucore.item.ItemBuilder;
@@ -12,14 +13,14 @@ import java.util.stream.Collectors;
 
 public class ShopEditInterface extends ShopInterface {
 
-    public ShopEditInterface(Player player) {
-        super(player);
+    public ShopEditInterface(Shop shop, Player player) {
+        super(shop, player);
         setTitle(_local.translate("GUI_FORM_SHOP_EDITOR_TITLE", getReplacements()));
     }
 
     @Override
     protected void onPerkClick(Player player, Perk perk) {
-        new PerkEditInterface(perk).open(player);
+        new PerkEditInterface(getShop(), perk).open(player);
     }
 
     @Override

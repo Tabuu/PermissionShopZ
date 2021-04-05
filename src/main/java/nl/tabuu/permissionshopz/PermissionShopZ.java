@@ -2,11 +2,10 @@ package nl.tabuu.permissionshopz;
 
 import nl.tabuu.permissionshopz.bstats.Metrics;
 import nl.tabuu.permissionshopz.command.PermissionShopCommand;
-import nl.tabuu.permissionshopz.dao.DAO;
 import nl.tabuu.permissionshopz.dao.NodeDAO;
 import nl.tabuu.permissionshopz.dao.PerkDAO;
-import nl.tabuu.permissionshopz.data.Perk;
-import nl.tabuu.permissionshopz.data.node.Node;
+import nl.tabuu.permissionshopz.dao.ShopDAO;
+import nl.tabuu.permissionshopz.data.Shop;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
 import nl.tabuu.permissionshopz.nodehandler.NodeHandler;
 import nl.tabuu.permissionshopz.util.NumberFormat;
@@ -16,41 +15,41 @@ import nl.tabuu.tabuucore.configuration.file.YamlConfiguration;
 import nl.tabuu.tabuucore.plugin.TabuuCorePlugin;
 import nl.tabuu.tabuucore.util.Dictionary;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PermissionShopZ extends TabuuCorePlugin {
     private static PermissionShopZ INSTANCE;
 
-    private Dictionary _locale;
     private PerkDAO _perkDao;
     private NodeDAO _nodeDao;
+    private ShopDAO _shopDao;
 
+    private Shop _defaultShop;
+
+    private Dictionary _locale;
     private IConfiguration _config;
-    private NodeHandler _permissionHandler;
+    private NodeHandler _nodeHandler;
 
     @Override
     public void onEnable() {
         INSTANCE = this;
 
-        getConfigurationManager().addConfiguration("perks.json", JsonConfiguration.class);
         getConfigurationManager().addConfiguration("nodes.json", JsonConfiguration.class);
-
-        _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
-        _locale = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+        getConfigurationManager().addConfiguration("perks.json", JsonConfiguration.class);
+        getConfigurationManager().addConfiguration("shops.json", JsonConfiguration.class);
 
         _nodeDao = new NodeDAO();
-        _nodeDao.readAll();
-
         _perkDao = new PerkDAO();
-        _perkDao.readAll();
+        _shopDao = new ShopDAO();
 
-        NumberFormat.reloadSuffixMap();
+        load();
 
         registerExecutors(new PermissionShopCommand());
-        getPermissionHandler();
 
         Metrics metrics = new Metrics(this, 7110);
-        Metrics.SimplePie handlerChart = new Metrics.SimplePie("permission_handler", _permissionHandler::getName);
+        Metrics.SimplePie handlerChart = new Metrics.SimplePie("permission_handler", _nodeHandler::getName);
         metrics.addCustomChart(handlerChart);
 
         getLogger().info("PermissionShopZ is now enabled.");
@@ -58,20 +57,40 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     @Override
     public void onDisable() {
-        _perkDao.writeAll();
-        _nodeDao.writeAll();
+        save();
         getLogger().info("PermissionShopZ is now disabled.");
     }
 
-    public void reload() {
-        _perkDao.writeAll();
+    public void save() {
         _nodeDao.writeAll();
-        getConfigurationManager().reloadAll();
+        _perkDao.writeAll();
+        _shopDao.writeAll();
+    }
+
+    public void load() {
+        _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
         _locale = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
+
         _nodeDao.readAll();
         _perkDao.readAll();
+        _shopDao.readAll();
 
+        Optional<Shop> optionalShop = _shopDao.getAllFiltered(shop -> "Default".equals(shop.getName())).stream().findFirst();
+        if(!optionalShop.isPresent()) {
+            _defaultShop = new Shop("Default", "Description");
+            _shopDao.create(_defaultShop);
+        } else _defaultShop = optionalShop.get();
+
+        getNodeHandler();
         NumberFormat.reloadSuffixMap();
+    }
+
+    public void reload() {
+        save();
+
+        getConfigurationManager().reloadAll();
+
+        load();
     }
 
     public Dictionary getLocale() {
@@ -82,7 +101,11 @@ public class PermissionShopZ extends TabuuCorePlugin {
         return _config;
     }
 
-    public DAO<Integer, Perk> getPerkDao() {
+    public Shop getDefaultShop() {
+        return _defaultShop;
+    }
+
+    public PerkDAO getPerkDao() {
         return _perkDao;
     }
 
@@ -90,14 +113,20 @@ public class PermissionShopZ extends TabuuCorePlugin {
         return _nodeDao;
     }
 
-    public INodeHandler getPermissionHandler() {
-        if(_permissionHandler == null) {
+    public ShopDAO getShopDao() {
+        return _shopDao;
+    }
+
+    @Nonnull
+    public INodeHandler getNodeHandler() {
+        if(Objects.isNull(_nodeHandler)) {
             NodeHandler handler = _config.get("PermissionManager", NodeHandler::valueOf);
-            Objects.requireNonNull(handler, "No permission handler specified");
-            _permissionHandler = handler;
+
+            assert Objects.nonNull(handler) : "No permission handler specified";
+            _nodeHandler = handler;
         }
 
-        return _permissionHandler.getHandler();
+        return _nodeHandler.getHandler();
     }
 
     public static PermissionShopZ getInstance() {

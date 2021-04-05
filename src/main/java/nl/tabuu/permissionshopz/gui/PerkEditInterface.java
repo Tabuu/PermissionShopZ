@@ -2,6 +2,7 @@ package nl.tabuu.permissionshopz.gui;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
+import nl.tabuu.permissionshopz.data.Shop;
 import nl.tabuu.permissionshopz.data.node.Node;
 import nl.tabuu.permissionshopz.gui.element.ListEditor;
 import nl.tabuu.permissionshopz.gui.element.ListEditorStyle;
@@ -31,11 +32,11 @@ public class PerkEditInterface extends InventoryFormUI {
     private final Perk _perk;
     private final Dictionary _local;
 
-    public PerkEditInterface(Perk perk) {
+    public PerkEditInterface(Shop shop, Perk perk) {
         super("Perk Editor", InventorySize.FIVE_ROWS);
 
-        _local = PermissionShopZ.getInstance().getLocale();
         _perk = perk;
+        _local = PermissionShopZ.getInstance().getLocale();
 
         setTitle(_local.translate("GUI_PERK_EDITOR_TITLE"));
     }

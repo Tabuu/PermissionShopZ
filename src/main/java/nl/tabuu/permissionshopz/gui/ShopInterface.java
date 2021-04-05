@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.data.Perk;
+import nl.tabuu.permissionshopz.data.Shop;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
 import nl.tabuu.permissionshopz.util.Message;
 import nl.tabuu.tabuucore.configuration.IConfiguration;
@@ -21,7 +22,6 @@ import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,23 +32,27 @@ public class ShopInterface extends InventoryFormUI {
     protected final INodeHandler _permission;
 
     private int _page;
+    private final Shop _shop;
     private final int _maxPage;
     private final Player _player;
     private final List<Perk> _perks;
 
-    public ShopInterface(Player player) {
+    public ShopInterface(Shop shop, Player player) {
         super("", InventorySize.THREE_ROWS);
 
         _economy = Vault.getEconomy();
         _config = PermissionShopZ.getInstance().getConfiguration();
         _local = PermissionShopZ.getInstance().getLocale();
-        _permission = PermissionShopZ.getInstance().getPermissionHandler();
+        _permission = PermissionShopZ.getInstance().getNodeHandler();
 
         InventorySize size = _config.get("GUISize", InventorySize::valueOf);
         if(size != null && size.getHeight() >= 3) setSize(size);
 
+        _shop = shop;
         _player = player;
-        _perks = new ArrayList<>(PermissionShopZ.getInstance().getPerkDao().getMatching(perk -> shouldDisplay(_player, perk)));
+        _perks = shop.getContents().stream()
+                .filter(perk -> shouldDisplay(getPlayer(), perk))
+                .collect(ArrayList::new, List::add, List::addAll);
 
         int contentWidth = getSize().getWidth() - 2;
         int contentHeight = getSize().getHeight() - 2;
@@ -212,6 +216,10 @@ public class ShopInterface extends InventoryFormUI {
 
     protected Player getPlayer() {
         return _player;
+    }
+
+    protected Shop getShop() {
+        return _shop;
     }
 
     protected Object[] getReplacements() {

@@ -13,11 +13,17 @@ public interface DAO<K, T extends ISerializable<IDataHolder>> {
     @Nullable T get(@Nonnull K key);
     @Nullable K getKey(@Nonnull T value);
     @Nonnull Collection<T> getAll();
-    @Nonnull Collection<T> getMatching(Predicate<T> predicate);
+    @Nonnull Collection<T> getAllFiltered(Predicate<T> predicate);
     boolean update(@Nonnull K key, @Nonnull T object);
     boolean delete(@Nonnull T object);
     boolean delete(@Nonnull K key);
+    boolean deleteIf(Predicate<T> predicate);
 
     boolean readAll();
     boolean writeAll();
+    boolean isGarbage(T object);
+
+    default boolean deleteGarbage() {
+        return deleteIf(this::isGarbage);
+    }
 }

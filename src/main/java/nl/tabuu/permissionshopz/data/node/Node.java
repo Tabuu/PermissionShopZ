@@ -31,7 +31,7 @@ public abstract class Node implements ISerializable<IDataHolder> {
     }
 
     protected INodeHandler getNodeHandler() {
-        return PermissionShopZ.getInstance().getPermissionHandler();
+        return PermissionShopZ.getInstance().getNodeHandler();
     }
 
     public Object[] getReplacements() {

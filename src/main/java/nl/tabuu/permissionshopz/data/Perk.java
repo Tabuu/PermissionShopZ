@@ -1,7 +1,7 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
-import nl.tabuu.permissionshopz.dao.NodeDAO;
+import nl.tabuu.permissionshopz.dao.IntegerTreeMapDAO;
 import nl.tabuu.permissionshopz.data.node.Node;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
 import nl.tabuu.permissionshopz.util.NumberFormat;
@@ -68,7 +68,7 @@ public class Perk implements ISerializable<IDataHolder> {
     }
 
     public void apply(Player player) {
-        INodeHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
+        INodeHandler handler = PermissionShopZ.getInstance().getNodeHandler();
         for (Node node : getAwardedNodes()) handler.addNode(player, node);
     }
 
@@ -112,7 +112,7 @@ public class Perk implements ISerializable<IDataHolder> {
     }
 
     public boolean hasRequiredNodes(Player player) {
-        INodeHandler handler = PermissionShopZ.getInstance().getPermissionHandler();
+        INodeHandler handler = PermissionShopZ.getInstance().getNodeHandler();
 
         for(Node node : getRequiredNodes()) {
             if(!handler.hasNode(player, node))
@@ -124,9 +124,9 @@ public class Perk implements ISerializable<IDataHolder> {
 
     @Override
     public IDataHolder serialize(IDataHolder data) {
-        data.set("Name", _name);
-        data.set("Cost", _cost);
-        data.set("Item", _displayItem, Serializer.ITEMSTACK);
+        data.set("Name", getName());
+        data.set("Cost", getCost());
+        data.set("Item", getDisplayItem(), Serializer.ITEMSTACK);
         data.setList("AwardedNodes", _awardedPermissions, getNodeSerializer());
         data.setList("RequiredNodes", _requiredPermissions, getNodeSerializer());
 
@@ -144,7 +144,7 @@ public class Perk implements ISerializable<IDataHolder> {
                 getAwardedNodes().equals(perk.getAwardedNodes());
     }
 
-    private static NodeDAO.NodeSerializer getNodeSerializer() {
+    private static IntegerTreeMapDAO<Node>.StringSerializer getNodeSerializer() {
         return PermissionShopZ.getInstance().getNodeDao().getSerializer();
     }
 

@@ -41,24 +41,25 @@ public class PermissionShopCommand implements ICommandListener {
             }
     )
     private CommandResult shop(Player player, List<?> arguments) {
-        new ShopInterface(player).open(player);
+        new ShopInterface(PermissionShopZ.getInstance().getDefaultShop(), player).open(player);
         return CommandResult.SUCCESS;
     }
 
     @CommandExecutor("permissionshopz add")
     private CommandResult shopAdd(Player player, List<?> arguments) {
         Perk perk = new Perk();
-        PerkEditInterface edit = new PerkEditInterface(perk);
+        PerkEditInterface edit = new PerkEditInterface(PermissionShopZ.getInstance().getDefaultShop(), perk);
         edit.open(player);
 
         PermissionShopZ.getInstance().getPerkDao().create(perk);
+        PermissionShopZ.getInstance().getDefaultShop().add(perk);
 
         return CommandResult.SUCCESS;
     }
 
     @CommandExecutor("permissionshopz edit")
     private CommandResult shopEdit(Player player, List<?> arguments) {
-        new ShopEditInterface(player).open(player);
+        new ShopEditInterface(PermissionShopZ.getInstance().getDefaultShop(), player).open(player);
         return CommandResult.SUCCESS;
     }
 
@@ -72,7 +73,7 @@ public class PermissionShopCommand implements ICommandListener {
     @CommandExecutor("permissionshopz debuginfo")
     private CommandResult debugInfo(CommandSender sender, List<?> arguments) {
         Map<String, String> replacementMap = new HashMap<>();
-        INodeHandler handler = _plugin.getPermissionHandler();
+        INodeHandler handler = _plugin.getNodeHandler();
 
         replacementMap.put("{PERMISSION_HANDLER_CLASS}", handler.getClass().getSimpleName());
 
