@@ -35,6 +35,12 @@ commands:
     description: Reloads the config.
     permission: permissionshopz.admin
 
+  permissionshopz loaddata:
+    usage: /permissionshopz loaddata
+    description: Loads the data from config.
+    permission: permissionshopz.admin
+
+
   permissionshopz cleandata:
     usage: /permissionshopz cleandata
     description: Removes all unused data from the database.

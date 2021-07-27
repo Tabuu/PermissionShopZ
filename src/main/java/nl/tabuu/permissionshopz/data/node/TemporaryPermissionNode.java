@@ -89,6 +89,11 @@ public class TemporaryPermissionNode extends PermissionNode {
         }
 
         @Override
+        public boolean canBuild() {
+            return super.canBuild() && getDuration() > 0;
+        }
+
+        @Override
         public TemporaryPermissionNode build() {
             if(!canBuild()) throw new IllegalStateException("Cannot build Node.");
             return new TemporaryPermissionNode(getType(), getDescription(), getPermission(), getDuration());

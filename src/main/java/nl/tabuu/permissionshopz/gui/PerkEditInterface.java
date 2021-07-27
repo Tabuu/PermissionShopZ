@@ -142,7 +142,7 @@ public class PerkEditInterface extends InventoryFormUI {
     }
 
     private void onRequiredPermissionsChange(Player player, List<Node> list) {
-        _perk.setRequiredPermissions(list);
+        _perk.setRequiredNodes(list);
         updateElement(new Vector2f(5, 2));
     }
 

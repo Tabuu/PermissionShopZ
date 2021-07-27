@@ -35,7 +35,7 @@ public class TrackNodeBuilderFromUI extends NodeBuilderFormUI<TrackNode.Builder>
 
         TextInputStyle
                 trackIdInputStyle = new TextInputStyle(rail, tag, "Track ID"),
-                trackIndexInputStyle = new TextInputStyle(rail, tag, "Track Level");
+                trackIndexInputStyle = new TextInputStyle(expBottle, tag, "Track Level");
 
         TextInput
                 trackIdInput = new TextInput(trackIdInputStyle, this, this::onTrackIdInput),

@@ -16,6 +16,8 @@ import nl.tabuu.tabuucore.util.vector.Vector2f;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
+
 public class NodeTypeSelectorFormUI extends FutureSupplierInventoryFormUI<Node> {
 
     private final InventoryUI _returnUI;
@@ -27,6 +29,7 @@ public class NodeTypeSelectorFormUI extends FutureSupplierInventoryFormUI<Node> 
         _returnUI = returnUI;
 
         _locale = PermissionShopZ.getInstance().getLocale();
+        setTitle(_locale.translate("GUI_NODE_SELECTOR_TITLE"));
     }
 
     @Override
@@ -47,7 +50,13 @@ public class NodeTypeSelectorFormUI extends FutureSupplierInventoryFormUI<Node> 
             NodeType nodeType = nodeTypes[i];
             Vector2f position = new Vector2f(i, 0);
 
-            Style buttonStyle = new Style(nodeType.getIcon());
+            XMaterial material = PermissionShopZ.getInstance().getConfiguration().get("Icons.NodeTypes." + nodeType.name(), XMaterial::valueOf);
+            if (Objects.isNull(material)) material = XMaterial.BARRIER;
+
+            ItemBuilder item = new ItemBuilder(material)
+                    .setDisplayName(_locale.translate("GUI_NODE_SELECTOR_NAME", "{TYPE}", nodeType));
+
+            Style buttonStyle = new Style(item);
             Button button = new Button(buttonStyle, player -> onNodeTypeClick(player, nodeType));
 
             setElement(position, button);

@@ -69,6 +69,8 @@ public class PermissionShopZ extends TabuuCorePlugin {
     }
 
     public void load() {
+        getConfigurationManager().reloadAll();
+
         _config = getConfigurationManager().addConfiguration("config.yml", YamlConfiguration.class);
         _locale = getConfigurationManager().addConfiguration("lang.yml", YamlConfiguration.class).getDictionary("");
 
@@ -88,8 +90,6 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     public void reload() {
         unload();
-
-        getConfigurationManager().reloadAll();
 
         load();
     }

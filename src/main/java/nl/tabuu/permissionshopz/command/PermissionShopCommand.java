@@ -40,6 +40,7 @@ public class PermissionShopCommand implements ICommandListener {
                     @ChildCommand(label = "add", method = "shopAdd"),
                     @ChildCommand(label = "edit", method = "shopEdit"),
                     @ChildCommand(label = "reload", method = "reload"),
+                    @ChildCommand(label = "loaddata", method = "loaddata"),
                     @ChildCommand(label = "cleandata", method = "cleandata"),
                     @ChildCommand(label = "debuginfo", method = "debugInfo")
             }
@@ -70,6 +71,13 @@ public class PermissionShopCommand implements ICommandListener {
     @CommandExecutor("permissionshopz reload")
     private CommandResult reload(CommandSender sender, List<?> arguments) {
         _plugin.reload();
+        sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
+        return CommandResult.SUCCESS;
+    }
+
+    @CommandExecutor("permissionshopz loaddata")
+    private CommandResult loaddata(CommandSender sender, List<?> arguments) {
+        PermissionShopZ.getInstance().load();
         sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
         return CommandResult.SUCCESS;
     }

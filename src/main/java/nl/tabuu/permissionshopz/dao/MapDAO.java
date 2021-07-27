@@ -3,7 +3,6 @@ package nl.tabuu.permissionshopz.dao;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.serialization.ISerializable;
 import nl.tabuu.tabuucore.serialization.ISerializer;
-import nl.tabuu.tabuucore.serialization.string.AbstractStringSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,6 +84,7 @@ public abstract class MapDAO<K, V extends ISerializable<IDataHolder>> implements
         return new ISerializer<K, V>() {
             @Override
             public V serialize(K key) {
+                if(Objects.isNull(key)) return null;
                 return get(key);
             }
 

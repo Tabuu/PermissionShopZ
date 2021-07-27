@@ -1,14 +1,12 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
+import nl.tabuu.permissionshopz.dao.PerkDAO;
 import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.serialization.ISerializable;
-import nl.tabuu.tabuucore.serialization.string.AbstractStringSerializer;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
 
 public class Shop implements ISerializable<IDataHolder> {
     private final String _name;
@@ -18,14 +16,14 @@ public class Shop implements ISerializable<IDataHolder> {
             _displayUnavailablePerks,
             _displayUnlockedPerks;
 
-    private final List<Perk> _contents;
+    private final Set<Integer> _contents;
 
-    public Shop(String name, String description, boolean displayUnavailablePerks, boolean displayUnlockedPerks, List<Perk> contents) {
+    public Shop(String name, String description, boolean displayUnavailablePerks, boolean displayUnlockedPerks, List<Integer> contents) {
         _name = name;
         _description = description;
         _displayUnavailablePerks = displayUnavailablePerks;
         _displayUnlockedPerks = displayUnlockedPerks;
-        _contents = new LinkedList<>(contents);
+        _contents = new LinkedHashSet<>(contents);
     }
 
     public Shop(String name, String description) {
@@ -44,20 +42,32 @@ public class Shop implements ISerializable<IDataHolder> {
                 data.getString("Description"),
                 data.getBoolean("DisplayUnavailablePerks", true),
                 data.getBoolean("DisplayUnlockedPerks", true),
-                data.getList("Contents", getPerkSerializer())
+                data.getList("Contents", getPerkDao().getKeySerializer())
         );
     }
 
     public boolean add(Perk perk) {
-        return _contents.add(perk);
+        Integer integer = PermissionShopZ.getInstance().getPerkDao().getKey(perk);
+        if(Objects.isNull(integer)) return false;
+
+        return _contents.add(integer);
     }
 
     public boolean remove(Perk perk) {
-        return _contents.remove(perk);
+        Integer integer = PermissionShopZ.getInstance().getPerkDao().getKey(perk);
+        if(Objects.isNull(integer)) return false;
+
+        return _contents.remove(integer);
     }
 
     public Collection<Perk> getContents() {
-        return Collections.unmodifiableCollection(_contents);
+        return _contents.stream()
+                .map(getPerkDao().getSerializer()::serialize)
+                .filter(Objects::nonNull)
+                .collect(Collector.of(ArrayList<Perk>::new, List::add, (left, right) -> {
+                    left.addAll(right);
+                    return left;
+                }, Collections::unmodifiableList));
     }
 
     public String getName() {
@@ -90,16 +100,18 @@ public class Shop implements ISerializable<IDataHolder> {
 
     @Override
     public IDataHolder serialize(IDataHolder data) {
+        _contents.removeIf(integer -> Objects.isNull(getPerkDao().get(integer)));
+
         data.set("Name", getName());
         data.set("Description", getDescription());
         data.set("DisplayUnavailablePerks", displayUnavailablePerks());
         data.set("DisplayUnlockedPerks", displayUnlockedPerks());
-        data.setList("Contents", _contents, getPerkSerializer());
+        data.setList("Contents", new LinkedList<>(_contents), getPerkDao().getKeySerializer());
 
         return data;
     }
 
-    private static AbstractStringSerializer<Perk> getPerkSerializer() {
-        return PermissionShopZ.getInstance().getPerkDao().getStringSerializer();
+    private static PerkDAO getPerkDao() {
+        return PermissionShopZ.getInstance().getPerkDao();
     }
 }

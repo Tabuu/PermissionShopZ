@@ -29,7 +29,7 @@ public class PerkDAO extends IntegerMapDAO<Perk> implements IConfigurationDAO<In
 
     @Override
     public boolean isGarbage(Perk perk) {
-        if(Objects.isNull(perk)) return true;
+        if (Objects.isNull(perk)) return true;
 
         Collection<Shop> shops = PermissionShopZ.getInstance().getShopDao().getAll();
         return shops.stream().noneMatch(shop -> shop.getContents().contains(perk));

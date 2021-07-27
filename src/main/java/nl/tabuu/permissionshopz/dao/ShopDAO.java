@@ -8,7 +8,7 @@ import nl.tabuu.tabuucore.serialization.string.Serializer;
 
 import java.util.Objects;
 
-public class ShopDAO extends StringMapDAO<Shop> implements IConfigurationDAO<String, Shop>{
+public class ShopDAO extends StringMapDAO<Shop> implements IConfigurationDAO<String, Shop> {
 
     @Override
     public String getConfigurationKey() {
@@ -32,7 +32,7 @@ public class ShopDAO extends StringMapDAO<Shop> implements IConfigurationDAO<Str
 
     @Override
     public boolean isGarbage(Shop shop) {
-        if(Objects.isNull(shop)) return true;
+        if (Objects.isNull(shop)) return true;
 
         return shop.getContents().isEmpty();
     }

@@ -32,6 +32,8 @@ public abstract class NodeBuilderFormUI<T extends Node.Builder> extends FutureSu
 
         _locale = PermissionShopZ.getInstance().getLocale();
         _config = PermissionShopZ.getInstance().getConfiguration();
+
+        setTitle(_locale.translate("GUI_NODE_EDITOR_TITLE"));
     }
 
     @Override
