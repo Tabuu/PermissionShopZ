@@ -1,7 +1,6 @@
 package nl.tabuu.permissionshopz.data;
 
 import nl.tabuu.permissionshopz.PermissionShopZ;
-import nl.tabuu.permissionshopz.dao.IntegerMapDAO;
 import nl.tabuu.permissionshopz.dao.NodeDAO;
 import nl.tabuu.permissionshopz.data.node.Node;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
@@ -10,8 +9,6 @@ import nl.tabuu.tabuucore.configuration.IDataHolder;
 import nl.tabuu.tabuucore.configuration.holder.JsonDataHolder;
 import nl.tabuu.tabuucore.material.XMaterial;
 import nl.tabuu.tabuucore.serialization.ISerializable;
-import nl.tabuu.tabuucore.serialization.ISerializer;
-import nl.tabuu.tabuucore.serialization.string.AbstractStringSerializer;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

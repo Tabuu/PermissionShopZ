@@ -95,6 +95,7 @@ public class PermissionsExHandler implements INodeHandler {
             case PERMISSION:
             case TEMPORARY_PERMISSION:
             case GROUP:
+            case TRACK:
                 return true;
 
             default:

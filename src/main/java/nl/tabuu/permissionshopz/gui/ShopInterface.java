@@ -46,7 +46,7 @@ public class ShopInterface extends InventoryFormUI {
         _permission = PermissionShopZ.getInstance().getNodeHandler();
 
         InventorySize size = _config.get("GUISize", InventorySize::valueOf);
-        if(size != null && size.getHeight() >= 3) setSize(size);
+        if (size != null && size.getHeight() >= 3) setSize(size);
 
         _shop = shop;
         _player = player;
@@ -65,7 +65,7 @@ public class ShopInterface extends InventoryFormUI {
     protected void onDraw() {
         ItemBuilder
                 next = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
-                        .setDisplayName(_local.translate("GUI_NAVIGATION_NEXT", getReplacements())),
+                .setDisplayName(_local.translate("GUI_NAVIGATION_NEXT", getReplacements())),
 
                 previous = new ItemBuilder(XMaterial.GREEN_STAINED_GLASS_PANE)
                         .setDisplayName(_local.translate("GUI_NAVIGATION_PREVIOUS", getReplacements())),
@@ -106,33 +106,32 @@ public class ShopInterface extends InventoryFormUI {
         int height = getSize().getHeight() - 2;
         Vector2f offset = new Vector2f(1, 1);
 
-        for(int i = 0; i < width * height; i++) {
+        for (int i = 0; i < width * height; i++) {
             int index = getPage() * (width * height) + i;
             int x = i % width;
             int y = i / width;
 
             Vector2f position = new Vector2f(x, y).add(offset);
 
-            if(index < _perks.size()) {
+            if (index < _perks.size()) {
                 Perk perk = _perks.get(index);
                 Button button = createPerkItem(_player, perk);
                 setElement(position, button);
-            }
-            else setElement(position, clearButton);
+            } else setElement(position, clearButton);
         }
         super.onDraw();
     }
 
     protected boolean shouldDisplay(Player player, Perk perk) {
-        if(!getShop().displayUnavailablePerks()) {
-            if(!_economy.has(player, perk.getCost())) return false;
-            if(!perk.hasRequiredNodes(player)) return false;
+        if (!getShop().displayUnavailablePerks()) {
+            if (!_economy.has(player, perk.getCost())) return false;
+            if (!perk.hasRequiredNodes(player)) return false;
         }
 
         boolean unlocked = perk.getAwardedNodes().stream().allMatch(node -> _permission.hasNode(_player, node));
 
-        if(!getShop().displayUnlockedPerks()) {
-            if(unlocked) return false;
+        if (!getShop().displayUnlockedPerks()) {
+            if (unlocked) return false;
         }
 
         return true;
@@ -176,23 +175,23 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected void onPerkClick(Player player, Perk perk) {
-        EconomyResponse response = _economy.withdrawPlayer(player, perk.getCost());
 
-        if(!perk.hasRequiredNodes(player))
-            Message.send(player, _local.translate("INFO_ERROR_INSUFFICIENT_PERMISSION", perk.getReplacements()));
+        if (perk.hasRequiredNodes(player)) {
+            EconomyResponse response = _economy.withdrawPlayer(player, perk.getCost());
 
-        else if(response.type.equals(EconomyResponse.ResponseType.SUCCESS)) {
-            perk.apply(player);
-            Message.send(player, _local.translate("INFO_PERK_BUY", perk.getReplacements()));
-        } else
-            Message.send(player, _local.translate("INFO_ERROR_INSUFFICIENT_FUNDS", perk.getReplacements()));
+            if (response.type.equals(EconomyResponse.ResponseType.SUCCESS)) {
+                perk.apply(player);
+                Message.send(player, _local.translate("INFO_PERK_BUY", perk.getReplacements()));
+            } else Message.send(player, _local.translate("INFO_ERROR_INSUFFICIENT_FUNDS", perk.getReplacements()));
+
+        } else Message.send(player, _local.translate("INFO_ERROR_INSUFFICIENT_PERMISSION", perk.getReplacements()));
 
         updatePage();
     }
 
     protected void updatePage() {
         String raw = _local.getOrDefault("GUI_FORM_SHOP_TITLE", "GUI_FORM_SHOP_TITLE");
-        if(Objects.nonNull(raw) && raw.contains("{CURRENT}")) {
+        if (Objects.nonNull(raw) && raw.contains("{CURRENT}")) {
             setTitle(_local.translate("GUI_FORM_SHOP_TITLE", getReplacements()));
             reload();
         }
@@ -222,7 +221,7 @@ public class ShopInterface extends InventoryFormUI {
     }
 
     protected Object[] getReplacements() {
-        return new Object[] {
+        return new Object[]{
                 "{CURRENT}", getPage() + 1,
                 "{MAX}", _maxPage + 1,
                 "{PLAYER}", _player.getName()

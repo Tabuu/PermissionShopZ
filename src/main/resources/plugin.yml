@@ -15,11 +15,6 @@ commands:
     permission: permissionshopz.default
     aliases: [pshop, permissionshop]
 
-  permissionshopz add:
-    usage: /permissionshopz add
-    description: Creates a new perk and opens the edit window for that perk.
-    permission: permissionshopz.admin
-
   permissionshopz edit:
     usage: /permissionshopz edit
     description: Opens the shop editor.
@@ -37,7 +32,7 @@ commands:
 
   permissionshopz loaddata:
     usage: /permissionshopz loaddata
-    description: Loads the data from config.
+    description: Loads the data from config and database.
     permission: permissionshopz.admin
 
 

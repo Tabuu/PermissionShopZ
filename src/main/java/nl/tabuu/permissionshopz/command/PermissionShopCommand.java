@@ -4,16 +4,15 @@ import nl.tabuu.permissionshopz.PermissionShopZ;
 import nl.tabuu.permissionshopz.dao.NodeDAO;
 import nl.tabuu.permissionshopz.dao.PerkDAO;
 import nl.tabuu.permissionshopz.dao.ShopDAO;
-import nl.tabuu.permissionshopz.data.Perk;
-import nl.tabuu.permissionshopz.gui.PerkEditInterface;
+import nl.tabuu.permissionshopz.data.node.NodeType;
 import nl.tabuu.permissionshopz.gui.ShopEditInterface;
 import nl.tabuu.permissionshopz.gui.ShopInterface;
 import nl.tabuu.permissionshopz.nodehandler.INodeHandler;
-import nl.tabuu.permissionshopz.data.node.NodeType;
 import nl.tabuu.tabuucore.command.CommandResult;
 import nl.tabuu.tabuucore.command.register.ICommandListener;
 import nl.tabuu.tabuucore.command.register.annotation.ChildCommand;
 import nl.tabuu.tabuucore.command.register.annotation.CommandExecutor;
+import nl.tabuu.tabuucore.debug.Debug;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
 import nl.tabuu.tabuucore.util.Dictionary;
 import org.bukkit.command.CommandSender;
@@ -37,28 +36,15 @@ public class PermissionShopCommand implements ICommandListener {
     @CommandExecutor(
             value = "permissionshopz",
             children = {
-                    @ChildCommand(label = "add", method = "shopAdd"),
                     @ChildCommand(label = "edit", method = "shopEdit"),
                     @ChildCommand(label = "reload", method = "reload"),
-                    @ChildCommand(label = "loaddata", method = "loaddata"),
-                    @ChildCommand(label = "cleandata", method = "cleandata"),
+                    @ChildCommand(label = "loaddata", method = "loadData"),
+                    @ChildCommand(label = "cleandata", method = "cleanData"),
                     @ChildCommand(label = "debuginfo", method = "debugInfo")
             }
     )
     private CommandResult shop(Player player, List<?> arguments) {
         new ShopInterface(PermissionShopZ.getInstance().getDefaultShop(), player).open(player);
-        return CommandResult.SUCCESS;
-    }
-
-    @CommandExecutor("permissionshopz add")
-    private CommandResult shopAdd(Player player, List<?> arguments) {
-        Perk perk = new Perk();
-        PerkEditInterface edit = new PerkEditInterface(PermissionShopZ.getInstance().getDefaultShop(), perk);
-        edit.open(player);
-
-        PermissionShopZ.getInstance().getPerkDao().create(perk);
-        PermissionShopZ.getInstance().getDefaultShop().add(perk);
-
         return CommandResult.SUCCESS;
     }
 
@@ -76,14 +62,14 @@ public class PermissionShopCommand implements ICommandListener {
     }
 
     @CommandExecutor("permissionshopz loaddata")
-    private CommandResult loaddata(CommandSender sender, List<?> arguments) {
+    private CommandResult loadData(CommandSender sender, List<?> arguments) {
         PermissionShopZ.getInstance().load();
         sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
         return CommandResult.SUCCESS;
     }
 
     @CommandExecutor("permissionshopz cleandata")
-    private CommandResult cleandata(CommandSender sender, List<?> arguments) {
+    private CommandResult cleanData(CommandSender sender, List<?> arguments) {
         ShopDAO shopDAO = PermissionShopZ.getInstance().getShopDao();
         PerkDAO perkDAO = PermissionShopZ.getInstance().getPerkDao();
         NodeDAO nodeDAO = PermissionShopZ.getInstance().getNodeDao();
@@ -116,7 +102,7 @@ public class PermissionShopCommand implements ICommandListener {
 
         replacementMap.put("{PERMISSION_HANDLER_CLASS}", handler.getClass().getSimpleName());
 
-        for(NodeType nodeType : NodeType.values()) {
+        for (NodeType nodeType : NodeType.values()) {
             boolean supported = handler.isNodeTypeSupported(nodeType);
             String key = String.format("{NODE_TYPE_%s_SUPPORTED}", nodeType.name());
             replacementMap.put(key, (supported ? "&a" : "&c") + Serializer.BOOLEAN.serialize(supported) + "&r");
