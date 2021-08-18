@@ -12,9 +12,7 @@ import nl.tabuu.tabuucore.command.CommandResult;
 import nl.tabuu.tabuucore.command.register.ICommandListener;
 import nl.tabuu.tabuucore.command.register.annotation.ChildCommand;
 import nl.tabuu.tabuucore.command.register.annotation.CommandExecutor;
-import nl.tabuu.tabuucore.debug.Debug;
 import nl.tabuu.tabuucore.serialization.string.Serializer;
-import nl.tabuu.tabuucore.util.Dictionary;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,21 +23,19 @@ import java.util.stream.Stream;
 
 public class PermissionShopCommand implements ICommandListener {
 
-    private final Dictionary _local;
     private final PermissionShopZ _plugin;
 
     public PermissionShopCommand() {
         _plugin = PermissionShopZ.getInstance();
-        _local = _plugin.getLocale();
     }
 
     @CommandExecutor(
             value = "permissionshopz",
             children = {
                     @ChildCommand(label = "edit", method = "shopEdit"),
-                    @ChildCommand(label = "reload", method = "reload"),
-                    @ChildCommand(label = "loaddata", method = "loadData"),
-                    @ChildCommand(label = "cleandata", method = "cleanData"),
+                    @ChildCommand(label = "save", method = "saveData"),
+                    @ChildCommand(label = "load", method = "loadData"),
+                    @ChildCommand(label = "clean", method = "cleanData"),
                     @ChildCommand(label = "debuginfo", method = "debugInfo")
             }
     )
@@ -54,21 +50,21 @@ public class PermissionShopCommand implements ICommandListener {
         return CommandResult.SUCCESS;
     }
 
-    @CommandExecutor("permissionshopz reload")
-    private CommandResult reload(CommandSender sender, List<?> arguments) {
-        _plugin.reload();
-        sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
+    @CommandExecutor("permissionshopz save")
+    private CommandResult saveData(CommandSender sender, List<?> arguments) {
+        _plugin.save();
+        sender.sendMessage(_plugin.getLocale().translate("INFO_DATA_SAVE"));
         return CommandResult.SUCCESS;
     }
 
-    @CommandExecutor("permissionshopz loaddata")
+    @CommandExecutor("permissionshopz load")
     private CommandResult loadData(CommandSender sender, List<?> arguments) {
-        PermissionShopZ.getInstance().load();
-        sender.sendMessage(_local.translate("INFO_COMMAND_RELOAD"));
+        _plugin.load();
+        sender.sendMessage(_plugin.getLocale().translate("INFO_DATA_LOAD"));
         return CommandResult.SUCCESS;
     }
 
-    @CommandExecutor("permissionshopz cleandata")
+    @CommandExecutor("permissionshopz clean")
     private CommandResult cleanData(CommandSender sender, List<?> arguments) {
         ShopDAO shopDAO = PermissionShopZ.getInstance().getShopDao();
         PerkDAO perkDAO = PermissionShopZ.getInstance().getPerkDao();
@@ -91,7 +87,7 @@ public class PermissionShopCommand implements ICommandListener {
                 "{NODES}", nodes - nodeDAO.size()
         };
 
-        sender.sendMessage(_local.translate("INFO_DATA_CLEAN", replacements));
+        sender.sendMessage(_plugin.getLocale().translate("INFO_DATA_CLEAN", replacements));
         return CommandResult.SUCCESS;
     }
 
@@ -113,7 +109,7 @@ public class PermissionShopCommand implements ICommandListener {
                 .flatMap(entry -> Stream.of(entry.getKey(), entry.getValue()))
                 .toArray();
 
-        sender.sendMessage(_local.translate("INFO_COMMAND_COMMANDDEBUG", replacements));
+        sender.sendMessage(_plugin.getLocale().translate("INFO_COMMAND_COMMANDDEBUG", replacements));
 
         return CommandResult.SUCCESS;
     }

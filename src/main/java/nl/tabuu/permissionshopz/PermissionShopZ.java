@@ -57,11 +57,11 @@ public class PermissionShopZ extends TabuuCorePlugin {
 
     @Override
     public void onDisable() {
-        unload();
+        save();
         getLogger().info("PermissionShopZ is now disabled.");
     }
 
-    public void unload() {
+    public void save() {
         _nodeDao.writeAll();
         _perkDao.writeAll();
         _shopDao.writeAll();
@@ -79,19 +79,13 @@ public class PermissionShopZ extends TabuuCorePlugin {
         _shopDao.readAll();
 
         Optional<Shop> optionalShop = _shopDao.getAllFiltered(shop -> "Default".equals(shop.getName())).stream().findFirst();
-        if(!optionalShop.isPresent()) {
+        if (!optionalShop.isPresent()) {
             _defaultShop = new Shop("Default", "Description");
             _shopDao.create(_defaultShop);
         } else _defaultShop = optionalShop.get();
 
         getNodeHandler();
         NumberFormat.reloadSuffixMap();
-    }
-
-    public void reload() {
-        unload();
-
-        load();
     }
 
     public Dictionary getLocale() {

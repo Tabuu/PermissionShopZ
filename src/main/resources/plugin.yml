@@ -25,20 +25,20 @@ commands:
     description: Displays information about the current state of the plugin.
     permission: permissionshopz.admin
 
-  permissionshopz reload:
-    usage: /permissionshopz reload
-    description: Reloads the config.
+  permissionshopz save:
+    usage: /permissionshopz save
+    description: Saves and overwrites all data to the local database files.
     permission: permissionshopz.admin
 
-  permissionshopz loaddata:
+  permissionshopz load:
     usage: /permissionshopz loaddata
-    description: Loads the data from config and database.
+    description: Reads and overwrites all data to the plugin.
     permission: permissionshopz.admin
 
 
-  permissionshopz cleandata:
+  permissionshopz clean:
     usage: /permissionshopz cleandata
-    description: Removes all unused data from the database.
+    description: Removes all data that is not actively in use by the plugin.
     permission: permissionshopz.admin
 
 permissions:

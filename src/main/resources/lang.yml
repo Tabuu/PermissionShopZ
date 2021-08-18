@@ -93,13 +93,14 @@ NODE_TO_STRING_UNKNOWN: |
 INFO_ERROR_INSUFFICIENT_FUNDS: "&c&lInsufficient funds."
 INFO_ERROR_INSUFFICIENT_PERMISSION: "&c&lInsufficient permission."
 
+INFO_DATA_SAVE: "&aData saved to file."
+INFO_DATA_LOAD: "&aData loaded from file."
 INFO_DATA_CLEAN: "&aClean complete: Shops({SHOPS}) Perks({PERKS}) Nodes({NODES})."
 
 INFO_PERK_ADD: "&2&lSuccessfully added perk {NAME}."
 INFO_PERK_BUY: "&2&lSuccessfully bought perk {NAME}."
 INFO_PERK_REMOVE: "&2&lSuccessfully removed perk {NAME}."
 
-INFO_COMMAND_RELOAD: "&aReload complete."
 INFO_COMMAND_COMMANDDEBUG: |-
   Permission Manager: {PERMISSION_HANDLER_CLASS}
   Group: {NODE_TYPE_GROUP_SUPPORTED}
